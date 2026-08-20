@@ -147,7 +147,7 @@ export function Navbar() {
                     {category.tools.map((tool) => (
                       <Link
                         key={tool.slug}
-                        href={`/tools/${tool.slug}`}
+                        href={`/tools/${category.slug}/${tool.slug}`}
                         onClick={() => setMobileOpen(false)}
                         className="rounded-md px-2 py-1.5 text-sm text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
                       >

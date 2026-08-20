@@ -10,14 +10,16 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSection } from "@/components/seo/FaqSection";
 
 interface ToolPageProps {
-  params: { category: string; slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 /** Single lookup used by metadata + render, so the two can never disagree. */
-function findTool(categorySlug: string, toolSlug: string) {
-  const category = categories.find((c) => c.slug === categorySlug);
-  const tool = category?.tools.find((t) => t.slug === toolSlug);
-  return category && tool ? { category, tool } : null;
+function findTool(slug: string) {
+  for (const category of categories) {
+    const tool = category.tools.find((t) => t.slug === slug);
+    if (tool) return { category, tool };
+  }
+  return null;
 }
 
 // Pre-render EVERY calculator page at build time — one static HTML file per
@@ -25,7 +27,6 @@ function findTool(categorySlug: string, toolSlug: string) {
 export function generateStaticParams() {
   return categories.flatMap((category) =>
     category.tools.map((tool) => ({
-      category: category.slug,
       slug: tool.slug,
     })),
   );
@@ -33,8 +34,9 @@ export function generateStaticParams() {
 
 // Dynamic title / description / OpenGraph, derived from the same data the
 // page renders. Falls back gracefully for unknown combos.
-export function generateMetadata({ params }: ToolPageProps): Metadata {
-  const found = findTool(params.category, params.slug);
+export async function generateMetadata({ params }: ToolPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const found = findTool(slug);
   if (!found) {
     return { title: "Calculator not found" };
   }
@@ -54,8 +56,9 @@ export function generateMetadata({ params }: ToolPageProps): Metadata {
   };
 }
 
-export default function ToolPage({ params }: ToolPageProps) {
-  const found = findTool(params.category, params.slug);
+export default async function ToolPage({ params }: ToolPageProps) {
+  const { slug } = await params;
+  const found = findTool(slug);
   if (!found) notFound(); // renders src/app/not-found.tsx
 
   const { category, tool } = found;
