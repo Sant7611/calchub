@@ -1,22 +1,7 @@
 ```
-# Next.js build outputs
-.next/
-
 # Dependencies
 node_modules/
 
-# Environment variables
-.env.local
-.env
-
-# IDE files
-.vscode/
-.idea/
-
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-*.swp
+# Test directories
+__tests__/
 ```

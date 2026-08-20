@@ -1,0 +1,16 @@
+{
+  "/[slug]/page": "/[slug]",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/blog/[slug]/page": "/blog/[slug]",
+  "/blog/page": "/blog",
+  "/categories/[slug]/page": "/categories/[slug]",
+  "/favicon.ico/route": "/favicon.ico",
+  "/page": "/",
+  "/privacy/page": "/privacy",
+  "/sitemap.xml/route": "/sitemap.xml",
+  "/terms/page": "/terms",
+  "/tools/[category]/[slug]/page": "/tools/[category]/[slug]",
+  "/tools/[category]/page": "/tools/[category]",
+  "/tools/page": "/tools"
+}
