@@ -8,63 +8,57 @@ export type Region =
   | "australia";
 
 export interface TaxBracket {
-  limit: number; // upper bound of the slab (Infinity for the top slab)
+  limit: number | null; // upper bound of the slab (null for the top slab)
   rate: number; // marginal rate, e.g., 0.36 === 36%
 }
 
-export interface FilingStatus {
-  value: string;
-  label: string;
-  // Optional: different brackets per status (future extension)
-}
-
 export interface PayrollDeduction {
-  key: string;
-  label: string;
-  defaultRate?: number; // as decimal, e.g., 0.062 for 6.2%
-  fixedAmount?: number; // optional fixed amount
-}
-
-export interface PayFrequency {
-  value: string;
-  label: string;
-  periodsPerYear: number;
+  name: string;
+  rate: number; // as decimal, e.g., 0.062 for 6.2%
+  annualCap?: number; // optional annual cap
 }
 
 export interface RegionConfig {
+  id: string;
   name: string;
-  currencyCode: string; // ISO 4217 code
-  currencySymbol: string;
-  locale: string; // Intl locale for formatting
-  timezone: string; // IANA timezone
-  dateFormat: string; // e.g., "MM/DD/YYYY" or "DD/MM/YYYY"
-  defaultTaxLabel: string; // e.g., "Federal Tax", "Income Tax"
-  defaultTaxRate: number; // default tax rate as decimal (e.g., 0.20 for 20%)
-  standardWeeklyHours: number; // standard full-time weekly hours
-  supportedPayFrequencies: PayFrequency[];
-  flag: string;
-  defaultInterestRate: number;
-  defaultLoanAmount: number;
-  taxYear: string;
-  taxBrackets: TaxBracket[];
-  toolName: string;
-  paymentLabel: string;
-  // Invoice/sales tax configuration
-  defaultSalesTaxRate: number; // VAT/GST/sales tax rate as decimal
-  salesTaxLabel: string; // e.g., "VAT", "GST", "Sales Tax"
-  // Filing status options (region-specific)
-  filingStatuses: FilingStatus[];
-  // Payroll deductions (region-specific)
-  payrollDeductions: PayrollDeduction[];
-  // Metadata for estimates
-  isEstimate: boolean; // true if brackets are estimates/placeholders
-  estimateNote?: string; // optional note explaining estimate status
-  // Mortgage/property terminology (region-specific)
-  propertyTaxLabel: string; // e.g., "Property Tax", "Council Tax", "Land Tax"
-  insuranceLabel: string; // e.g., "Home Insurance", "Buildings Insurance"
-  hoaLabel: string; // e.g., "HOA", "Strata Fees", "Service Charge"
-  hasServiceCharge: boolean; // whether service charges are common
-  serviceChargeLabel: string; // e.g., "Service Charge", "Maintenance Fee"
+  currency: {
+    code: string;
+    symbol: string;
+    locale: string;
+    decimals: number;
+  };
+  timezone: string;
+  dateFormat: string;
+  numberFormat: string;
+  work: {
+    hoursPerWeek: number;
+    hoursPerDay: number;
+    weeksPerYear: number;
+    payFrequencies: string[];
+    defaultPayFrequency: string;
+  };
+  tax: {
+    system: string;
+    taxYear: string;
+    brackets: TaxBracket[];
+    standardDeduction?: number;
+    payrollDeductions?: PayrollDeduction[];
+  };
+  consumptionTax: {
+    label: string;
+    defaultRate: number;
+  };
+  loan: {
+    terminology: {
+      propertyTax: string;
+      insurance: string;
+      hoaOrServiceCharge: string;
+    };
+  };
+  isEstimate: boolean;
+  estimateNote?: string;
+  sourceUrl?: string;
+  lastUpdated?: string;
 }
 
 /**
@@ -73,326 +67,342 @@ export interface RegionConfig {
  */
 export const REGIONS: Record<Region, RegionConfig> = {
   global: {
+    id: "global",
     name: "Global (Illustrative)",
-    currencyCode: "USD",
-    currencySymbol: "$",
-    locale: "en-US",
+    currency: {
+      code: "USD",
+      symbol: "$",
+      locale: "en-US",
+      decimals: 2,
+    },
     timezone: "UTC",
     dateFormat: "MM/DD/YYYY",
-    defaultTaxLabel: "Tax",
-    defaultTaxRate: 0.2,
-    standardWeeklyHours: 40,
-    supportedPayFrequencies: [
-      { value: "weekly", label: "Weekly", periodsPerYear: 52 },
-      { value: "biweekly", label: "Bi-weekly", periodsPerYear: 26 },
-      { value: "semimonthly", label: "Semi-monthly", periodsPerYear: 24 },
-      { value: "monthly", label: "Monthly", periodsPerYear: 12 },
-      { value: "quarterly", label: "Quarterly", periodsPerYear: 4 },
-      { value: "annually", label: "Annually", periodsPerYear: 1 },
-    ],
-    flag: "🌍",
-    defaultInterestRate: 5,
-    defaultLoanAmount: 10_000,
-    taxYear: "Current Year (Illustrative)",
-    taxBrackets: [{ limit: Infinity, rate: 0.2 }],
-    toolName: "Calculator",
-    paymentLabel: "Payment",
-    defaultSalesTaxRate: 0,
-    salesTaxLabel: "Sales Tax",
-    filingStatuses: [{ value: "single", label: "Single" }],
-    payrollDeductions: [],
+    numberFormat: "en-US",
+    work: {
+      hoursPerWeek: 40,
+      hoursPerDay: 8,
+      weeksPerYear: 52,
+      payFrequencies: ["weekly", "biweekly", "semimonthly", "monthly", "quarterly", "annually"],
+      defaultPayFrequency: "monthly",
+    },
+    tax: {
+      system: "illustrative",
+      taxYear: "Current Year (Illustrative)",
+      brackets: [{ limit: null, rate: 0.2 }],
+    },
+    consumptionTax: {
+      label: "Sales Tax",
+      defaultRate: 0,
+    },
+    loan: {
+      terminology: {
+        propertyTax: "Property Tax",
+        insurance: "Insurance",
+        hoaOrServiceCharge: "HOA Fees",
+      },
+    },
     isEstimate: true,
     estimateNote: "Global mode uses illustrative rates only — not based on any specific country's tax laws.",
-    propertyTaxLabel: "Property Tax",
-    insuranceLabel: "Insurance",
-    hoaLabel: "HOA Fees",
-    hasServiceCharge: false,
-    serviceChargeLabel: "Service Charge",
   },
   usa: {
+    id: "usa",
     name: "United States",
-    currencyCode: "USD",
-    currencySymbol: "$",
-    locale: "en-US",
+    currency: {
+      code: "USD",
+      symbol: "$",
+      locale: "en-US",
+      decimals: 2,
+    },
     timezone: "America/New_York",
     dateFormat: "MM/DD/YYYY",
-    defaultTaxLabel: "Federal Tax",
-    defaultTaxRate: 0.22,
-    standardWeeklyHours: 40,
-    supportedPayFrequencies: [
-      { value: "weekly", label: "Weekly", periodsPerYear: 52 },
-      { value: "biweekly", label: "Bi-weekly", periodsPerYear: 26 },
-      { value: "semimonthly", label: "Semi-monthly", periodsPerYear: 24 },
-      { value: "monthly", label: "Monthly", periodsPerYear: 12 },
-      { value: "quarterly", label: "Quarterly", periodsPerYear: 4 },
-      { value: "annually", label: "Annually", periodsPerYear: 1 },
-    ],
-    flag: "🇺🇸",
-    defaultInterestRate: 6.5,
-    defaultLoanAmount: 25_000,
-    taxYear: "Federal 2024 (Single)",
-    taxBrackets: [
-      { limit: 11_600, rate: 0.1 },
-      { limit: 47_150, rate: 0.12 },
-      { limit: 100_525, rate: 0.22 },
-      { limit: 191_950, rate: 0.24 },
-      { limit: 243_725, rate: 0.32 },
-      { limit: 609_350, rate: 0.35 },
-      { limit: Infinity, rate: 0.37 },
-    ],
-    toolName: "Loan Calculator",
-    paymentLabel: "Monthly Payment",
-    defaultSalesTaxRate: 0.07,
-    salesTaxLabel: "Sales Tax",
-    filingStatuses: [
-      { value: "single", label: "Single" },
-      { value: "married_joint", label: "Married Filing Jointly" },
-      { value: "married_separate", label: "Married Filing Separately" },
-      { value: "head_household", label: "Head of Household" },
-    ],
-    payrollDeductions: [
-      { key: "social_security", label: "Social Security", defaultRate: 0.062 },
-      { key: "medicare", label: "Medicare", defaultRate: 0.0145 },
-    ],
+    numberFormat: "en-US",
+    work: {
+      hoursPerWeek: 40,
+      hoursPerDay: 8,
+      weeksPerYear: 52,
+      payFrequencies: ["weekly", "biweekly", "semimonthly", "monthly", "quarterly", "annually"],
+      defaultPayFrequency: "monthly",
+    },
+    tax: {
+      system: "federal",
+      taxYear: "Federal 2024 (Single)",
+      brackets: [
+        { limit: 11600, rate: 0.1 },
+        { limit: 47150, rate: 0.12 },
+        { limit: 100525, rate: 0.22 },
+        { limit: 191950, rate: 0.24 },
+        { limit: 243725, rate: 0.32 },
+        { limit: 609350, rate: 0.35 },
+        { limit: null, rate: 0.37 },
+      ],
+      standardDeduction: 14600,
+      payrollDeductions: [
+        { name: "Social Security", rate: 0.062, annualCap: 168600 },
+        { name: "Medicare", rate: 0.0145 },
+      ],
+    },
+    consumptionTax: {
+      label: "Sales Tax",
+      defaultRate: 0.07,
+    },
+    loan: {
+      terminology: {
+        propertyTax: "Property Tax",
+        insurance: "Homeowners Insurance",
+        hoaOrServiceCharge: "HOA Fees",
+      },
+    },
     isEstimate: false,
-    propertyTaxLabel: "Property Tax",
-    insuranceLabel: "Homeowners Insurance",
-    hoaLabel: "HOA Fees",
-    hasServiceCharge: false,
-    serviceChargeLabel: "Service Charge",
+    sourceUrl: "https://www.irs.gov/taxtopics/tc503",
+    lastUpdated: "2024-01-15",
   },
   nepal: {
+    id: "nepal",
     name: "Nepal",
-    currencyCode: "NPR",
-    currencySymbol: "Rs. ",
-    locale: "en-IN",
+    currency: {
+      code: "NPR",
+      symbol: "Rs.",
+      locale: "en-NP",
+      decimals: 2,
+    },
     timezone: "Asia/Kathmandu",
     dateFormat: "DD/MM/YYYY",
-    defaultTaxLabel: "Income Tax",
-    defaultTaxRate: 0.2,
-    standardWeeklyHours: 48,
-    supportedPayFrequencies: [
-      { value: "monthly", label: "Monthly", periodsPerYear: 12 },
-      { value: "quarterly", label: "Quarterly", periodsPerYear: 4 },
-      { value: "annually", label: "Annually", periodsPerYear: 1 },
-    ],
-    flag: "🇳🇵",
-    defaultInterestRate: 11,
-    defaultLoanAmount: 1_000_000,
-    taxYear: "FY 2083/84 (Individual)",
-    taxBrackets: [
-      { limit: 500_000, rate: 0.01 },
-      { limit: 700_000, rate: 0.1 },
-      { limit: 1_000_000, rate: 0.2 },
-      { limit: 2_000_000, rate: 0.3 },
-      { limit: Infinity, rate: 0.36 },
-    ],
-    toolName: "EMI Calculator",
-    paymentLabel: "Monthly EMI",
-    defaultSalesTaxRate: 0.13,
-    salesTaxLabel: "VAT",
-    filingStatuses: [
-      { value: "individual", label: "Individual" },
-      { value: "couple", label: "Couple (Joint)" },
-    ],
-    payrollDeductions: [
-      { key: "ssf_employee", label: "SSF (Employee)", defaultRate: 0.11 },
-    ],
+    numberFormat: "en-IN",
+    work: {
+      hoursPerWeek: 48,
+      hoursPerDay: 8,
+      weeksPerYear: 52,
+      payFrequencies: ["monthly", "quarterly", "annually"],
+      defaultPayFrequency: "monthly",
+    },
+    tax: {
+      system: "progressive",
+      taxYear: "FY 2083/84 (2026/27)",
+      brackets: [
+        { limit: 1000000, rate: 0.01 },
+        { limit: 500000, rate: 0.1 },
+        { limit: 1000000, rate: 0.2 },
+        { limit: 1500000, rate: 0.27 },
+        { limit: null, rate: 0.29 },
+      ],
+      payrollDeductions: [
+        { name: "SSF (Employee)", rate: 0.11 },
+      ],
+    },
+    consumptionTax: {
+      label: "VAT",
+      defaultRate: 0.13,
+    },
+    loan: {
+      terminology: {
+        propertyTax: "Property Tax",
+        insurance: "Home Insurance",
+        hoaOrServiceCharge: "Maintenance Fee",
+      },
+    },
     isEstimate: false,
-    propertyTaxLabel: "Property Tax",
-    insuranceLabel: "Home Insurance",
-    hoaLabel: "Maintenance Fee",
-    hasServiceCharge: true,
-    serviceChargeLabel: "Service Charge",
+    sourceUrl: "https://ird.gov.np/",
+    lastUpdated: "2024-07-15",
+    estimateNote: "Based on Finance Act 2083/84. SSF/approved-retirement-fund exceptions may apply.",
   },
   india: {
+    id: "india",
     name: "India",
-    currencyCode: "INR",
-    currencySymbol: "₹",
-    locale: "en-IN",
+    currency: {
+      code: "INR",
+      symbol: "₹",
+      locale: "en-IN",
+      decimals: 2,
+    },
     timezone: "Asia/Kolkata",
     dateFormat: "DD/MM/YYYY",
-    defaultTaxLabel: "Income Tax",
-    defaultTaxRate: 0.1,
-    standardWeeklyHours: 48,
-    supportedPayFrequencies: [
-      { value: "monthly", label: "Monthly", periodsPerYear: 12 },
-      { value: "quarterly", label: "Quarterly", periodsPerYear: 4 },
-      { value: "annually", label: "Annually", periodsPerYear: 1 },
-    ],
-    flag: "🇮🇳",
-    defaultInterestRate: 8.5,
-    defaultLoanAmount: 1_000_000,
-    taxYear: "New Regime FY 2024-25 (Estimate)",
-    taxBrackets: [
-      { limit: 300_000, rate: 0 },
-      { limit: 700_000, rate: 0.05 },
-      { limit: 1_000_000, rate: 0.1 },
-      { limit: 1_200_000, rate: 0.15 },
-      { limit: 1_500_000, rate: 0.2 },
-      { limit: Infinity, rate: 0.3 },
-    ],
-    toolName: "EMI Calculator",
-    paymentLabel: "Monthly EMI",
-    defaultSalesTaxRate: 0.18,
-    salesTaxLabel: "GST",
-    filingStatuses: [
-      { value: "individual", label: "Individual" },
-      { value: "huf", label: "HUF" },
-    ],
-    payrollDeductions: [
-      { key: "pf", label: "Provident Fund (EPF)", defaultRate: 0.12 },
-    ],
+    numberFormat: "en-IN",
+    work: {
+      hoursPerWeek: 48,
+      hoursPerDay: 8,
+      weeksPerYear: 52,
+      payFrequencies: ["monthly", "quarterly", "annually"],
+      defaultPayFrequency: "monthly",
+    },
+    tax: {
+      system: "new-regime",
+      taxYear: "New Regime FY 2024-25",
+      brackets: [
+        { limit: 300000, rate: 0 },
+        { limit: 400000, rate: 0.05 },
+        { limit: 300000, rate: 0.1 },
+        { limit: 200000, rate: 0.15 },
+        { limit: 300000, rate: 0.2 },
+        { limit: null, rate: 0.3 },
+      ],
+      standardDeduction: 75000,
+      payrollDeductions: [
+        { name: "Provident Fund (EPF)", rate: 0.12 },
+      ],
+    },
+    consumptionTax: {
+      label: "GST",
+      defaultRate: 0.18,
+    },
+    loan: {
+      terminology: {
+        propertyTax: "Property Tax",
+        insurance: "Home Insurance",
+        hoaOrServiceCharge: "Society Maintenance",
+      },
+    },
     isEstimate: true,
     estimateNote: "India brackets are simplified estimates under the new tax regime. Actual liability may vary with deductions and surcharges.",
-    propertyTaxLabel: "Property Tax",
-    insuranceLabel: "Home Insurance",
-    hoaLabel: "Maintenance Charges",
-    hasServiceCharge: true,
-    serviceChargeLabel: "Society Maintenance",
+    sourceUrl: "https://www.incometax.gov.in/",
+    lastUpdated: "2024-07-01",
   },
   uk: {
+    id: "uk",
     name: "United Kingdom",
-    currencyCode: "GBP",
-    currencySymbol: "£",
-    locale: "en-GB",
+    currency: {
+      code: "GBP",
+      symbol: "£",
+      locale: "en-GB",
+      decimals: 2,
+    },
     timezone: "Europe/London",
     dateFormat: "DD/MM/YYYY",
-    defaultTaxLabel: "Income Tax",
-    defaultTaxRate: 0.2,
-    standardWeeklyHours: 37.5,
-    supportedPayFrequencies: [
-      { value: "weekly", label: "Weekly", periodsPerYear: 52 },
-      { value: "biweekly", label: "Bi-weekly", periodsPerYear: 26 },
-      { value: "monthly", label: "Monthly", periodsPerYear: 12 },
-      { value: "quarterly", label: "Quarterly", periodsPerYear: 4 },
-      { value: "annually", label: "Annually", periodsPerYear: 1 },
-    ],
-    flag: "🇬🇧",
-    defaultInterestRate: 5.25,
-    defaultLoanAmount: 20_000,
-    taxYear: "Tax Year 2024/25 (Estimate)",
-    taxBrackets: [
-      { limit: 12_570, rate: 0 },
-      { limit: 50_270, rate: 0.2 },
-      { limit: 125_140, rate: 0.4 },
-      { limit: Infinity, rate: 0.45 },
-    ],
-    toolName: "Loan Calculator",
-    paymentLabel: "Monthly Payment",
-    defaultSalesTaxRate: 0.2,
-    salesTaxLabel: "VAT",
-    filingStatuses: [
-      { value: "single", label: "Single" },
-      { value: "married", label: "Married/Civil Partnership" },
-    ],
-    payrollDeductions: [
-      { key: "ni", label: "National Insurance (Class 1)", defaultRate: 0.08 },
-    ],
+    numberFormat: "en-GB",
+    work: {
+      hoursPerWeek: 40,
+      hoursPerDay: 8,
+      weeksPerYear: 52,
+      payFrequencies: ["weekly", "biweekly", "monthly", "quarterly", "annually"],
+      defaultPayFrequency: "monthly",
+    },
+    tax: {
+      system: "progressive",
+      taxYear: "Tax Year 2024/25",
+      brackets: [
+        { limit: 12570, rate: 0 },
+        { limit: 37700, rate: 0.2 },
+        { limit: 74870, rate: 0.4 },
+        { limit: null, rate: 0.45 },
+      ],
+      standardDeduction: 12570, // Personal Allowance
+      payrollDeductions: [
+        { name: "National Insurance (Class 1)", rate: 0.08 },
+      ],
+    },
+    consumptionTax: {
+      label: "VAT",
+      defaultRate: 0.2,
+    },
+    loan: {
+      terminology: {
+        propertyTax: "Council Tax",
+        insurance: "Buildings Insurance",
+        hoaOrServiceCharge: "Service Charge",
+      },
+    },
     isEstimate: true,
     estimateNote: "UK brackets are simplified estimates. National Insurance and personal allowance tapering not fully modeled.",
-    propertyTaxLabel: "Council Tax",
-    insuranceLabel: "Buildings Insurance",
-    hoaLabel: "Service Charge",
-    hasServiceCharge: true,
-    serviceChargeLabel: "Service Charge",
+    sourceUrl: "https://www.gov.uk/income-tax-rates",
+    lastUpdated: "2024-04-06",
   },
   canada: {
+    id: "canada",
     name: "Canada",
-    currencyCode: "CAD",
-    currencySymbol: "$",
-    locale: "en-CA",
+    currency: {
+      code: "CAD",
+      symbol: "$",
+      locale: "en-CA",
+      decimals: 2,
+    },
     timezone: "America/Toronto",
     dateFormat: "DD/MM/YYYY",
-    defaultTaxLabel: "Federal Tax",
-    defaultTaxRate: 0.205,
-    standardWeeklyHours: 40,
-    supportedPayFrequencies: [
-      { value: "weekly", label: "Weekly", periodsPerYear: 52 },
-      { value: "biweekly", label: "Bi-weekly", periodsPerYear: 26 },
-      { value: "semimonthly", label: "Semi-monthly", periodsPerYear: 24 },
-      { value: "monthly", label: "Monthly", periodsPerYear: 12 },
-      { value: "quarterly", label: "Quarterly", periodsPerYear: 4 },
-      { value: "annually", label: "Annually", periodsPerYear: 1 },
-    ],
-    flag: "🇨🇦",
-    defaultInterestRate: 5.5,
-    defaultLoanAmount: 30_000,
-    taxYear: "Federal 2024 (Estimate)",
-    taxBrackets: [
-      { limit: 55_867, rate: 0.15 },
-      { limit: 111_733, rate: 0.205 },
-      { limit: 173_669, rate: 0.26 },
-      { limit: 246_752, rate: 0.29 },
-      { limit: Infinity, rate: 0.33 },
-    ],
-    toolName: "Loan Calculator",
-    paymentLabel: "Monthly Payment",
-    defaultSalesTaxRate: 0.05,
-    salesTaxLabel: "GST/HST",
-    filingStatuses: [
-      { value: "single", label: "Single" },
-      { value: "married", label: "Married/Common-law" },
-    ],
-    payrollDeductions: [
-      { key: "cpp", label: "CPP", defaultRate: 0.0595 },
-      { key: "ei", label: "EI", defaultRate: 0.0166 },
-    ],
+    numberFormat: "en-CA",
+    work: {
+      hoursPerWeek: 40,
+      hoursPerDay: 8,
+      weeksPerYear: 52,
+      payFrequencies: ["weekly", "biweekly", "semimonthly", "monthly", "quarterly", "annually"],
+      defaultPayFrequency: "monthly",
+    },
+    tax: {
+      system: "federal",
+      taxYear: "Federal 2024",
+      brackets: [
+        { limit: 55867, rate: 0.15 },
+        { limit: 55866, rate: 0.205 },
+        { limit: 61936, rate: 0.26 },
+        { limit: 73083, rate: 0.29 },
+        { limit: null, rate: 0.33 },
+      ],
+      payrollDeductions: [
+        { name: "CPP", rate: 0.0595 },
+        { name: "EI", rate: 0.0166 },
+      ],
+    },
+    consumptionTax: {
+      label: "GST/HST",
+      defaultRate: 0.05,
+    },
+    loan: {
+      terminology: {
+        propertyTax: "Property Tax",
+        insurance: "Home Insurance",
+        hoaOrServiceCharge: "Condo Fees",
+      },
+    },
     isEstimate: true,
     estimateNote: "Canada federal brackets only. Provincial taxes, CPP, and EI are separate and vary by province.",
-    propertyTaxLabel: "Property Tax",
-    insuranceLabel: "Home Insurance",
-    hoaLabel: "Condo Fees",
-    hasServiceCharge: false,
-    serviceChargeLabel: "Service Charge",
+    sourceUrl: "https://www.canada.ca/en/revenue-agency/services/tax/individuals/frequently-asked-questions-individuals-income-tax/tax-packages-general-information/federal-personal-income-tax-brackets.html",
+    lastUpdated: "2024-01-01",
   },
   australia: {
+    id: "australia",
     name: "Australia",
-    currencyCode: "AUD",
-    currencySymbol: "$",
-    locale: "en-AU",
+    currency: {
+      code: "AUD",
+      symbol: "$",
+      locale: "en-AU",
+      decimals: 2,
+    },
     timezone: "Australia/Sydney",
     dateFormat: "DD/MM/YYYY",
-    defaultTaxLabel: "Income Tax",
-    defaultTaxRate: 0.19,
-    standardWeeklyHours: 38,
-    supportedPayFrequencies: [
-      { value: "weekly", label: "Weekly", periodsPerYear: 52 },
-      { value: "biweekly", label: "Bi-weekly", periodsPerYear: 26 },
-      { value: "semimonthly", label: "Semi-monthly", periodsPerYear: 24 },
-      { value: "monthly", label: "Monthly", periodsPerYear: 12 },
-      { value: "quarterly", label: "Quarterly", periodsPerYear: 4 },
-      { value: "annually", label: "Annually", periodsPerYear: 1 },
-    ],
-    flag: "🇦🇺",
-    defaultInterestRate: 6,
-    defaultLoanAmount: 40_000,
-    taxYear: "FY 2024-25 (Estimate)",
-    taxBrackets: [
-      { limit: 18_200, rate: 0 },
-      { limit: 45_000, rate: 0.19 },
-      { limit: 135_000, rate: 0.325 },
-      { limit: 190_000, rate: 0.37 },
-      { limit: Infinity, rate: 0.45 },
-    ],
-    toolName: "Loan Calculator",
-    paymentLabel: "Monthly Payment",
-    defaultSalesTaxRate: 0.1,
-    salesTaxLabel: "GST",
-    filingStatuses: [
-      { value: "resident", label: "Resident" },
-      { value: "foreign", label: "Foreign Resident" },
-    ],
-    payrollDeductions: [
-      { key: "super", label: "Superannuation (SG)", defaultRate: 0.115 },
-    ],
+    numberFormat: "en-AU",
+    work: {
+      hoursPerWeek: 38,
+      hoursPerDay: 7.6,
+      weeksPerYear: 52,
+      payFrequencies: ["weekly", "biweekly", "semimonthly", "monthly", "quarterly", "annually"],
+      defaultPayFrequency: "monthly",
+    },
+    tax: {
+      system: "progressive",
+      taxYear: "FY 2024-25",
+      brackets: [
+        { limit: 18200, rate: 0 },
+        { limit: 26800, rate: 0.19 },
+        { limit: 90000, rate: 0.325 },
+        { limit: 55000, rate: 0.37 },
+        { limit: null, rate: 0.45 },
+      ],
+      payrollDeductions: [
+        { name: "Superannuation (SG)", rate: 0.115 },
+      ],
+    },
+    consumptionTax: {
+      label: "GST",
+      defaultRate: 0.1,
+    },
+    loan: {
+      terminology: {
+        propertyTax: "Council Rates",
+        insurance: "Home Insurance",
+        hoaOrServiceCharge: "Strata Fees",
+      },
+    },
     isEstimate: true,
     estimateNote: "Australia brackets are simplified estimates. Medicare levy and offsets not included.",
-    propertyTaxLabel: "Council Rates",
-    insuranceLabel: "Home Insurance",
-    hoaLabel: "Strata Fees",
-    hasServiceCharge: false,
-    serviceChargeLabel: "Service Charge",
+    sourceUrl: "https://www.ato.gov.au/rates/individual-income-tax-rates/",
+    lastUpdated: "2024-07-01",
   },
 };
 
@@ -409,10 +419,9 @@ export function getRegionConfig(region: Region): RegionConfig {
 }
 
 /** Get all regions as an array for iteration/selection UIs. */
-export function getAllRegions(): { value: Region; name: string; flag: string }[] {
+export function getAllRegions(): { value: Region; name: string }[] {
   return Object.entries(REGIONS).map(([key, config]) => ({
     value: key as Region,
     name: config.name,
-    flag: config.flag,
   }));
 }

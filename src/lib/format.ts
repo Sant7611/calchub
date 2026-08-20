@@ -15,13 +15,18 @@ export function makeFormatters(region: Region): Formatters {
   const config = getRegionConfig(region);
 
   const fmt = (value: number, fractionDigits = 0) =>
-    new Intl.NumberFormat(config.locale, {
+    new Intl.NumberFormat(config.numberFormat || config.currency.locale, {
       minimumFractionDigits: fractionDigits,
       maximumFractionDigits: fractionDigits,
     }).format(value);
 
-  const money = (value: number, fractionDigits = 0) =>
-    `${config.currencySymbol}${fmt(value, fractionDigits)}`;
+  const money = (value: number, fractionDigits = 2) =>
+    new Intl.NumberFormat(config.currency.locale, {
+      style: "currency",
+      currency: config.currency.code,
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    }).format(value);
 
   return { money, fmt };
 }
@@ -34,7 +39,7 @@ export function formatCurrency(
   value: number,
   currencyCode: string,
   locale: string,
-  fractionDigits = 0
+  fractionDigits = 2
 ): string {
   return new Intl.NumberFormat(locale, {
     style: "currency",

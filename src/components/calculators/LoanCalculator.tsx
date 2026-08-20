@@ -6,6 +6,38 @@ import { useRegion } from "@/store/useRegionStore";
 import { makeFormatters } from "@/lib/format";
 import { getRegionConfig, type Region } from "@/config/regions";
 
+// Flag emojis for each region
+const REGION_FLAGS: Record<Region, string> = {
+  global: "🌍",
+  usa: "🇺🇸",
+  nepal: "🇳🇵",
+  india: "🇮🇳",
+  uk: "🇬🇧",
+  canada: "🇨🇦",
+  australia: "🇦🇺",
+};
+
+// Default loan amounts and interest rates by region
+const DEFAULT_LOAN_AMOUNTS: Record<Region, number> = {
+  global: 10_000,
+  usa: 25_000,
+  nepal: 1_000_000,
+  india: 1_000_000,
+  uk: 20_000,
+  canada: 30_000,
+  australia: 40_000,
+};
+
+const DEFAULT_INTEREST_RATES: Record<Region, number> = {
+  global: 5,
+  usa: 6.5,
+  nepal: 11,
+  india: 8.5,
+  uk: 5.25,
+  canada: 5.5,
+  australia: 6,
+};
+
 /**
  * EMI Calculator with multi-region support.
  * Default region: Nepal (NPR)
@@ -23,8 +55,8 @@ export function LoanCalculator() {
   
   // Use region as part of key to reset state when region changes
   // This avoids calling setState in useEffect which causes cascading renders
-  const [amount, setAmount] = useState(config.defaultLoanAmount);
-  const [rate, setRate] = useState(config.defaultInterestRate);
+  const [amount, setAmount] = useState(DEFAULT_LOAN_AMOUNTS[region]);
+  const [rate, setRate] = useState(DEFAULT_INTEREST_RATES[region]);
   const [years, setYears] = useState(5); // Default 5 years for all regions
   
   // Input validation
@@ -52,9 +84,8 @@ export function LoanCalculator() {
   const handleRegionChange = (newRegion: Region) => {
     setRegion(newRegion);
     // Reset to new region's defaults without useEffect
-    const newConfig = getRegionConfig(newRegion);
-    setAmount(newConfig.defaultLoanAmount);
-    setRate(newConfig.defaultInterestRate);
+    setAmount(DEFAULT_LOAN_AMOUNTS[newRegion]);
+    setRate(DEFAULT_INTEREST_RATES[newRegion]);
   };
 
   return (
@@ -77,7 +108,7 @@ export function LoanCalculator() {
                     : "bg-fog-100 text-fog-700 hover:bg-fog-200"
                 }`}
               >
-                {regionConfig.flag} {regionConfig.name} ({regionConfig.currencyCode})
+                {REGION_FLAGS[r]} {regionConfig.name} ({regionConfig.currency.code})
               </button>
             );
           })}
@@ -96,11 +127,11 @@ export function LoanCalculator() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Field label={`Loan amount (${config.currencyCode})`}>
+        <Field label={`Loan amount (${config.currency.code})`}>
           <NumInput 
             value={amount} 
             onChange={setAmount} 
-            prefix={config.currencySymbol} 
+            prefix={config.currency.symbol} 
             step={region === "nepal" || region === "india" ? 10000 : 500}
             min={0}
           />
@@ -126,7 +157,7 @@ export function LoanCalculator() {
       </div>
 
       <StatGrid>
-        <Stat accent label={config.paymentLabel} value={formatters.money(monthly, 2)} />
+        <Stat accent label="Monthly Payment" value={formatters.money(monthly, 2)} />
         <Stat label="Total interest" value={formatters.money(interest, 0)} />
         <Stat label="Total repayment" value={formatters.money(total, 0)} />
       </StatGrid>
@@ -155,7 +186,7 @@ export function LoanCalculator() {
       </div>
 
       <p className="mt-4 text-[11.5px] text-fog-600">
-        {config.paymentLabel} calculated using reducing balance method · {n} monthly payments of {formatters.money(monthly, 2)}.
+        Monthly Payment calculated using reducing balance method · {n} monthly payments of {formatters.money(monthly, 2)}.
         Rates shown are indicative and may vary by lender in {config.name}.
       </p>
 
