@@ -72,9 +72,51 @@ const loanCalculator: CalculatorContent = {
   ],
 };
 
+const emiCalculator: CalculatorContent = {
+  slug: "emi-calculator",
+  intro: [
+    "An EMI (Equated Monthly Installment) calculator helps you determine your fixed monthly payment for home loans, car loans, and personal loans. EMI combines both principal and interest into one predictable payment, making budgeting easier.",
+    "This calculator uses the reducing-balance method — the same approach banks in Nepal, India and internationally use — so you can trust the results when comparing loan offers or planning your finances.",
+  ],
+  howToUse: [
+    "Select your region (Nepal, India, or USA) to see local currency and typical rates.",
+    "Enter the loan amount you need (principal).",
+    "Input the annual interest rate offered by your lender.",
+    "Set the loan tenure in years, then instantly see your monthly EMI, total interest payable, and the complete repayment schedule.",
+  ],
+  formula: {
+    title: "EMI Formula (Reducing Balance Method)",
+    explanation:
+      "EMI = P × r × (1+r)ⁿ / [(1+r)ⁿ − 1], where P = loan principal, r = monthly interest rate (annual rate ÷ 12 ÷ 100), and n = loan tenure in months. This formula ensures each payment is identical throughout the loan term, with the interest portion decreasing and principal portion increasing over time.",
+  },
+  faqs: [
+    {
+      question: "What is EMI and how is it calculated?",
+      answer:
+        "EMI stands for Equated Monthly Installment. It's a fixed amount paid monthly towards repaying a loan. Banks calculate EMI using the reducing balance method, where interest is computed on the outstanding principal each month.",
+    },
+    {
+      question: "Does EMI change over the loan tenure?",
+      answer:
+        "For fixed-rate loans, the EMI remains constant throughout. However, if you have a floating/variable rate loan, the EMI may change when the interest rate resets. Some lenders adjust the tenure instead of the EMI when rates change.",
+    },
+    {
+      question: "How can I reduce my EMI burden?",
+      answer:
+        "You can lower your EMI by: (1) opting for a longer tenure, (2) making a larger down payment to reduce the principal, (3) improving your credit score to qualify for lower interest rates, or (4) making partial prepayments when possible.",
+    },
+    {
+      question: "Is this EMI calculator accurate for Nepal and India?",
+      answer:
+        "Yes. This calculator uses the same reducing-balance formula used by banks in Nepal and India. It supports NPR (Rs.), INR (₹), and USD ($) with region-specific default amounts and interest rates for realistic estimates.",
+    },
+  ],
+};
+
 /** Authored content, keyed by tool slug. */
 const contentBySlug: Record<string, CalculatorContent> = {
   "loan-calculator": loanCalculator,
+  "emi-calculator": emiCalculator,
 };
 
 /**

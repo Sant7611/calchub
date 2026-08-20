@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Field, NumInput, Stat, StatGrid, currency } from "./shared";
+import { useState, useEffect } from "react";
+import { Field, NumInput, Stat, StatGrid } from "./shared";
+import { useRegion } from "@/store/useRegionStore";
+import { makeFormatters } from "@/lib/format";
+import { getRegionConfig, type Region } from "@/config/regions";
 
 /**
  * EMI Calculator with multi-region support.
@@ -14,55 +17,20 @@ import { Field, NumInput, Stat, StatGrid, currency } from "./shared";
  * - N = Loan tenure in months
  */
 
-type Region = "nepal" | "india" | "us" | "uk";
-
-interface RegionConfig {
-  name: string;
-  currency: string;
-  currencySymbol: string;
-  typicalRate: number;
-  typicalTerm: number;
-}
-
-const regionConfigs: Record<Region, RegionConfig> = {
-  nepal: {
-    name: "Nepal",
-    currency: "NPR",
-    currencySymbol: "Rs.",
-    typicalRate: 10.5,
-    typicalTerm: 5,
-  },
-  india: {
-    name: "India",
-    currency: "INR",
-    currencySymbol: "₹",
-    typicalRate: 8.5,
-    typicalTerm: 5,
-  },
-  us: {
-    name: "United States",
-    currency: "USD",
-    currencySymbol: "$",
-    typicalRate: 6.5,
-    typicalTerm: 5,
-  },
-  uk: {
-    name: "United Kingdom",
-    currency: "GBP",
-    currencySymbol: "£",
-    typicalRate: 5.5,
-    typicalTerm: 5,
-  },
-};
-
 export function LoanCalculator() {
-  const [region, setRegion] = useState<Region>("nepal");
-  const config = regionConfigs[region];
+  const { region, setRegion, config } = useRegion();
+  const formatters = makeFormatters(region);
   
   // Initialize with region-appropriate defaults
-  const [amount, setAmount] = useState(1000000); // 10 lakh NPR default
-  const [rate, setRate] = useState(config.typicalRate);
-  const [years, setYears] = useState(config.typicalTerm);
+  const [amount, setAmount] = useState(config.defaultLoanAmount);
+  const [rate, setRate] = useState(config.defaultInterestRate);
+  const [years, setYears] = useState(5); // Default 5 years for all regions
+  
+  // Reset amount and rate when region changes
+  useEffect(() => {
+    setAmount(config.defaultLoanAmount);
+    setRate(config.defaultInterestRate);
+  }, [region, config.defaultLoanAmount, config.defaultInterestRate]);
   
   const r = rate / 100 / 12;
   const n = years * 12;
@@ -74,7 +42,7 @@ export function LoanCalculator() {
   
   const total = monthly * n;
   const interest = total - amount;
-  
+
   const handleRegionChange = (newRegion: Region) => {
     setRegion(newRegion);
   };
@@ -87,19 +55,22 @@ export function LoanCalculator() {
           Region
         </label>
         <div className="flex flex-wrap gap-2">
-          {(Object.keys(regionConfigs) as Region[]).map((r) => (
-            <button
-              key={r}
-              onClick={() => handleRegionChange(r)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                region === r
-                  ? "bg-brand-600 text-white shadow-md"
-                  : "bg-fog-100 text-fog-700 hover:bg-fog-200"
-              }`}
-            >
-              {regionConfigs[r].name} ({regionConfigs[r].currencySymbol})
-            </button>
-          ))}
+          {(["nepal", "india", "usa"] as Region[]).map((r) => {
+            const regionConfig = getRegionConfig(r);
+            return (
+              <button
+                key={r}
+                onClick={() => handleRegionChange(r)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  region === r
+                    ? "bg-brand-600 text-white shadow-md"
+                    : "bg-fog-100 text-fog-700 hover:bg-fog-200"
+                }`}
+              >
+                {regionConfig.label} ({regionConfig.symbol})
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -108,7 +79,7 @@ export function LoanCalculator() {
           <NumInput 
             value={amount} 
             onChange={setAmount} 
-            prefix={config.currencySymbol} 
+            prefix={config.symbol} 
             step={region === "nepal" || region === "india" ? 10000 : 500} 
           />
         </Field>
@@ -121,9 +92,9 @@ export function LoanCalculator() {
       </div>
 
       <StatGrid>
-        <Stat accent label="Monthly EMI" value={currency(monthly, 2, config.currencySymbol)} />
-        <Stat label="Total interest" value={currency(interest, 0, config.currencySymbol)} />
-        <Stat label="Total repayment" value={currency(total, 0, config.currencySymbol)} />
+        <Stat accent label={config.paymentLabel} value={formatters.money(monthly, 2)} />
+        <Stat label="Total interest" value={formatters.money(interest, 0)} />
+        <Stat label="Total repayment" value={formatters.money(total, 0)} />
       </StatGrid>
 
       {/* Amortization Summary */}
@@ -132,11 +103,11 @@ export function LoanCalculator() {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-fog-600">Principal:</span>
-            <span className="ml-2 font-medium">{currency(amount, 0, config.currencySymbol)}</span>
+            <span className="ml-2 font-medium">{formatters.money(amount, 0)}</span>
           </div>
           <div>
             <span className="text-fog-600">Interest:</span>
-            <span className="ml-2 font-medium">{currency(interest, 0, config.currencySymbol)}</span>
+            <span className="ml-2 font-medium">{formatters.money(interest, 0)}</span>
           </div>
           <div>
             <span className="text-fog-600">Total Payments:</span>
@@ -150,8 +121,8 @@ export function LoanCalculator() {
       </div>
 
       <p className="mt-4 text-[11.5px] text-fog-600">
-        EMI calculated using reducing balance method · {n} monthly payments of {currency(monthly, 2, config.currencySymbol)}.
-        Rates shown are indicative and may vary by lender in {config.name}.
+        {config.paymentLabel} calculated using reducing balance method · {n} monthly payments of {formatters.money(monthly, 2)}.
+        Rates shown are indicative and may vary by lender in {config.label}.
       </p>
     </div>
   );
