@@ -68,7 +68,7 @@ export function WorldClock() {
 
   // Format time for a specific timezone
   const formatTimeInZone = (date: Date, timezone: string) => {
-    return new Intl.DateTimeFormat(config.locale, {
+    return new Intl.DateTimeFormat(config.currency.locale, {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
@@ -79,7 +79,7 @@ export function WorldClock() {
 
   // Format date for a specific timezone (regional formatting)
   const formatDateInZone = (date: Date, timezone: string) => {
-    return new Intl.DateTimeFormat(config.locale, {
+    return new Intl.DateTimeFormat(config.currency.locale, {
       weekday: "short",
       year: "numeric",
       month: "short",

@@ -58,10 +58,10 @@ export async function generateMetadata({ params, searchParams }: ToolPageProps):
   
   // Use region-specific tool name for EMI/Loan calculators
   const toolName = tool.slug === "loan-calculator" || tool.slug === "emi-calculator"
-    ? regionConfig.toolName
+    ? regionConfig.loan.terminology.hoaOrServiceCharge.includes("EMI") ? "EMI Calculator" : "Loan Calculator"
     : tool.name;
   
-  const title = `${toolName} for ${regionConfig.name} (${regionConfig.currencyCode})`;
+  const title = `${toolName} for ${regionConfig.name} (${regionConfig.currency.code})`;
 
   return {
     title,
@@ -84,8 +84,9 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
   
   // Use region-specific tool name for EMI/Loan calculators in H1
   const regionConfig = REGIONS[region];
+  const config = regionConfig;
   const displayToolName = tool.slug === "loan-calculator" || tool.slug === "emi-calculator"
-    ? regionConfig.toolName
+    ? config.loan.terminology.hoaOrServiceCharge.includes("EMI") ? "EMI Calculator" : "Loan Calculator"
     : tool.name;
 
   return (

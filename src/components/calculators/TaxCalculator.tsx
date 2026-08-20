@@ -11,26 +11,28 @@ export function TaxCalculator() {
   const formatters = makeFormatters(region);
   
   const [income, setIncome] = useState(85000);
-  const [filingStatus, setFilingStatus] = useState(config.filingStatuses[0]?.value ?? "single");
+  const [filingStatus, setFilingStatus] = useState("single");
 
   // Calculate tax using region brackets (simplified - same brackets for all statuses in this demo)
   let tax = 0;
-  let prev = 0;
-  for (const b of config.taxBrackets) {
-    if (income > prev) {
-      tax += (Math.min(income, b.limit) - prev) * b.rate;
-      prev = b.limit;
-    }
+  let remainingIncome = income;
+  for (const bracket of config.tax.brackets) {
+    if (remainingIncome <= 0) break;
+    const taxableInBracket = bracket.limit !== null 
+      ? Math.min(remainingIncome, bracket.limit) 
+      : remainingIncome;
+    tax += taxableInBracket * bracket.rate;
+    remainingIncome -= bracket.limit ?? remainingIncome;
   }
 
   // Calculate payroll deductions based on region
   let totalDeductions = 0;
   const deductionDetails: { label: string; amount: number }[] = [];
-  for (const ded of config.payrollDeductions) {
-    if (ded.defaultRate) {
-      const amount = income * ded.defaultRate;
+  if (config.tax.payrollDeductions) {
+    for (const ded of config.tax.payrollDeductions) {
+      const amount = income * ded.rate;
       totalDeductions += amount;
-      deductionDetails.push({ label: ded.label, amount });
+      deductionDetails.push({ label: ded.name, amount });
     }
   }
 
@@ -40,24 +42,22 @@ export function TaxCalculator() {
   return (
     <div>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Field label={`Annual income (${config.currencyCode})`}>
-          <NumInput value={income} onChange={setIncome} prefix={config.currencySymbol} step={1000} />
+        <Field label={`Annual income (${config.currency.code})`}>
+          <NumInput value={income} onChange={setIncome} prefix={config.currency.symbol} step={1000} />
         </Field>
         <div className="sm:col-span-2">
           <Field 
             label="Filing Status" 
-            hint={`${config.taxYear} · ${config.isEstimate ? "Estimate" : "Verified"} brackets`}
+            hint={`${config.tax.taxYear} · ${config.isEstimate ? "Estimate" : "Verified"} brackets`}
           >
             <select
               value={filingStatus}
               onChange={(e) => setFilingStatus(e.target.value)}
               className="h-[42px] w-full rounded-lg border border-ink-600 bg-ink-850 px-3 font-mono text-[13px] text-fog-300 outline-none focus:border-mint-500/60 focus:ring-2 focus:ring-mint-500/20"
             >
-              {config.filingStatuses.map((status) => (
-                <option key={status.value} value={status.value}>
-                  {status.label}
-                </option>
-              ))}
+              <option value="single">Single</option>
+              <option value="married">Married Filing Jointly</option>
+              <option value="head">Head of Household</option>
             </select>
           </Field>
         </div>
@@ -65,7 +65,7 @@ export function TaxCalculator() {
 
       <StatGrid>
         <Stat accent label="Take-home pay" value={formatters.money(takeHome)} sub={`${formatters.money(takeHome / 12)} / month`} />
-        <Stat label={config.defaultTaxLabel} value={formatters.money(tax)} />
+        <Stat label={config.consumptionTax.label === "VAT" ? "Income Tax" : "Tax"} value={formatters.money(tax)} />
         <Stat label="Effective rate" value={`${formatters.fmt(effective, 1)}%`} />
       </StatGrid>
 

@@ -4,7 +4,6 @@ import { useState, useMemo, useEffect } from "react";
 import { Field, NumInput, Stat, StatGrid } from "./shared";
 import { useRegion } from "@/store/useRegionStore";
 import { formatCurrency } from "@/lib/format";
-import { getRegionConfig, type Region } from "@/config/regions";
 
 /**
  * Currency Converter with multi-region support.
@@ -81,14 +80,12 @@ export function CurrencyConverter() {
   
   const [amount, setAmount] = useState(1);
   const [fromCurrency, setFromCurrency] = useState<string>("USD");
-  const [toCurrency, setToCurrency] = useState<string>(config.currencyCode);
+  const [toCurrency, setToCurrency] = useState<string>(() => {
+    // Get initial currency from config
+    return "currency" in config ? config.currency.code : "USD";
+  });
   const [rateData, setRateData] = useState<RateData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Set default currency based on region when it changes
-  useEffect(() => {
-    setToCurrency(config.currencyCode);
-  }, [config.currencyCode]);
 
   // Fetch rates on mount
   useEffect(() => {
@@ -124,7 +121,7 @@ export function CurrencyConverter() {
 
   const currencies = Object.keys(OFFLINE_RATES);
   const formattedLastUpdate = rateData 
-    ? new Date(rateData.lastUpdate).toLocaleString(config.locale, {
+    ? new Date(rateData.lastUpdate).toLocaleString(config.currency.locale, {
         dateStyle: "medium",
         timeStyle: "short",
         timeZone: config.timezone,
@@ -133,7 +130,7 @@ export function CurrencyConverter() {
 
   const formatAmount = (value: number, currency: string) => {
     const fractionDigits = value < 1 ? 4 : value < 100 ? 2 : 0;
-    return formatCurrency(value, currency, config.locale, fractionDigits);
+    return formatCurrency(value, currency, config.currency.locale, fractionDigits);
   };
 
   return (
