@@ -1,14 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Field, NumInput, Stat, StatGrid, currency, number } from "./shared";
+import { Field, NumInput, Stat, StatGrid } from "./shared";
+import { useRegion } from "@/store/useRegionStore";
+import { makeFormatters } from "@/lib/format";
 
 /** Return on investment, with optional annualization. Mirrors `roi-calculator`. */
 export function RoiCalculator() {
+  const { region, config } = useRegion();
+  const formatters = makeFormatters(region);
+  
   const [initial, setInitial] = useState(10000);
   const [finalValue, setFinalValue] = useState(13500);
   const [years, setYears] = useState(3);
-
+  
   const gain = finalValue - initial;
   const roi = initial !== 0 ? (gain / initial) * 100 : 0;
   const annualized =
@@ -19,11 +24,11 @@ export function RoiCalculator() {
   return (
     <div>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Field label="Initial investment">
-          <NumInput value={initial} onChange={setInitial} prefix="$" step={500} />
+        <Field label={`Initial investment (${config.currencyCode})`}>
+          <NumInput value={initial} onChange={setInitial} prefix={config.currencySymbol} step={500} />
         </Field>
-        <Field label="Final value">
-          <NumInput value={finalValue} onChange={setFinalValue} prefix="$" step={500} />
+        <Field label={`Final value (${config.currencyCode})`}>
+          <NumInput value={finalValue} onChange={setFinalValue} prefix={config.currencySymbol} step={500} />
         </Field>
         <Field label="Holding period">
           <NumInput value={years} onChange={setYears} suffix="yrs" step={0.5} />
@@ -31,9 +36,9 @@ export function RoiCalculator() {
       </div>
 
       <StatGrid>
-        <Stat accent label="Total ROI" value={`${number(roi, 1)}%`} sub={`${currency(gain)} ${gain >= 0 ? "gain" : "loss"}`} />
-        <Stat label="Annualized return" value={`${number(annualized, 1)}%`} sub="CAGR" />
-        <Stat label="Final value" value={currency(finalValue)} />
+        <Stat accent label="Total ROI" value={`${formatters.fmt(roi, 1)}%`} sub={`${formatters.money(gain)} ${gain >= 0 ? "gain" : "loss"}`} />
+        <Stat label="Annualized return" value={`${formatters.fmt(annualized, 1)}%`} sub="CAGR" />
+        <Stat label="Final value" value={formatters.money(finalValue)} />
       </StatGrid>
 
       <p className="mt-4 text-[11.5px] text-fog-600">
