@@ -1,17 +1,14 @@
 ```
-# Next.js build outputs
+# Next.js build output
 .next/
-
-# TypeScript generated files
-*.tsbuildinfo
-*.d.ts
+out/
 
 # Dependencies
 node_modules/
 
 # Environment variables
-.env
 .env.local
+.env
 .env.*
 
 # Logs
@@ -19,13 +16,20 @@ node_modules/
 
 # Temporary files
 *.tmp
-*.temp
+*.swp
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Editor directories
+.vscode/
+.idea/
 
 # OS generated files
 .DS_Store
 Thumbs.db
-
-# Editors
-.vscode/
-.idea/
 ```

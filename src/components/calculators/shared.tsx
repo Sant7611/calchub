@@ -1,13 +1,21 @@
 import type { ReactNode } from "react";
 
 /* ── formatting ─────────────────────────────────────────── */
-export const currency = (n: number, digits = 0) =>
-  new Intl.NumberFormat("en-US", {
+export const currency = (n: number, digits = 0, customSymbol?: string) => {
+  if (customSymbol) {
+    // Use custom symbol for non-USD currencies
+    return `${customSymbol}${new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    }).format(Number.isFinite(n) ? n : 0)}`;
+  }
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
   }).format(Number.isFinite(n) ? n : 0);
+};
 
 export const number = (n: number, digits = 2) =>
   new Intl.NumberFormat("en-US", {
@@ -43,6 +51,7 @@ export function NumInput({
   suffix,
   step = 1,
   min = 0,
+  max,
 }: {
   value: number;
   onChange: (v: number) => void;
@@ -50,6 +59,7 @@ export function NumInput({
   suffix?: string;
   step?: number;
   min?: number;
+  max?: number;
 }) {
   return (
     <div className="flex items-center overflow-hidden rounded-lg border border-ink-600 bg-ink-850 transition-all duration-200 focus-within:border-mint-500/60 focus-within:ring-2 focus-within:ring-mint-500/20">
@@ -63,6 +73,7 @@ export function NumInput({
         value={Number.isFinite(value) ? value : 0}
         step={step}
         min={min}
+        max={max}
         onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
         className="w-full bg-transparent px-3 py-2 font-mono text-[14px] font-medium text-fog-100 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
