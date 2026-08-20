@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import type { LucideIcon } from "lucide-react";
 import { useRecentlyUsed } from "@/lib/recently-used";
 import { categories } from "@/data/categories";
 import { CalculatorCard } from "@/components/ui/CalculatorCard";
@@ -33,6 +34,7 @@ export function RecentlyUsed() {
     slug: string;
     name: string;
     description: string;
+    icon: LucideIcon;
     categorySlug: string;
     categoryName: string;
   }>;
@@ -54,14 +56,18 @@ export function RecentlyUsed() {
           </Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {tools.map((tool) => (
-            <CalculatorCard
-              key={tool.slug}
-              tool={tool}
-              categorySlug={tool.categorySlug}
-              onRemove={() => remove(tool.slug)}
-            />
-          ))}
+          {tools.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <CalculatorCard
+                key={tool.slug}
+                title={tool.name}
+                description={tool.description}
+                icon={Icon}
+                href={`/tools/${tool.categorySlug}/${tool.slug}`}
+              />
+            );
+          })}
         </div>
       </div>
     </section>

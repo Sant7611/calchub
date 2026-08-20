@@ -51,7 +51,7 @@ export function generateMetadata({ params, searchParams }: ToolPageProps): Metad
 
   const { tool } = found;
   const content = getCalculatorContent(tool.slug, tool.name);
-  const regionConfig = getRegion(resolveRegion(searchParams.region));
+  const regionConfig = REGIONS[resolveRegion(searchParams.region)];
   const title = `${tool.name} for ${regionConfig.label} (${regionConfig.currency})`;
 
   return {
