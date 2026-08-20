@@ -113,10 +113,95 @@ const emiCalculator: CalculatorContent = {
   ],
 };
 
+const currencyConverter: CalculatorContent = {
+  slug: "currency-converter",
+  intro: [
+    "A currency converter gives you instant exchange rates between major world currencies including NPR (Nepalese Rupee), INR (Indian Rupee), USD, EUR, GBP, CAD, AUD and more. See when rates were last updated and whether you're viewing live or cached data.",
+    "This tool uses indicative market rates and includes an offline fallback so you always get a result. Exchange rates are shown with timestamps and source information for transparency.",
+  ],
+  howToUse: [
+    "Enter the amount you want to convert.",
+    "Select the source currency (e.g., USD, NPR, INR).",
+    "Choose the target currency you want to convert to.",
+    "View the converted amount, exchange rate, and rate timestamp.",
+    "Check the reversibility verification to confirm accuracy.",
+  ],
+  formula: {
+    title: "Currency Conversion Formula",
+    explanation:
+      "Conversion uses cross-rates relative to USD base: Amount_target = (Amount_source / Rate_source) × Rate_target. This method ensures mathematical reversibility within rounding tolerance. Rates are updated from market data sources when available.",
+  },
+  faqs: [
+    {
+      question: "Are these exchange rates live?",
+      answer:
+        "When available, rates are fetched from market data APIs. If the API is unavailable, the tool falls back to cached indicative rates. The timestamp shows when rates were last updated, and an indicator tells you if you're viewing offline data.",
+    },
+    {
+      question: "Why is NPR (Nepalese Rupee) included?",
+      answer:
+        "NPR is supported as a key regional currency for users in Nepal. The Nepalese Rupee is pegged to the Indian Rupee at approximately 1 INR = 1.6 NPR, and both are included alongside major international currencies.",
+    },
+    {
+      question: "Can I use these rates for actual transactions?",
+      answer:
+        "No. These are indicative rates for informational purposes only. Actual exchange rates offered by banks, money changers, or payment processors will differ due to spreads, fees, and real-time market movements. Always verify with your financial institution before transacting.",
+    },
+    {
+      question: "How accurate is the conversion?",
+      answer:
+        "The math is precise and reversible within standard floating-point rounding tolerance. You can verify this using the reversibility check shown after conversion. However, the underlying rates are indicative and may not reflect current market conditions.",
+    },
+  ],
+};
+
+const worldClock: CalculatorContent = {
+  slug: "world-clock",
+  intro: [
+    "A world clock and time zone converter lets you compare local times across multiple cities simultaneously. View current times in Kathmandu, Delhi, London, New York, Toronto, Sydney, and other major cities around the world.",
+    "Times are calculated using the IANA timezone database with automatic Daylight Saving Time (DST) adjustments. Your selected region sets the default timezone for personalized date and time formatting.",
+  ],
+  howToUse: [
+    "Your local time is displayed at the top based on your selected region.",
+    "Click city buttons to add or remove them from the comparison view.",
+    "View current time, date, and UTC offset for each selected city.",
+    "Use the reference table to see all regional times at a glance.",
+  ],
+  formula: {
+    title: "Time Zone Calculation",
+    explanation:
+      "Times are computed using IANA timezone identifiers (e.g., Asia/Kathmandu, America/New_York). The browser's Intl.DateTimeFormat API handles timezone conversions and DST rules automatically, ensuring accurate times year-round.",
+  },
+  faqs: [
+    {
+      question: "Which cities are supported?",
+      answer:
+        "Regional cities include Kathmandu (Nepal), Delhi (India), London (UK), New York (USA), Toronto (Canada), and Sydney (Australia). Additional cities like Tokyo, Singapore, Dubai, Paris, Berlin, Los Angeles, Chicago, and Vancouver are also available.",
+    },
+    {
+      question: "Does this account for Daylight Saving Time?",
+      answer:
+        "Yes. The tool uses the IANA timezone database which automatically applies DST rules where applicable. Times in London, New York, Toronto, Sydney and other DST-observing regions will adjust seasonally.",
+    },
+    {
+      question: "Why does my region affect the display?",
+      answer:
+        "Your selected region determines the default timezone and date/time format. For example, selecting Nepal shows times in Asia/Kathmandu timezone with DD/MM/YYYY formatting, while USA shows MM/DD/YYYY with America/New_York timezone.",
+    },
+    {
+      question: "How often do times update?",
+      answer:
+        "The clock updates every second to show accurate real-time information. Date changes roll over automatically at midnight in each respective timezone.",
+    },
+  ],
+};
+
 /** Authored content, keyed by tool slug. */
 const contentBySlug: Record<string, CalculatorContent> = {
   "loan-calculator": loanCalculator,
   "emi-calculator": emiCalculator,
+  "currency-converter": currencyConverter,
+  "world-clock": worldClock,
 };
 
 /**
