@@ -12,8 +12,11 @@ export interface RegionConfig {
   symbol: string;
   locale: string; // Intl grouping — lakh style for NP/IN, comma style for US
   defaultInterestRate: number;
+  defaultLoanAmount: number; // Default principal for loan/EMI calculators
   taxYear: string;
   taxBrackets: TaxBracket[];
+  toolName: string; // "EMI Calculator" for NP/IN, "Loan Calculator" for US
+  paymentLabel: string; // "Monthly EMI" for NP/IN, "Monthly Payment" for US
 }
 
 /**
@@ -29,6 +32,7 @@ export const REGIONS: Record<Region, RegionConfig> = {
     symbol: "Rs. ",
     locale: "en-IN",
     defaultInterestRate: 11,
+    defaultLoanAmount: 1_000_000, // 10 lakh NPR
     taxYear: "FY 2081/82",
     taxBrackets: [
       { limit: 500_000, rate: 0.01 },
@@ -37,6 +41,8 @@ export const REGIONS: Record<Region, RegionConfig> = {
       { limit: 2_000_000, rate: 0.3 },
       { limit: Infinity, rate: 0.36 },
     ],
+    toolName: "EMI Calculator",
+    paymentLabel: "Monthly EMI",
   },
   india: {
     label: "India",
@@ -45,6 +51,7 @@ export const REGIONS: Record<Region, RegionConfig> = {
     symbol: "₹",
     locale: "en-IN",
     defaultInterestRate: 8.5,
+    defaultLoanAmount: 1_000_000, // 10 lakh INR
     taxYear: "New Regime FY 2024-25",
     taxBrackets: [
       { limit: 300_000, rate: 0 },
@@ -54,6 +61,8 @@ export const REGIONS: Record<Region, RegionConfig> = {
       { limit: 1_500_000, rate: 0.2 },
       { limit: Infinity, rate: 0.3 },
     ],
+    toolName: "EMI Calculator",
+    paymentLabel: "Monthly EMI",
   },
   usa: {
     label: "United States",
@@ -62,6 +71,7 @@ export const REGIONS: Record<Region, RegionConfig> = {
     symbol: "$",
     locale: "en-US",
     defaultInterestRate: 6.5,
+    defaultLoanAmount: 25_000, // $25k USD
     taxYear: "Federal 2024",
     taxBrackets: [
       { limit: 11_600, rate: 0.1 },
@@ -70,6 +80,8 @@ export const REGIONS: Record<Region, RegionConfig> = {
       { limit: 191_950, rate: 0.24 },
       { limit: Infinity, rate: 0.32 },
     ],
+    toolName: "Loan Calculator",
+    paymentLabel: "Monthly Payment",
   },
 };
 

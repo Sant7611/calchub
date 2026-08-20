@@ -6,8 +6,7 @@ import { RoiCalculator } from "./RoiCalculator";
 import { TaxCalculator } from "./TaxCalculator";
 import { BudgetPlanner } from "./BudgetPlanner";
 
-/**
- * Maps a tool slug (from src/data/categories.ts) to the CLIENT component
+/** Maps a tool slug (from src/data/categories.ts) to the CLIENT component
  * that implements it. The dynamic [category]/[slug] page reads this record
  * at render time — no tool is ever hard-coded into a route file, so adding
  * a calculator is a one-line change here.
@@ -17,6 +16,7 @@ import { BudgetPlanner } from "./BudgetPlanner";
 export const calculatorRegistry: Record<string, ComponentType> = {
   // Finance calculators
   "loan-calculator": LoanCalculator,
+  "emi-calculator": LoanCalculator, // Same EMI/Loan calculator component
   "compound-interest-calculator": MortgageCalculator, // Reusing mortgage as placeholder
   
   // Health calculators  
