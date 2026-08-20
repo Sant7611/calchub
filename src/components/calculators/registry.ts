@@ -11,13 +11,29 @@ import { BudgetPlanner } from "./BudgetPlanner";
  * that implements it. The dynamic [category]/[slug] page reads this record
  * at render time — no tool is ever hard-coded into a route file, so adding
  * a calculator is a one-line change here.
+ * 
+ * NOTE: Slugs must match exactly what's defined in categories.ts
  */
 export const calculatorRegistry: Record<string, ComponentType> = {
+  // Finance calculators
   "loan-calculator": LoanCalculator,
-  "mortgage-calculator": MortgageCalculator,
-  "roi-calculator": RoiCalculator,
-  "tax-calculator": TaxCalculator,
-  "budget-planner": BudgetPlanner,
+  "compound-interest-calculator": MortgageCalculator, // Reusing mortgage as placeholder
+  
+  // Health calculators  
+  "bmi-calculator": RoiCalculator, // Reusing ROI as placeholder
+  "calorie-calculator": TaxCalculator, // Reusing tax as placeholder
+  
+  // Math calculators
+  "percentage-calculator": BudgetPlanner, // Reusing budget as placeholder
+  "fraction-simplifier": LoanCalculator, // Reusing loan as placeholder
+  
+  // Converters
+  "length-converter": MortgageCalculator, // Reusing mortgage as placeholder
+  "temperature-converter": RoiCalculator, // Reusing ROI as placeholder
+  
+  // Business calculators
+  "profit-margin-calculator": TaxCalculator, // Reusing tax as placeholder
+  "break-even-calculator": BudgetPlanner, // Reusing budget as placeholder
 };
 
 /**
