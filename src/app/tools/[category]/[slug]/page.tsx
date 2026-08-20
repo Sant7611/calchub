@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import { CalendarClock } from "lucide-react";
 
 import { categories } from "@/data/categories";
-import { REGIONS, getRegion, type Region } from "@/config/regions";
+import { REGIONS, type Region } from "@/config/regions";
 import { getCalculatorContent } from "@/data/calculator-content";
-import { getCalculatorComponent } from "@/components/calculators/registry";
+import { calculatorRegistry } from "@/components/calculators/registry";
 import { CalculatorCard } from "@/components/ui/CalculatorCard";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSection } from "@/components/seo/FaqSection";
@@ -79,7 +79,7 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
 
   const { category, tool } = found;
   const content = getCalculatorContent(tool.slug, tool.name);
-  const Calculator = getCalculatorComponent(tool.slug);
+  const CalculatorComponent = calculatorRegistry[tool.slug];
   const related = category.tools.filter((t) => t.slug !== tool.slug);
   
   // Use region-specific tool name for EMI/Loan calculators in H1
@@ -113,8 +113,8 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
 
       {/* The interactive calculator (client island) — or Coming Soon */}
       <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        {Calculator ? (
-          <Calculator />
+        {CalculatorComponent ? (
+          <CalculatorComponent />
         ) : (
           <div className="flex flex-col items-center py-10 text-center">
             <span className="grid h-14 w-14 place-items-center rounded-full bg-slate-100">

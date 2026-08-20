@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getRecentTools as getFromStorage, addRecentTool as addToStorage, clearRecentTools as clearStorage } from "./recent";
+import { useState, useCallback } from "react";
 
 const KEY = "calcu-recent-tools";
 const CAP = 6;
@@ -37,18 +36,15 @@ export function clearRecentTools(): void {
 }
 
 export function useRecentlyUsed() {
-  const [items, setItems] = useState<string[]>([]);
+  // Use lazy initialization to read from localStorage on first render
+  const [items, setItems] = useState<string[]>(() => getRecentTools());
 
-  useEffect(() => {
+  const add = useCallback((slug: string) => {
+    addRecentTool(slug);
     setItems(getRecentTools());
   }, []);
 
-  const add = (slug: string) => {
-    addRecentTool(slug);
-    setItems(getRecentTools());
-  };
-
-  const remove = (slug: string) => {
+  const remove = useCallback((slug: string) => {
     try {
       const current = getRecentTools();
       const next = current.filter((s) => s !== slug);
@@ -57,12 +53,12 @@ export function useRecentlyUsed() {
     } catch {
       /* noop */
     }
-  };
+  }, []);
 
-  const clear = () => {
+  const clear = useCallback(() => {
     clearRecentTools();
     setItems([]);
-  };
+  }, []);
 
   return { items, add, remove, clear };
 }

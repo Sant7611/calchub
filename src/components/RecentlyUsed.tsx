@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import type { LucideIcon } from "lucide-react";
 import { useRecentlyUsed } from "@/lib/recently-used";
 import { categories } from "@/data/categories";
@@ -13,7 +12,7 @@ import { ArrowRight } from "lucide-react";
  * Shows up to 4 most recently viewed calculator tools.
  */
 export function RecentlyUsed() {
-  const { items, remove } = useRecentlyUsed();
+  const { items } = useRecentlyUsed();
 
   if (items.length === 0) {
     return null;
