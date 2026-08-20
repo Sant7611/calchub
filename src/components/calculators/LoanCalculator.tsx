@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Field, NumInput, Stat, StatGrid } from "./shared";
 import { useRegion } from "@/store/useRegionStore";
 import { makeFormatters } from "@/lib/format";
@@ -21,16 +21,11 @@ export function LoanCalculator() {
   const { region, setRegion, config } = useRegion();
   const formatters = makeFormatters(region);
   
-  // Initialize with region-appropriate defaults
+  // Use region as part of key to reset state when region changes
+  // This avoids calling setState in useEffect which causes cascading renders
   const [amount, setAmount] = useState(config.defaultLoanAmount);
   const [rate, setRate] = useState(config.defaultInterestRate);
   const [years, setYears] = useState(5); // Default 5 years for all regions
-  
-  // Reset amount and rate when region changes
-  useEffect(() => {
-    setAmount(config.defaultLoanAmount);
-    setRate(config.defaultInterestRate);
-  }, [region, config.defaultLoanAmount, config.defaultInterestRate]);
   
   const r = rate / 100 / 12;
   const n = years * 12;
@@ -45,6 +40,10 @@ export function LoanCalculator() {
 
   const handleRegionChange = (newRegion: Region) => {
     setRegion(newRegion);
+    // Reset to new region's defaults without useEffect
+    const newConfig = getRegionConfig(newRegion);
+    setAmount(newConfig.defaultLoanAmount);
+    setRate(newConfig.defaultInterestRate);
   };
 
   return (
