@@ -1,10 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Field, NumInput, Stat, StatGrid, currency } from "./shared";
+import { Field, NumInput, Stat, StatGrid } from "./shared";
+import { useRegion } from "@/store/useRegionStore";
+import { makeFormatters } from "@/lib/format";
 
 /** Home price → monthly mortgage. Mirrors `mortgage-calculator`. */
 export function MortgageCalculator() {
+  const { region, config } = useRegion();
+  const formatters = makeFormatters(region);
+  
   const [price, setPrice] = useState(420000);
   const [downPct, setDownPct] = useState(20);
   const [rate, setRate] = useState(6.1);
@@ -20,8 +25,8 @@ export function MortgageCalculator() {
   return (
     <div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Field label="Home price">
-          <NumInput value={price} onChange={setPrice} prefix="$" step={5000} />
+        <Field label={`Home price (${config.currencyCode})`}>
+          <NumInput value={price} onChange={setPrice} prefix={config.currencySymbol} step={5000} />
         </Field>
         <Field label="Down payment">
           <NumInput value={downPct} onChange={setDownPct} suffix="%" step={1} />
@@ -35,9 +40,9 @@ export function MortgageCalculator() {
       </div>
 
       <StatGrid>
-        <Stat accent label="Monthly (P&I)" value={currency(monthly, 2)} />
-        <Stat label="Loan amount" value={currency(principal)} sub={`after ${currency(down)} down`} />
-        <Stat label="Lifetime interest" value={currency(interest)} />
+        <Stat accent label="Monthly (P&I)" value={formatters.money(monthly, 2)} />
+        <Stat label="Loan amount" value={formatters.money(principal)} sub={`after ${formatters.money(down)} down`} />
+        <Stat label="Lifetime interest" value={formatters.money(interest)} />
       </StatGrid>
 
       <p className="mt-4 text-[11.5px] text-fog-600">

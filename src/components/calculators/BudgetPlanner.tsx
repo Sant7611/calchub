@@ -1,10 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Bar, Field, NumInput, currency } from "./shared";
+import { Bar, Field, NumInput } from "./shared";
+import { useRegion } from "@/store/useRegionStore";
+import { makeFormatters } from "@/lib/format";
 
 /** 50/30/20 allocation of net income. Mirrors `budget-planner`. */
 export function BudgetPlanner() {
+  const { region, config } = useRegion();
+  const formatters = makeFormatters(region);
+  
   const [income, setIncome] = useState(5200);
 
   const needs = income * 0.5;
@@ -14,15 +19,15 @@ export function BudgetPlanner() {
   return (
     <div>
       <div className="max-w-xs">
-        <Field label="Monthly net income" hint="After tax — what actually lands in your account.">
-          <NumInput value={income} onChange={setIncome} prefix="$" step={100} />
+        <Field label={`Monthly net income (${config.currencyCode})`} hint="After tax — what actually lands in your account.">
+          <NumInput value={income} onChange={setIncome} prefix={config.currencySymbol} step={100} />
         </Field>
       </div>
 
       <div className="mt-6 space-y-4">
-        <Bar label="Needs · 50%" value={currency(needs)} pct={50} color="bg-mint-400" />
-        <Bar label="Wants · 30%" value={currency(wants)} pct={30} color="bg-amber-400" />
-        <Bar label="Savings · 20%" value={currency(savings)} pct={20} color="bg-sky-400" />
+        <Bar label="Needs · 50%" value={formatters.money(needs)} pct={50} color="bg-mint-400" />
+        <Bar label="Wants · 30%" value={formatters.money(wants)} pct={30} color="bg-amber-400" />
+        <Bar label="Savings · 20%" value={formatters.money(savings)} pct={20} color="bg-sky-400" />
       </div>
 
       <p className="mt-5 text-[11.5px] text-fog-600">

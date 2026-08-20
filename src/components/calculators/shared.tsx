@@ -1,28 +1,5 @@
 import type { ReactNode } from "react";
 
-/* ── formatting ─────────────────────────────────────────── */
-export const currency = (n: number, digits = 0, customSymbol?: string) => {
-  if (customSymbol) {
-    // Use custom symbol for non-USD currencies
-    return `${customSymbol}${new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: digits,
-      maximumFractionDigits: digits,
-    }).format(Number.isFinite(n) ? n : 0)}`;
-  }
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
-  }).format(Number.isFinite(n) ? n : 0);
-};
-
-export const number = (n: number, digits = 2) =>
-  new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
-  }).format(Number.isFinite(n) ? n : 0);
-
 /* ── form field ─────────────────────────────────────────── */
 export function Field({
   label,
