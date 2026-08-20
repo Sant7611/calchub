@@ -1,5 +1,5 @@
 ```
-# Next.js build output
+# Next.js build outputs
 .next/
 out/
 
@@ -11,25 +11,30 @@ node_modules/
 .env
 .env.*
 
+# Cache directories
+.cache/
+.nyc_output/
+coverage/
+
 # Logs
 *.log
-
-# Temporary files
-*.tmp
-*.swp
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Editor directories
-.vscode/
-.idea/
 
 # OS generated files
 .DS_Store
 Thumbs.db
+<<<<<<< HEAD
 ```
+=======
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+dist/
+build/
+target/
+```
+>>>>>>> 413d42ae9cc5cbb62ab08ac52c3b919941c2ab94

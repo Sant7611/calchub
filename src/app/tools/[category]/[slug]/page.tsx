@@ -44,17 +44,24 @@ export function generateStaticParams() {
 }
 
 // Region-aware titles, e.g.
-//   "Loan Calculator for Nepal (NPR) – oncalculator.app"
+//   "EMI Calculator for Nepal (NPR) – oncalculator.app"
+//   "Loan Calculator for USA (USD) – oncalculator.app"
 export async function generateMetadata({ params, searchParams }: ToolPageProps): Promise<Metadata> {
   const { category: categorySlug, slug: toolSlug } = await params;
-  const region = (await searchParams).region;
+  const region = resolveRegion((await searchParams).region);
   const found = findTool(categorySlug, toolSlug);
   if (!found) return { title: "Calculator not found" };
 
   const { tool } = found;
   const content = getCalculatorContent(tool.slug, tool.name);
-  const regionConfig = REGIONS[resolveRegion(region)];
-  const title = `${tool.name} for ${regionConfig.label} (${regionConfig.currency})`;
+  const regionConfig = REGIONS[region];
+  
+  // Use region-specific tool name for EMI/Loan calculators
+  const toolName = tool.slug === "loan-calculator" || tool.slug === "emi-calculator"
+    ? regionConfig.toolName
+    : tool.name;
+  
+  const title = `${toolName} for ${regionConfig.label} (${regionConfig.currency})`;
 
   return {
     title,
@@ -65,7 +72,7 @@ export async function generateMetadata({ params, searchParams }: ToolPageProps):
 
 export default async function ToolPage({ params, searchParams }: ToolPageProps) {
   const { category: categorySlug, slug: toolSlug } = await params;
-  const region = (await searchParams).region;
+  const region = resolveRegion((await searchParams).region);
   
   const found = findTool(categorySlug, toolSlug);
   if (!found) notFound();
@@ -74,6 +81,12 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
   const content = getCalculatorContent(tool.slug, tool.name);
   const Calculator = getCalculatorComponent(tool.slug);
   const related = category.tools.filter((t) => t.slug !== tool.slug);
+  
+  // Use region-specific tool name for EMI/Loan calculators in H1
+  const regionConfig = REGIONS[region];
+  const displayToolName = tool.slug === "loan-calculator" || tool.slug === "emi-calculator"
+    ? regionConfig.toolName
+    : tool.name;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
@@ -84,13 +97,13 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
         items={[
           { label: "Home", href: "/" },
           { label: category.name, href: `/tools?category=${category.slug}` },
-          { label: tool.name },
+          { label: displayToolName },
         ]}
       />
 
       {/* H1 + intro — NO ads above this line, ever */}
       <h1 className="mt-6 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-        {tool.name}
+        {displayToolName}
       </h1>
       <div className="mt-4 space-y-4 text-lg leading-relaxed text-slate-600">
         {content.intro.map((paragraph) => (

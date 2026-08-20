@@ -56,6 +56,12 @@ export const categories: Category[] = [
         icon: PiggyBank,
       },
       {
+        name: "EMI Calculator",
+        slug: "emi-calculator",
+        description: "Calculate Equated Monthly Installment (EMI) for home, car and personal loans.",
+        icon: PiggyBank,
+      },
+      {
         name: "Compound Interest",
         slug: "compound-interest-calculator",
         description: "Project how an investment grows with recurring contributions.",
