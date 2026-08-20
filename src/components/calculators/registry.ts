@@ -5,6 +5,7 @@ import { MortgageCalculator } from "./MortgageCalculator";
 import { RoiCalculator } from "./RoiCalculator";
 import { TaxCalculator } from "./TaxCalculator";
 import { BudgetPlanner } from "./BudgetPlanner";
+import { InvoiceCalculator } from "./InvoiceCalculator";
 
 /** Maps a tool slug (from src/data/categories.ts) to the CLIENT component
  * that implements it. The dynamic [category]/[slug] page reads this record
@@ -34,6 +35,7 @@ export const calculatorRegistry: Record<string, ComponentType> = {
   // Business calculators
   "profit-margin-calculator": TaxCalculator, // Reusing tax as placeholder
   "break-even-calculator": BudgetPlanner, // Reusing budget as placeholder
+  "invoice-calculator": InvoiceCalculator,
 };
 
 /**

@@ -9,7 +9,20 @@ export type Region =
 
 export interface TaxBracket {
   limit: number; // upper bound of the slab (Infinity for the top slab)
-  rate: number; // marginal rate, e.g. 0.36 === 36%
+  rate: number; // marginal rate, e.g., 0.36 === 36%
+}
+
+export interface FilingStatus {
+  value: string;
+  label: string;
+  // Optional: different brackets per status (future extension)
+}
+
+export interface PayrollDeduction {
+  key: string;
+  label: string;
+  defaultRate?: number; // as decimal, e.g., 0.062 for 6.2%
+  fixedAmount?: number; // optional fixed amount
 }
 
 export interface PayFrequency {
@@ -36,6 +49,16 @@ export interface RegionConfig {
   taxBrackets: TaxBracket[];
   toolName: string;
   paymentLabel: string;
+  // Invoice/sales tax configuration
+  defaultSalesTaxRate: number; // VAT/GST/sales tax rate as decimal
+  salesTaxLabel: string; // e.g., "VAT", "GST", "Sales Tax"
+  // Filing status options (region-specific)
+  filingStatuses: FilingStatus[];
+  // Payroll deductions (region-specific)
+  payrollDeductions: PayrollDeduction[];
+  // Metadata for estimates
+  isEstimate: boolean; // true if brackets are estimates/placeholders
+  estimateNote?: string; // optional note explaining estimate status
 }
 
 /**
@@ -44,7 +67,7 @@ export interface RegionConfig {
  */
 export const REGIONS: Record<Region, RegionConfig> = {
   global: {
-    name: "Global",
+    name: "Global (Illustrative)",
     currencyCode: "USD",
     currencySymbol: "$",
     locale: "en-US",
@@ -64,10 +87,16 @@ export const REGIONS: Record<Region, RegionConfig> = {
     flag: "🌍",
     defaultInterestRate: 5,
     defaultLoanAmount: 10_000,
-    taxYear: "Current Year",
+    taxYear: "Current Year (Illustrative)",
     taxBrackets: [{ limit: Infinity, rate: 0.2 }],
     toolName: "Calculator",
     paymentLabel: "Payment",
+    defaultSalesTaxRate: 0,
+    salesTaxLabel: "Sales Tax",
+    filingStatuses: [{ value: "single", label: "Single" }],
+    payrollDeductions: [],
+    isEstimate: true,
+    estimateNote: "Global mode uses illustrative rates only — not based on any specific country's tax laws.",
   },
   usa: {
     name: "United States",
@@ -90,16 +119,31 @@ export const REGIONS: Record<Region, RegionConfig> = {
     flag: "🇺🇸",
     defaultInterestRate: 6.5,
     defaultLoanAmount: 25_000,
-    taxYear: "Federal 2024",
+    taxYear: "Federal 2024 (Single)",
     taxBrackets: [
       { limit: 11_600, rate: 0.1 },
       { limit: 47_150, rate: 0.12 },
       { limit: 100_525, rate: 0.22 },
       { limit: 191_950, rate: 0.24 },
-      { limit: Infinity, rate: 0.32 },
+      { limit: 243_725, rate: 0.32 },
+      { limit: 609_350, rate: 0.35 },
+      { limit: Infinity, rate: 0.37 },
     ],
     toolName: "Loan Calculator",
     paymentLabel: "Monthly Payment",
+    defaultSalesTaxRate: 0.07,
+    salesTaxLabel: "Sales Tax",
+    filingStatuses: [
+      { value: "single", label: "Single" },
+      { value: "married_joint", label: "Married Filing Jointly" },
+      { value: "married_separate", label: "Married Filing Separately" },
+      { value: "head_household", label: "Head of Household" },
+    ],
+    payrollDeductions: [
+      { key: "social_security", label: "Social Security", defaultRate: 0.062 },
+      { key: "medicare", label: "Medicare", defaultRate: 0.0145 },
+    ],
+    isEstimate: false,
   },
   nepal: {
     name: "Nepal",
@@ -119,7 +163,7 @@ export const REGIONS: Record<Region, RegionConfig> = {
     flag: "🇳🇵",
     defaultInterestRate: 11,
     defaultLoanAmount: 1_000_000,
-    taxYear: "FY 2081/82",
+    taxYear: "FY 2083/84 (Individual)",
     taxBrackets: [
       { limit: 500_000, rate: 0.01 },
       { limit: 700_000, rate: 0.1 },
@@ -129,6 +173,16 @@ export const REGIONS: Record<Region, RegionConfig> = {
     ],
     toolName: "EMI Calculator",
     paymentLabel: "Monthly EMI",
+    defaultSalesTaxRate: 0.13,
+    salesTaxLabel: "VAT",
+    filingStatuses: [
+      { value: "individual", label: "Individual" },
+      { value: "couple", label: "Couple (Joint)" },
+    ],
+    payrollDeductions: [
+      { key: "ssf_employee", label: "SSF (Employee)", defaultRate: 0.11 },
+    ],
+    isEstimate: false,
   },
   india: {
     name: "India",
@@ -148,7 +202,7 @@ export const REGIONS: Record<Region, RegionConfig> = {
     flag: "🇮🇳",
     defaultInterestRate: 8.5,
     defaultLoanAmount: 1_000_000,
-    taxYear: "New Regime FY 2024-25",
+    taxYear: "New Regime FY 2024-25 (Estimate)",
     taxBrackets: [
       { limit: 300_000, rate: 0 },
       { limit: 700_000, rate: 0.05 },
@@ -159,6 +213,17 @@ export const REGIONS: Record<Region, RegionConfig> = {
     ],
     toolName: "EMI Calculator",
     paymentLabel: "Monthly EMI",
+    defaultSalesTaxRate: 0.18,
+    salesTaxLabel: "GST",
+    filingStatuses: [
+      { value: "individual", label: "Individual" },
+      { value: "huf", label: "HUF" },
+    ],
+    payrollDeductions: [
+      { key: "pf", label: "Provident Fund (EPF)", defaultRate: 0.12 },
+    ],
+    isEstimate: true,
+    estimateNote: "India brackets are simplified estimates under the new tax regime. Actual liability may vary with deductions and surcharges.",
   },
   uk: {
     name: "United Kingdom",
@@ -180,7 +245,7 @@ export const REGIONS: Record<Region, RegionConfig> = {
     flag: "🇬🇧",
     defaultInterestRate: 5.25,
     defaultLoanAmount: 20_000,
-    taxYear: "Tax Year 2024/25",
+    taxYear: "Tax Year 2024/25 (Estimate)",
     taxBrackets: [
       { limit: 12_570, rate: 0 },
       { limit: 50_270, rate: 0.2 },
@@ -189,6 +254,17 @@ export const REGIONS: Record<Region, RegionConfig> = {
     ],
     toolName: "Loan Calculator",
     paymentLabel: "Monthly Payment",
+    defaultSalesTaxRate: 0.2,
+    salesTaxLabel: "VAT",
+    filingStatuses: [
+      { value: "single", label: "Single" },
+      { value: "married", label: "Married/Civil Partnership" },
+    ],
+    payrollDeductions: [
+      { key: "ni", label: "National Insurance (Class 1)", defaultRate: 0.08 },
+    ],
+    isEstimate: true,
+    estimateNote: "UK brackets are simplified estimates. National Insurance and personal allowance tapering not fully modeled.",
   },
   canada: {
     name: "Canada",
@@ -211,7 +287,7 @@ export const REGIONS: Record<Region, RegionConfig> = {
     flag: "🇨🇦",
     defaultInterestRate: 5.5,
     defaultLoanAmount: 30_000,
-    taxYear: "Federal 2024",
+    taxYear: "Federal 2024 (Estimate)",
     taxBrackets: [
       { limit: 55_867, rate: 0.15 },
       { limit: 111_733, rate: 0.205 },
@@ -221,6 +297,18 @@ export const REGIONS: Record<Region, RegionConfig> = {
     ],
     toolName: "Loan Calculator",
     paymentLabel: "Monthly Payment",
+    defaultSalesTaxRate: 0.05,
+    salesTaxLabel: "GST/HST",
+    filingStatuses: [
+      { value: "single", label: "Single" },
+      { value: "married", label: "Married/Common-law" },
+    ],
+    payrollDeductions: [
+      { key: "cpp", label: "CPP", defaultRate: 0.0595 },
+      { key: "ei", label: "EI", defaultRate: 0.0166 },
+    ],
+    isEstimate: true,
+    estimateNote: "Canada federal brackets only. Provincial taxes, CPP, and EI are separate and vary by province.",
   },
   australia: {
     name: "Australia",
@@ -243,7 +331,7 @@ export const REGIONS: Record<Region, RegionConfig> = {
     flag: "🇦🇺",
     defaultInterestRate: 6,
     defaultLoanAmount: 40_000,
-    taxYear: "FY 2024-25",
+    taxYear: "FY 2024-25 (Estimate)",
     taxBrackets: [
       { limit: 18_200, rate: 0 },
       { limit: 45_000, rate: 0.19 },
@@ -253,6 +341,17 @@ export const REGIONS: Record<Region, RegionConfig> = {
     ],
     toolName: "Loan Calculator",
     paymentLabel: "Monthly Payment",
+    defaultSalesTaxRate: 0.1,
+    salesTaxLabel: "GST",
+    filingStatuses: [
+      { value: "resident", label: "Resident" },
+      { value: "foreign", label: "Foreign Resident" },
+    ],
+    payrollDeductions: [
+      { key: "super", label: "Superannuation (SG)", defaultRate: 0.115 },
+    ],
+    isEstimate: true,
+    estimateNote: "Australia brackets are simplified estimates. Medicare levy and offsets not included.",
   },
 };
 
