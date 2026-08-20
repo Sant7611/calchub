@@ -13,9 +13,6 @@ import {
 } from "lucide-react";
 import { categories } from "@/data/categories";
 
-// Phase 6 update — a "Blog" link joins the desktop bar and the mobile menu.
-// Still the only client component on the shell: it needs useState, a ref and
-// DOM listeners, so it alone crosses the "use client" fence.
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -32,23 +29,21 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
+    <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo — left */}
         <Link
           href="/"
-          className="flex items-center gap-2.5"
+          className="flex cursor-pointer items-center gap-2.5"
           onClick={() => setMobileOpen(false)}
         >
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground">
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-indigo-600 text-white">
             <Calculator className="h-5 w-5" />
           </span>
-          <span className="text-lg font-bold tracking-tight">
-            Calcu<span className="text-primary">Tools</span>
+          <span className="text-lg font-bold tracking-tight text-slate-900">
+            Calcu<span className="text-indigo-600">Tools</span>
           </span>
         </Link>
 
-        {/* Categories dropdown — center (desktop) */}
         <div
           ref={dropdownRef}
           className="absolute left-1/2 hidden -translate-x-1/2 md:block"
@@ -58,7 +53,7 @@ export function Navbar() {
             onClick={() => setDropdownOpen((open) => !open)}
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
-            className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
           >
             Categories
             <ChevronDown
@@ -69,38 +64,36 @@ export function Navbar() {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute left-1/2 top-full z-50 mt-2 w-80 -translate-x-1/2 rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg">
+            <div className="absolute left-1/2 top-full z-50 mt-2 w-80 -translate-x-1/2 rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
               {categories.map((category) => (
                 <Link
                   key={category.slug}
                   href={`/categories/${category.slug}`}
                   onClick={() => setDropdownOpen(false)}
-                  className="flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors hover:bg-accent"
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-100"
                 >
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-secondary text-secondary-foreground">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-slate-100 text-slate-600">
                     <category.icon className="h-4 w-4" />
                   </span>
                   <span className="flex-1">
-                    <span className="block text-sm font-medium">
+                    <span className="block text-sm font-medium text-slate-900">
                       {category.name}
                     </span>
-                    <span className="block text-xs text-muted-foreground">
+                    <span className="block text-xs text-slate-500">
                       {category.tools.length} tools
                     </span>
                   </span>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+                  <ArrowUpRight className="h-4 w-4 text-slate-400" />
                 </Link>
               ))}
             </div>
           )}
         </div>
 
-        {/* Right — Blog + All Tools (desktop) · hamburger (mobile) */}
         <div className="flex items-center gap-1.5">
-          {/* NEW in Phase 6 */}
           <Link
             href="/blog"
-            className="hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground md:inline-flex"
+            className="hidden cursor-pointer items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 md:inline-flex"
           >
             <BookOpenText className="h-4 w-4" />
             Blog
@@ -108,7 +101,7 @@ export function Navbar() {
 
           <Link
             href="/tools"
-            className="hidden items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 md:inline-flex"
+            className="hidden cursor-pointer items-center gap-1.5 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 md:inline-flex"
           >
             <LayoutGrid className="h-4 w-4" />
             All Tools
@@ -119,7 +112,7 @@ export function Navbar() {
             onClick={() => setMobileOpen((open) => !open)}
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation menu"
-            className="grid h-10 w-10 place-items-center rounded-md text-foreground transition-colors hover:bg-accent md:hidden"
+            className="grid h-10 w-10 cursor-pointer place-items-center rounded-md text-slate-700 transition-colors hover:bg-slate-100 md:hidden"
           >
             {mobileOpen ? (
               <X className="h-5 w-5" />
@@ -129,27 +122,26 @@ export function Navbar() {
           </button>
         </div>
 
-        {/* Mobile menu — absolute-positioned directly under the bar */}
         {mobileOpen && (
-          <div className="absolute inset-x-0 top-full max-h-[calc(100vh-4rem)] overflow-y-auto border-b border-border bg-background shadow-lg md:hidden">
+          <div className="absolute inset-x-0 top-full max-h-[calc(100vh-4rem)] overflow-y-auto border-b border-slate-200 bg-white shadow-lg md:hidden">
             <div className="space-y-6 px-4 py-6 sm:px-6">
               {categories.map((category) => (
                 <div key={category.slug}>
                   <Link
                     href={`/categories/${category.slug}`}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground"
+                    className="flex cursor-pointer items-center gap-2 text-sm font-semibold uppercase tracking-wide text-slate-500 hover:text-slate-900"
                   >
                     <category.icon className="h-4 w-4" />
                     {category.name}
                   </Link>
-                  <div className="mt-2 grid grid-cols-1 gap-1 border-l border-border pl-5">
+                  <div className="mt-2 grid grid-cols-1 gap-1 border-l border-slate-200 pl-5">
                     {category.tools.map((tool) => (
                       <Link
                         key={tool.slug}
                         href={`/tools/${tool.slug}`}
                         onClick={() => setMobileOpen(false)}
-                        className="rounded-md px-2 py-1.5 text-sm text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
+                        className="cursor-pointer rounded-md px-2 py-1.5 text-sm text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
                       >
                         {tool.name}
                       </Link>
@@ -158,20 +150,19 @@ export function Navbar() {
                 </div>
               ))}
 
-              {/* NEW in Phase 6 — Blog entry in the mobile menu */}
               <Link
                 href="/blog"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 rounded-md border border-border px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+                className="flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-100"
               >
-                <BookOpenText className="h-4 w-4 text-primary" />
+                <BookOpenText className="h-4 w-4 text-indigo-600" />
                 Blog &amp; Guides
               </Link>
 
               <Link
                 href="/tools"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
+                className="flex cursor-pointer items-center justify-center gap-2 rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
               >
                 <LayoutGrid className="h-4 w-4" />
                 Browse all tools
