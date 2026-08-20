@@ -9,7 +9,7 @@ import { CtaBox } from "@/components/blog/CtaBox";
 import { Callout } from "@/components/blog/Callout";
 
 interface BlogPostPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 // One static HTML file per article — content-as-code, fully pre-rendered.
@@ -17,8 +17,9 @@ export function generateStaticParams() {
   return getPosts().map((post) => ({ slug: post.slug }));
 }
 
-export function generateMetadata({ params }: BlogPostPageProps): Metadata {
-  const post = getPostBySlug(params.slug);
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
   if (!post) return { title: "Article not found" };
 
   return {
@@ -84,8 +85,9 @@ function PostJsonLd({ post }: { post: BlogPost }) {
   );
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getPostBySlug(params.slug);
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
   if (!post) notFound();
 
   const formattedDate = new Date(post.date).toLocaleDateString("en-GB", {

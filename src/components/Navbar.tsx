@@ -139,7 +139,7 @@ export function Navbar() {
                     {category.tools.map((tool) => (
                       <Link
                         key={tool.slug}
-                        href={`/tools/${tool.slug}`}
+                        href={`/tools/${category.slug}/${tool.slug}`}
                         onClick={() => setMobileOpen(false)}
                         className="cursor-pointer rounded-md px-2 py-1.5 text-sm text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
                       >

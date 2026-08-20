@@ -12,7 +12,7 @@ export function generateStaticParams() {
   return categories.map((category) => ({ category: category.slug }));
 }
 
-export async function generateMetadata({ params }: CategoryPageProps): Metadata {
+export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { category: categorySlug } = await params;
   const category = categories.find((c) => c.slug === categorySlug);
   if (!category) return { title: "Category not found" };

@@ -13,8 +13,8 @@ import { TrackToolView } from "@/components/TrackToolView";
 import { AdBanner } from "@/components/AdBanner";
 
 interface ToolPageProps {
-  params: { category: string; slug: string };
-  searchParams: { region?: string };
+  params: Promise<{ category: string; slug: string }>;
+  searchParams: Promise<{ region?: string }>;
 }
 
 // Ad-slot IDs come from the environment — nothing is hardcoded.
@@ -45,13 +45,15 @@ export function generateStaticParams() {
 
 // Region-aware titles, e.g.
 //   "Loan Calculator for Nepal (NPR) – oncalculator.app"
-export function generateMetadata({ params, searchParams }: ToolPageProps): Metadata {
-  const found = findTool(params.category, params.slug);
+export async function generateMetadata({ params, searchParams }: ToolPageProps): Promise<Metadata> {
+  const { category: categorySlug, slug: toolSlug } = await params;
+  const region = (await searchParams).region;
+  const found = findTool(categorySlug, toolSlug);
   if (!found) return { title: "Calculator not found" };
 
   const { tool } = found;
   const content = getCalculatorContent(tool.slug, tool.name);
-  const regionConfig = REGIONS[resolveRegion(searchParams.region)];
+  const regionConfig = REGIONS[resolveRegion(region)];
   const title = `${tool.name} for ${regionConfig.label} (${regionConfig.currency})`;
 
   return {
@@ -61,8 +63,11 @@ export function generateMetadata({ params, searchParams }: ToolPageProps): Metad
   };
 }
 
-export default function ToolPage({ params, searchParams }: ToolPageProps) {
-  const found = findTool(params.category, params.slug);
+export default async function ToolPage({ params, searchParams }: ToolPageProps) {
+  const { category: categorySlug, slug: toolSlug } = await params;
+  const region = (await searchParams).region;
+  
+  const found = findTool(categorySlug, toolSlug);
   if (!found) notFound();
 
   const { category, tool } = found;
