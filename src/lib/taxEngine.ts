@@ -32,12 +32,18 @@ export function calculateRegionalTax(
     if (income > prevLimit) {
       const taxableInBracket = Math.min(income, bracket.limit) - prevLimit;
       tax += taxableInBracket * bracket.rate;
-      if (income >= bracket.limit && bracket.limit !== Infinity) {
+      
+      // Determine if income falls within this bracket
+      if (income <= bracket.limit || bracket.limit === Infinity) {
+        // Income falls within this bracket - this is the marginal rate
         marginalRate = bracket.rate;
-      } else if (bracket.limit === Infinity) {
-        marginalRate = bracket.rate;
+        break;
       }
+      // Income exceeds this bracket, continue to next bracket
       prevLimit = bracket.limit;
+    } else {
+      // Income doesn't exceed previous limit, we're done
+      break;
     }
   }
   
