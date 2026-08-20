@@ -17,6 +17,7 @@ import {
   Wallet,
   HeartPulse,
   Coins,
+  Calculator,
 } from "lucide-react";
 
 /**
@@ -58,16 +59,28 @@ export const categories: Category[] = [
         icon: PiggyBank,
       },
       {
+        name: "Tax Calculator",
+        slug: "tax-calculator",
+        description: "Estimate 2026 US federal income tax, Social Security, Medicare, effective tax rate and after-tax income.",
+        icon: Wallet,
+      },
+      {
+        name:"Salary Calculator",
+        slug: "salary-calculator",
+        description: "Calculate take-home pay after taxes, deductions and benefits.",
+        icon: TrendingUp,
+      },
+      {
         name: "EMI Calculator",
         slug: "emi-calculator",
         description: "Calculate Equated Monthly Installment (EMI) for home, car and personal loans.",
         icon: PiggyBank,
       },
       {
-        name: "Compound Interest",
-        slug: "compound-interest-calculator",
-        description: "Project how an investment grows with recurring contributions.",
-        icon: TrendingUp,
+        name: "Mortgage Calculator",
+        slug: "mortgage-calculator",
+        description: "Calculate monthly mortgage payments and total interest over the life of the loan.",
+        icon: PiggyBank,
       },
     ],
   },
@@ -107,6 +120,12 @@ export const categories: Category[] = [
         description: "Reduce fractions and convert between mixed and improper form.",
         icon: Divide,
       },
+      {
+        name: "Scientific Calculator",
+        slug: "scientific-calculator",
+        description: "Advanced calculations with trigonometric, logarithmic and exponential functions.",
+        icon: Calculator,
+      }
     ],
   },
   {

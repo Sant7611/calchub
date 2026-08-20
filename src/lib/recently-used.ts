@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const KEY = "calcu-recent-tools";
 const CAP = 6;
@@ -36,8 +36,16 @@ export function clearRecentTools(): void {
 }
 
 export function useRecentlyUsed() {
-  // Use lazy initialization to read from localStorage on first render
-  const [items, setItems] = useState<string[]>(() => getRecentTools());
+  // Both server and first client render start empty. Browser-only history is
+  // loaded after hydration so it cannot change the markup React hydrates.
+  const [items, setItems] = useState<string[]>([]);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setItems(getRecentTools());
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const add = useCallback((slug: string) => {
     addRecentTool(slug);

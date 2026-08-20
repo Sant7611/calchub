@@ -1,0 +1,8 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = { title: "Finance Calculators - Tax & Salary Estimates", description: "Explore regional income tax and salary calculators for Nepal, India, the USA, UK, Canada, and Australia.", alternates: { canonical: "/finance" }, openGraph: { title: "Finance Calculators - Tax & Salary Estimates", description: "Regional tax and salary estimation tools." }, robots: { index: true, follow: true } };
+
+export default function FinancePage() {
+  return <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6"><h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Finance Calculators</h1><p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-600">Choose a regional income-tax calculator or estimate salary and take-home pay with the same configured country data.</p><div className="mt-8 grid gap-5 md:grid-cols-2"><Link href="/finance/tax-calc" className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-indigo-300 hover:shadow-md"><h2 className="text-xl font-bold text-slate-900">Income Tax Calculator</h2><p className="mt-2 text-slate-600">Estimate tax, payroll deductions, effective rate, and take-home income.</p></Link><Link href="/finance/salary-calc" className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-indigo-300 hover:shadow-md"><h2 className="text-xl font-bold text-slate-900">Salary Calculator</h2><p className="mt-2 text-slate-600">Estimate gross salary, deductions, tax, and take-home pay.</p></Link></div></main>;
+}

@@ -72,6 +72,69 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../src/app/emi-calculator/bike-loan/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/emi-calculator/bike-loan">> = Specific
+  const handler = {} as typeof import("../../src/app/emi-calculator/bike-loan/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/emi-calculator/business-loan/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/emi-calculator/business-loan">> = Specific
+  const handler = {} as typeof import("../../src/app/emi-calculator/business-loan/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/emi-calculator/car-loan/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/emi-calculator/car-loan">> = Specific
+  const handler = {} as typeof import("../../src/app/emi-calculator/car-loan/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/emi-calculator/education-loan/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/emi-calculator/education-loan">> = Specific
+  const handler = {} as typeof import("../../src/app/emi-calculator/education-loan/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/emi-calculator/home-loan/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/emi-calculator/home-loan">> = Specific
+  const handler = {} as typeof import("../../src/app/emi-calculator/home-loan/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/emi-calculator/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/emi-calculator">> = Specific
+  const handler = {} as typeof import("../../src/app/emi-calculator/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/emi-calculator/personal-loan/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/emi-calculator/personal-loan">> = Specific
+  const handler = {} as typeof import("../../src/app/emi-calculator/personal-loan/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/">> = Specific
