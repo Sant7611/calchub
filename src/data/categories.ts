@@ -32,6 +32,8 @@ export interface Tool {
   description: string;
   /** Lucide icon component rendered on cards, lists and breadcrumbs */
   icon: LucideIcon;
+  /** Flag to mark this tool as popular for homepage showcase */
+  popular?: boolean;
 }
 
 export interface Category {
