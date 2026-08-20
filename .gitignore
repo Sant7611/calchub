@@ -1,7 +1,6 @@
 ```
-# Next.js build outputs
+# Next.js build output
 .next/
-out/
 
 # Dependencies
 node_modules/
@@ -9,12 +8,6 @@ node_modules/
 # Environment variables
 .env.local
 .env
-.env.*
-
-# Cache directories
-.cache/
-.nyc_output/
-coverage/
 
 # Logs
 *.log
@@ -23,14 +16,58 @@ coverage/
 .DS_Store
 Thumbs.db
 
-# IDE specific files
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Build artifacts
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+.env
+.env.local
+
+# Build outputs
 dist/
 build/
 target/
+coverage/
+htmlcov/
+*.out
+*.exe
+*.dll
+*.so
+*.a
+*.obj
+
+# Cache directories
+.cache/
+.mypy_cache/
+.pytest_cache/
+.gradle/
+.nyc_output/
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.swo
+
+# Compressed files
+*.zip
+*.tar.gz
+*.tar.xz
+*.tar.bz2
+*.gz
+*.rar
+*.7z
 ```

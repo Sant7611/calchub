@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { categories, allTools } from "@/data/categories";
+import { categories } from "@/data/categories";
 import { CalculatorCard } from "@/components/ui/CalculatorCard";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 
