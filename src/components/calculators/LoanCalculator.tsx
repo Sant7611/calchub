@@ -54,7 +54,7 @@ export function LoanCalculator() {
           Region
         </label>
         <div className="flex flex-wrap gap-2">
-          {(["nepal", "india", "usa"] as Region[]).map((r) => {
+          {(["global", "nepal", "india", "usa", "uk", "canada", "australia"] as Region[]).map((r) => {
             const regionConfig = getRegionConfig(r);
             return (
               <button
@@ -66,7 +66,7 @@ export function LoanCalculator() {
                     : "bg-fog-100 text-fog-700 hover:bg-fog-200"
                 }`}
               >
-                {regionConfig.label} ({regionConfig.symbol})
+                {regionConfig.name} ({regionConfig.currencySymbol})
               </button>
             );
           })}
@@ -74,11 +74,11 @@ export function LoanCalculator() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Field label={`Loan amount (${config.currency})`}>
+        <Field label={`Loan amount (${config.currencyCode})`}>
           <NumInput 
             value={amount} 
             onChange={setAmount} 
-            prefix={config.symbol} 
+            prefix={config.currencySymbol} 
             step={region === "nepal" || region === "india" ? 10000 : 500} 
           />
         </Field>
@@ -121,7 +121,7 @@ export function LoanCalculator() {
 
       <p className="mt-4 text-[11.5px] text-fog-600">
         {config.paymentLabel} calculated using reducing balance method · {n} monthly payments of {formatters.money(monthly, 2)}.
-        Rates shown are indicative and may vary by lender in {config.label}.
+        Rates shown are indicative and may vary by lender in {config.name}.
       </p>
     </div>
   );

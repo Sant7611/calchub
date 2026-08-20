@@ -29,9 +29,9 @@ function findTool(categorySlug: string, toolSlug: string) {
   return category && tool ? { category, tool } : null;
 }
 
-/** Validate the optional ?region= param server-side; fall back to Nepal. */
+/** Validate the optional ?region= param server-side; fall back to Global. */
 function resolveRegion(raw?: string): Region {
-  return raw && raw in REGIONS ? (raw as Region) : "nepal";
+  return raw && raw in REGIONS ? (raw as Region) : "global";
 }
 
 export function generateStaticParams() {
@@ -61,7 +61,7 @@ export async function generateMetadata({ params, searchParams }: ToolPageProps):
     ? regionConfig.toolName
     : tool.name;
   
-  const title = `${toolName} for ${regionConfig.label} (${regionConfig.currency})`;
+  const title = `${toolName} for ${regionConfig.name} (${regionConfig.currencyCode})`;
 
   return {
     title,

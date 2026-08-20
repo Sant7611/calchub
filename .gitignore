@@ -1,13 +1,15 @@
 ```
-# Next.js build output
+# Next.js build outputs
 .next/
+out/
 
 # Dependencies
 node_modules/
 
 # Environment variables
-.env.local
 .env
+.env.local
+*.env.*
 
 # Logs
 *.log
@@ -15,35 +17,28 @@ node_modules/
 # OS generated files
 .DS_Store
 Thumbs.db
-<<<<<<< HEAD
-```
-=======
 
 # IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
+*.tmp
 
-# Python
+# Logs
+*.log
+
+# Python cache (if present)
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-venv/
-.venv/
-.env
-.env.local
 
-# Build outputs
+# Build/cache directories
 dist/
 build/
 target/
-<<<<<<< HEAD
-```
->>>>>>> 413d42ae9cc5cbb62ab08ac52c3b919941c2ab94
-=======
+
 coverage/
 htmlcov/
 *.out
@@ -55,27 +50,23 @@ htmlcov/
 
 # Cache directories
 .cache/
+
 .mypy_cache/
 .pytest_cache/
-.gradle/
-.nyc_output/
 coverage/
+htmlcov/
+*.coverage
 
-# Temporary files
-*.tmp
-*.temp
-*.log
-*.bak
-*.swp
-*.swo
+# System files
+.DS_Store
+Thumbs.db
 
 # Compressed files
 *.zip
-*.tar.gz
-*.tar.xz
-*.tar.bz2
 *.gz
-*.rar
+*.tar
+*.tgz
+*.bz2
+*.xz
 *.7z
 ```
->>>>>>> 6bef5eb0eb0476bb77aa709771a4295d78ef3d82

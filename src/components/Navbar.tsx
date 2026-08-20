@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { categories } from "@/data/categories";
+import { RegionSelector } from "@/components/RegionSelector";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -91,6 +92,8 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-1.5">
+          <RegionSelector />
+
           <Link
             href="/blog"
             className="hidden cursor-pointer items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 md:inline-flex"
@@ -125,6 +128,10 @@ export function Navbar() {
         {mobileOpen && (
           <div className="absolute inset-x-0 top-full max-h-[calc(100vh-4rem)] overflow-y-auto border-b border-slate-200 bg-white shadow-lg md:hidden">
             <div className="space-y-6 px-4 py-6 sm:px-6">
+              <div className="mb-4">
+                <RegionSelector />
+              </div>
+
               {categories.map((category) => (
                 <div key={category.slug}>
                   <Link
