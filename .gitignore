@@ -1,25 +1,23 @@
 ```
-# Next.js build outputs
+# Next.js build output
 .next/
+
+# TypeScript build output
+*.tsbuildinfo
 
 # Dependencies
 node_modules/
 
 # Environment variables
-.env*
-!.env.example
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
+.env.local
+.env
 
 # Logs
 *.log
 
-# Temporary files
-*.tmp
+# Editor directories
+.vscode/
+.idea/
 
 # OS generated files
 .DS_Store
