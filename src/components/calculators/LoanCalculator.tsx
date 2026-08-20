@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Field, NumInput, Stat, StatGrid } from "./shared";
 import { useRegion } from "@/store/useRegionStore";
 import { makeFormatters } from "@/lib/format";
@@ -27,16 +27,27 @@ export function LoanCalculator() {
   const [rate, setRate] = useState(config.defaultInterestRate);
   const [years, setYears] = useState(5); // Default 5 years for all regions
   
+  // Input validation
+  const errors = useMemo(() => {
+    const errs: string[] = [];
+    if (amount < 0) errs.push("Principal amount cannot be negative.");
+    if (rate < 0) errs.push("Interest rate cannot be negative.");
+    if (years < 1 || years > 50) errs.push("Loan term must be between 1 and 50 years.");
+    return errs;
+  }, [amount, rate, years]);
+  
+  const isValid = errors.length === 0;
+  
   const r = rate / 100 / 12;
   const n = years * 12;
   
-  // EMI calculation formula
-  const monthly = r === 0 
+  // EMI calculation formula - handle zero-interest loans safely
+  const monthly = !isValid ? 0 : (r === 0 
     ? amount / n 
-    : (amount * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    : (amount * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
   
-  const total = monthly * n;
-  const interest = total - amount;
+  const total = isValid ? monthly * n : 0;
+  const interest = isValid ? total - amount : 0;
 
   const handleRegionChange = (newRegion: Region) => {
     setRegion(newRegion);
@@ -66,12 +77,23 @@ export function LoanCalculator() {
                     : "bg-fog-100 text-fog-700 hover:bg-fog-200"
                 }`}
               >
-                {regionConfig.name} ({regionConfig.currencySymbol})
+                {regionConfig.flag} {regionConfig.name} ({regionConfig.currencyCode})
               </button>
             );
           })}
         </div>
       </div>
+
+      {/* Validation Errors */}
+      {errors.length > 0 && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <ul className="text-sm text-red-700 space-y-1">
+            {errors.map((err, i) => (
+              <li key={i}>⚠️ {err}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Field label={`Loan amount (${config.currencyCode})`}>
@@ -79,14 +101,27 @@ export function LoanCalculator() {
             value={amount} 
             onChange={setAmount} 
             prefix={config.currencySymbol} 
-            step={region === "nepal" || region === "india" ? 10000 : 500} 
+            step={region === "nepal" || region === "india" ? 10000 : 500}
+            min={0}
           />
         </Field>
         <Field label="Interest rate (APR)">
-          <NumInput value={rate} onChange={setRate} suffix="%" step={0.1} />
+          <NumInput 
+            value={rate} 
+            onChange={setRate} 
+            suffix="%" 
+            step={0.1}
+            min={0}
+          />
         </Field>
         <Field label="Term">
-          <NumInput value={years} onChange={setYears} suffix="yrs" min={1} max={30} />
+          <NumInput 
+            value={years} 
+            onChange={setYears} 
+            suffix="yrs" 
+            min={1} 
+            max={50}
+          />
         </Field>
       </div>
 
@@ -114,7 +149,7 @@ export function LoanCalculator() {
           </div>
           <div>
             <span className="text-fog-600">Interest Ratio:</span>
-            <span className="ml-2 font-medium">{((interest / amount) * 100).toFixed(1)}%</span>
+            <span className="ml-2 font-medium">{amount > 0 ? ((interest / amount) * 100).toFixed(1) : 0}%</span>
           </div>
         </div>
       </div>
@@ -123,6 +158,15 @@ export function LoanCalculator() {
         {config.paymentLabel} calculated using reducing balance method · {n} monthly payments of {formatters.money(monthly, 2)}.
         Rates shown are indicative and may vary by lender in {config.name}.
       </p>
+
+      {/* Estimate Disclaimer */}
+      {config.isEstimate && (
+        <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-xs text-amber-800">
+            ⚠️ <strong>Estimate:</strong> {config.estimateNote || "These calculations are estimates only."}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
