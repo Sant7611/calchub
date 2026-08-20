@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Field, NumInput, Stat, StatGrid, currency } from "./shared";
 
