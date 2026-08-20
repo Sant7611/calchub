@@ -17,7 +17,7 @@ interface RegionStore {
 
 /**
  * SSR-safe by construction:
- *  - The initial value is ALWAYS `nepal`, so the server render and the first
+ *  - The initial value is ALWAYS `global`, so the server render and the first
  *    client render match — zero hydration mismatches.
  *  - Zustand `persist` rehydrates the saved choice inside useEffect, AFTER
  *    hydration, so a returning user sees their region without a flash-conflict.

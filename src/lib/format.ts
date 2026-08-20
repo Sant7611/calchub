@@ -21,7 +21,7 @@ export function makeFormatters(region: Region): Formatters {
     }).format(value);
 
   const money = (value: number, fractionDigits = 0) =>
-    `${config.symbol}${fmt(value, fractionDigits)}`;
+    `${config.currencySymbol}${fmt(value, fractionDigits)}`;
 
   return { money, fmt };
 }
