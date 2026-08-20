@@ -3,6 +3,7 @@ import {
   Apple,
   ArrowLeftRight,
   Briefcase,
+  Clock,
   Divide,
   Gauge,
   LineChart,
@@ -15,6 +16,7 @@ import {
   TrendingUp,
   Wallet,
   HeartPulse,
+  Coins,
 } from "lucide-react";
 
 /**
@@ -123,6 +125,18 @@ export const categories: Category[] = [
         slug: "temperature-converter",
         description: "Celsius, Fahrenheit and Kelvin with the formulas shown.",
         icon: Thermometer,
+      },
+      {
+        name: "Currency Converter",
+        slug: "currency-converter",
+        description: "Real-time exchange rates with NPR, INR and major currencies. Shows rate timestamp and source.",
+        icon: Coins,
+      },
+      {
+        name: "World Clock",
+        slug: "world-clock",
+        description: "Compare times across Kathmandu, Delhi, London, New York, Toronto, Sydney and more.",
+        icon: Clock,
       },
     ],
   },
