@@ -1,9 +1,7 @@
 ```
-# Next.js build output
+# Next.js build outputs
 .next/
-
-# TypeScript build output
-*.tsbuildinfo
+out/
 
 # Dependencies
 node_modules/
@@ -11,15 +9,30 @@ node_modules/
 # Environment variables
 .env.local
 .env
+.env.*
+
+# Cache directories
+.cache/
+.nyc_output/
+coverage/
 
 # Logs
 *.log
 
-# Editor directories
-.vscode/
-.idea/
-
-# OS generated files
+# Temporary files
+*.tmp
+*.temp
 .DS_Store
 Thumbs.db
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+dist/
+build/
+target/
 ```

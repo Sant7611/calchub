@@ -59,6 +59,12 @@ export interface RegionConfig {
   // Metadata for estimates
   isEstimate: boolean; // true if brackets are estimates/placeholders
   estimateNote?: string; // optional note explaining estimate status
+  // Mortgage/property terminology (region-specific)
+  propertyTaxLabel: string; // e.g., "Property Tax", "Council Tax", "Land Tax"
+  insuranceLabel: string; // e.g., "Home Insurance", "Buildings Insurance"
+  hoaLabel: string; // e.g., "HOA", "Strata Fees", "Service Charge"
+  hasServiceCharge: boolean; // whether service charges are common
+  serviceChargeLabel: string; // e.g., "Service Charge", "Maintenance Fee"
 }
 
 /**
@@ -97,6 +103,11 @@ export const REGIONS: Record<Region, RegionConfig> = {
     payrollDeductions: [],
     isEstimate: true,
     estimateNote: "Global mode uses illustrative rates only — not based on any specific country's tax laws.",
+    propertyTaxLabel: "Property Tax",
+    insuranceLabel: "Insurance",
+    hoaLabel: "HOA Fees",
+    hasServiceCharge: false,
+    serviceChargeLabel: "Service Charge",
   },
   usa: {
     name: "United States",
@@ -144,6 +155,11 @@ export const REGIONS: Record<Region, RegionConfig> = {
       { key: "medicare", label: "Medicare", defaultRate: 0.0145 },
     ],
     isEstimate: false,
+    propertyTaxLabel: "Property Tax",
+    insuranceLabel: "Homeowners Insurance",
+    hoaLabel: "HOA Fees",
+    hasServiceCharge: false,
+    serviceChargeLabel: "Service Charge",
   },
   nepal: {
     name: "Nepal",
@@ -183,6 +199,11 @@ export const REGIONS: Record<Region, RegionConfig> = {
       { key: "ssf_employee", label: "SSF (Employee)", defaultRate: 0.11 },
     ],
     isEstimate: false,
+    propertyTaxLabel: "Property Tax",
+    insuranceLabel: "Home Insurance",
+    hoaLabel: "Maintenance Fee",
+    hasServiceCharge: true,
+    serviceChargeLabel: "Service Charge",
   },
   india: {
     name: "India",
@@ -224,6 +245,11 @@ export const REGIONS: Record<Region, RegionConfig> = {
     ],
     isEstimate: true,
     estimateNote: "India brackets are simplified estimates under the new tax regime. Actual liability may vary with deductions and surcharges.",
+    propertyTaxLabel: "Property Tax",
+    insuranceLabel: "Home Insurance",
+    hoaLabel: "Maintenance Charges",
+    hasServiceCharge: true,
+    serviceChargeLabel: "Society Maintenance",
   },
   uk: {
     name: "United Kingdom",
@@ -265,6 +291,11 @@ export const REGIONS: Record<Region, RegionConfig> = {
     ],
     isEstimate: true,
     estimateNote: "UK brackets are simplified estimates. National Insurance and personal allowance tapering not fully modeled.",
+    propertyTaxLabel: "Council Tax",
+    insuranceLabel: "Buildings Insurance",
+    hoaLabel: "Service Charge",
+    hasServiceCharge: true,
+    serviceChargeLabel: "Service Charge",
   },
   canada: {
     name: "Canada",
@@ -309,6 +340,11 @@ export const REGIONS: Record<Region, RegionConfig> = {
     ],
     isEstimate: true,
     estimateNote: "Canada federal brackets only. Provincial taxes, CPP, and EI are separate and vary by province.",
+    propertyTaxLabel: "Property Tax",
+    insuranceLabel: "Home Insurance",
+    hoaLabel: "Condo Fees",
+    hasServiceCharge: false,
+    serviceChargeLabel: "Service Charge",
   },
   australia: {
     name: "Australia",
@@ -352,6 +388,11 @@ export const REGIONS: Record<Region, RegionConfig> = {
     ],
     isEstimate: true,
     estimateNote: "Australia brackets are simplified estimates. Medicare levy and offsets not included.",
+    propertyTaxLabel: "Council Rates",
+    insuranceLabel: "Home Insurance",
+    hoaLabel: "Strata Fees",
+    hasServiceCharge: false,
+    serviceChargeLabel: "Service Charge",
   },
 };
 
