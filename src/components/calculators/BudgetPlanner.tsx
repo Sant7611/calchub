@@ -19,8 +19,8 @@ export function BudgetPlanner() {
   return (
     <div>
       <div className="max-w-xs">
-        <Field label={`Monthly net income (${config.currencyCode})`} hint="After tax — what actually lands in your account.">
-          <NumInput value={income} onChange={setIncome} prefix={config.currencySymbol} step={100} />
+        <Field label={`Monthly net income (${config.currency.code})`} hint="After tax — what actually lands in your account.">
+          <NumInput value={income} onChange={setIncome} prefix={config.currency.symbol} step={100} />
         </Field>
       </div>
 

@@ -28,10 +28,10 @@ export function MortgageCalculator() {
     if (downPct < 0 || downPct > 100) errs.push("Down payment must be between 0% and 100%.");
     if (rate < 0) errs.push("Interest rate cannot be negative.");
     if (years < 1 || years > 50) errs.push("Loan term must be between 1 and 50 years.");
-    if (propertyTaxRate < 0) errs.push(`${config.propertyTaxLabel} cannot be negative.`);
-    if (insuranceAnnual < 0) errs.push(`${config.insuranceLabel} cannot be negative.`);
-    if (hoaMonthly < 0) errs.push(`${config.hoaLabel} cannot be negative.`);
-    if (serviceChargeMonthly < 0) errs.push(`${config.serviceChargeLabel} cannot be negative.`);
+    if (propertyTaxRate < 0) errs.push(`${config.loan.terminology.propertyTax} cannot be negative.`);
+    if (insuranceAnnual < 0) errs.push(`${config.loan.terminology.insurance} cannot be negative.`);
+    if (hoaMonthly < 0) errs.push(`${config.loan.terminology.hoaOrServiceCharge} cannot be negative.`);
+    if (serviceChargeMonthly < 0) errs.push(`${config.loan.terminology.hoaOrServiceCharge} cannot be negative.`);
     return errs;
   }, [price, downPct, rate, years, propertyTaxRate, insuranceAnnual, hoaMonthly, serviceChargeMonthly, config]);
 
@@ -63,9 +63,8 @@ export function MortgageCalculator() {
       {/* Region-Specific Terminology Info */}
       <div className="mb-4 p-3 bg-brand-50 border border-brand-200 rounded-lg">
         <p className="text-xs text-brand-900">
-          <strong>{config.name} mode:</strong> Using {config.currencyCode} ({config.currencySymbol}) · 
-          {config.propertyTaxLabel} · {config.insuranceLabel} · {config.hoaLabel}
-          {config.hasServiceCharge && ` · ${config.serviceChargeLabel}`}
+          <strong>{config.name} mode:</strong> Using {config.currency.code} ({config.currency.symbol}) · 
+          {config.loan.terminology.propertyTax} · {config.loan.terminology.insurance} · {config.loan.terminology.hoaOrServiceCharge}
         </p>
       </div>
 
@@ -81,11 +80,11 @@ export function MortgageCalculator() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Field label={`Home price (${config.currencyCode})`}>
+        <Field label={`Home price (${config.currency.code})`}>
           <NumInput 
             value={price} 
             onChange={setPrice} 
-            prefix={config.currencySymbol} 
+            prefix={config.currency.symbol} 
             step={5000}
             min={0}
           />
@@ -122,7 +121,7 @@ export function MortgageCalculator() {
 
       {/* Additional Mortgage Fields */}
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Field label={`${config.propertyTaxLabel} (annual %)`}>
+        <Field label={`${config.loan.terminology.propertyTax} (annual %)`}>
           <NumInput 
             value={propertyTaxRate} 
             onChange={setPropertyTaxRate} 
@@ -131,56 +130,41 @@ export function MortgageCalculator() {
             min={0}
           />
         </Field>
-        <Field label={`${config.insuranceLabel} (annual)`}>
+        <Field label={`${config.loan.terminology.insurance} (annual)`}>
           <NumInput 
             value={insuranceAnnual} 
             onChange={setInsuranceAnnual} 
-            prefix={config.currencySymbol}
+            prefix={config.currency.symbol}
             step={100}
             min={0}
           />
         </Field>
-        <Field label={config.hoaLabel}>
+        <Field label={config.loan.terminology.hoaOrServiceCharge}>
           <NumInput 
             value={hoaMonthly} 
             onChange={setHoaMonthly} 
-            prefix={config.currencySymbol}
+            prefix={config.currency.symbol}
             step={50}
             min={0}
           />
         </Field>
-        {config.hasServiceCharge && (
-          <Field label={config.serviceChargeLabel}>
-            <NumInput 
-              value={serviceChargeMonthly} 
-              onChange={setServiceChargeMonthly} 
-              prefix={config.currencySymbol}
-              step={50}
-              min={0}
-            />
-          </Field>
-        )}
       </div>
 
       <StatGrid>
         <Stat accent label="Total Monthly Payment" value={formatters.money(totalMonthly, 2)} sub="PITI + fees" />
         <Stat label="Principal & Interest" value={formatters.money(piMonthly, 2)} />
-        <Stat label={config.propertyTaxLabel} value={formatters.money(propertyTaxMonthly, 2)} sub="monthly" />
-        <Stat label={config.insuranceLabel} value={formatters.money(insuranceMonthly, 2)} sub="monthly" />
+        <Stat label={config.loan.terminology.propertyTax} value={formatters.money(propertyTaxMonthly, 2)} sub="monthly" />
+        <Stat label={config.loan.terminology.insurance} value={formatters.money(insuranceMonthly, 2)} sub="monthly" />
         {hoaMonthly > 0 && (
-          <Stat label={config.hoaLabel} value={formatters.money(hoaMonthly, 2)} sub="monthly" />
-        )}
-        {config.hasServiceCharge && serviceChargeMonthly > 0 && (
-          <Stat label={config.serviceChargeLabel} value={formatters.money(serviceChargeMonthly, 2)} sub="monthly" />
+          <Stat label={config.loan.terminology.hoaOrServiceCharge} value={formatters.money(hoaMonthly, 2)} sub="monthly" />
         )}
         <Stat label="Loan amount" value={formatters.money(principal)} sub={`after ${formatters.money(down)} down`} />
         <Stat label="Lifetime interest" value={formatters.money(interest)} />
       </StatGrid>
 
       <p className="mt-4 text-[11.5px] text-fog-600">
-        Estimates include principal, interest, {config.propertyTaxLabel.toLowerCase()}, {config.insuranceLabel.toLowerCase()}
-        {hoaMonthly > 0 && `, ${config.hoaLabel.toLowerCase()}`}
-        {config.hasServiceCharge && serviceChargeMonthly > 0 && `, ${config.serviceChargeLabel.toLowerCase()}`}.
+        Estimates include principal, interest, {config.loan.terminology.propertyTax.toLowerCase()}, {config.loan.terminology.insurance.toLowerCase()}
+        {hoaMonthly > 0 && `, ${config.loan.terminology.hoaOrServiceCharge.toLowerCase()}`}.
         Actual costs may vary by location and provider.
       </p>
 

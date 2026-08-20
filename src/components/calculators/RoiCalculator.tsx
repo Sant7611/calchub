@@ -24,11 +24,11 @@ export function RoiCalculator() {
   return (
     <div>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Field label={`Initial investment (${config.currencyCode})`}>
-          <NumInput value={initial} onChange={setInitial} prefix={config.currencySymbol} step={500} />
+        <Field label={`Initial investment (${config.currency.code})`}>
+          <NumInput value={initial} onChange={setInitial} prefix={config.currency.symbol} step={500} />
         </Field>
-        <Field label={`Final value (${config.currencyCode})`}>
-          <NumInput value={finalValue} onChange={setFinalValue} prefix={config.currencySymbol} step={500} />
+        <Field label={`Final value (${config.currency.code})`}>
+          <NumInput value={finalValue} onChange={setFinalValue} prefix={config.currency.symbol} step={500} />
         </Field>
         <Field label="Holding period">
           <NumInput value={years} onChange={setYears} suffix="yrs" step={0.5} />

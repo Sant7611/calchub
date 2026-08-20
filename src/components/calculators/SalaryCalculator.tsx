@@ -13,9 +13,9 @@ export function SalaryCalculator() {
 
   // Input states
   const [hourlyRate, setHourlyRate] = useState(25);
-  const [hoursPerWeek, setHoursPerWeek] = useState(config.standardWeeklyHours);
+  const [hoursPerWeek, setHoursPerWeek] = useState(config.work.hoursPerWeek);
   const [weeksPerYear, setWeeksPerYear] = useState(52);
-  const [payFrequency, setPayFrequency] = useState(config.supportedPayFrequencies[0]?.value ?? "monthly");
+  const [payFrequency, setPayFrequency] = useState(config.work.defaultPayFrequency);
   
   // Optional deductions (user-toggleable)
   const [socialSecurityRate, setSocialSecurityRate] = useState<number | null>(null);
@@ -24,8 +24,16 @@ export function SalaryCalculator() {
   const [retirementRate, setRetirementRate] = useState<number | null>(null);
 
   // Get selected pay frequency config
-  const selectedFrequency = config.supportedPayFrequencies.find(f => f.value === payFrequency) 
-    ?? config.supportedPayFrequencies[0];
+  const payFrequencyLabels: Record<string, number> = {
+    weekly: 52,
+    biweekly: 26,
+    semimonthly: 24,
+    monthly: 12,
+    quarterly: 4,
+    annually: 1,
+  };
+  const periodsPerYear = payFrequencyLabels[payFrequency] ?? 12;
+  const frequencyLabel = payFrequency.charAt(0).toUpperCase() + payFrequency.slice(1);
 
   // Calculate gross annual salary
   const grossAnnual = useMemo(() => {
@@ -34,7 +42,7 @@ export function SalaryCalculator() {
 
   // Calculate tax using regional tax engine
   const taxResult = useMemo(() => {
-    return calculateRegionalTax(grossAnnual, region, "individual");
+    return calculateRegionalTax(grossAnnual, region);
   }, [grossAnnual, region]);
 
   // Calculate optional deductions based on region
@@ -73,54 +81,31 @@ export function SalaryCalculator() {
   const netPay = Math.max(0, grossAnnual - taxResult.tax - totalDeductions);
 
   // Calculate per-period amounts
-  const periodsPerYear = selectedFrequency.periodsPerYear;
   const grossPerPeriod = grossAnnual / periodsPerYear;
   const taxPerPeriod = taxResult.tax / periodsPerYear;
   const netPerPeriod = netPay / periodsPerYear;
 
-  // Get region-specific labels for deductions
-  const getDeductionLabels = () => {
-    const labels: { key: string; label: string; defaultRate?: number }[] = [];
-    
-    for (const ded of config.payrollDeductions) {
-      if (ded.key.includes("social") || ded.key.includes("security")) {
-        labels.push({ key: "social_security", label: ded.label, defaultRate: ded.defaultRate });
-      } else if (ded.key.includes("pf") || ded.key.includes("provident") || ded.key.includes("ssf")) {
-        labels.push({ key: "pension", label: ded.label, defaultRate: ded.defaultRate });
-      } else if (ded.key.includes("health") || ded.key.includes("medicare")) {
-        labels.push({ key: "health", label: ded.label, defaultRate: ded.defaultRate });
-      } else if (ded.key.includes("super") || ded.key.includes("retirement") || ded.key.includes("cpp")) {
-        labels.push({ key: "retirement", label: ded.label, defaultRate: ded.defaultRate });
-      }
-    }
-    
-    return labels;
-  };
-
-  const deductionLabels = useMemo(() => getDeductionLabels(), [config.payrollDeductions, config.name]);
-
   // Auto-set default rates based on region's payroll deductions when region changes
   useEffect(() => {
-    const ssDeduction = deductionLabels.find(d => d.key === "social_security");
-    const pensionDeduction = deductionLabels.find(d => d.key === "pension");
-    
-    if (ssDeduction?.defaultRate && socialSecurityRate === null) {
-      setSocialSecurityRate(ssDeduction.defaultRate);
+    if (config.tax.payrollDeductions && config.tax.payrollDeductions.length > 0) {
+      const firstDed = config.tax.payrollDeductions[0];
+      if (firstDed.name.toLowerCase().includes("social") || firstDed.name.toLowerCase().includes("security")) {
+        if (socialSecurityRate === null) setSocialSecurityRate(firstDed.rate);
+      } else if (firstDed.name.toLowerCase().includes("pf") || firstDed.name.toLowerCase().includes("provident") || firstDed.name.toLowerCase().includes("ssf")) {
+        if (pensionRate === null) setPensionRate(firstDed.rate);
+      }
     }
-    if (pensionDeduction?.defaultRate && pensionRate === null) {
-      setPensionRate(pensionDeduction.defaultRate);
-    }
-  }, [deductionLabels]); // Re-run when deduction labels change (i.e., when region changes)
+  }, [config.tax.payrollDeductions]);
 
   return (
     <div className="space-y-6">
       {/* Income Inputs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Field label={`Hourly Rate (${config.currencyCode})`}>
+        <Field label={`Hourly Rate (${config.currency.code})`}>
           <NumInput 
             value={hourlyRate} 
             onChange={setHourlyRate} 
-            prefix={config.currencySymbol} 
+            prefix={config.currency.symbol} 
             step={0.5} 
           />
         </Field>
@@ -150,9 +135,9 @@ export function SalaryCalculator() {
             onChange={(e) => setPayFrequency(e.target.value)}
             className="h-[42px] w-full rounded-lg border border-ink-600 bg-ink-850 px-3 font-mono text-[13px] text-fog-300 outline-none focus:border-mint-500/60 focus:ring-2 focus:ring-mint-500/20"
           >
-            {config.supportedPayFrequencies.map((freq) => (
-              <option key={freq.value} value={freq.value}>
-                {freq.label}
+            {config.work.payFrequencies.map((freq) => (
+              <option key={freq} value={freq}>
+                {freq.charAt(0).toUpperCase() + freq.slice(1)}
               </option>
             ))}
           </select>
@@ -187,7 +172,7 @@ export function SalaryCalculator() {
         )}
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {(region === "global" || deductionLabels.find(d => d.key === "social_security")) && (
+          {(region === "global" || (config.tax.payrollDeductions && config.tax.payrollDeductions.some(d => d.name.toLowerCase().includes("social") || d.name.toLowerCase().includes("security")))) && (
             <Field label="Social Security / National Insurance">
               <div className="flex items-center gap-2">
                 <input
@@ -210,7 +195,7 @@ export function SalaryCalculator() {
             </Field>
           )}
           
-          {(region === "global" || deductionLabels.find(d => d.key === "pension")) && (
+          {(region === "global" || (config.tax.payrollDeductions && config.tax.payrollDeductions.some(d => d.name.toLowerCase().includes("pf") || d.name.toLowerCase().includes("provident") || d.name.toLowerCase().includes("ssf")))) && (
             <Field label={config.name.includes("Nepal") ? "Provident Fund (SSF)" : "Pension / Provident Fund"}>
               <div className="flex items-center gap-2">
                 <input
@@ -233,7 +218,7 @@ export function SalaryCalculator() {
             </Field>
           )}
           
-          {(region === "global" || deductionLabels.find(d => d.key === "health")) && (
+          {(region === "global" || (config.tax.payrollDeductions && config.tax.payrollDeductions.some(d => d.name.toLowerCase().includes("health") || d.name.toLowerCase().includes("medicare")))) && (
             <Field label="Health Insurance / Medicare">
               <div className="flex items-center gap-2">
                 <input
@@ -256,7 +241,7 @@ export function SalaryCalculator() {
             </Field>
           )}
           
-          {(region === "global" || deductionLabels.find(d => d.key === "retirement")) && (
+          {(region === "global" || (config.tax.payrollDeductions && config.tax.payrollDeductions.some(d => d.name.toLowerCase().includes("super") || d.name.toLowerCase().includes("retirement") || d.name.toLowerCase().includes("cpp")))) && (
             <Field label={config.name.includes("Australia") ? "Superannuation" : "Retirement / CPP"}>
               <div className="flex items-center gap-2">
                 <input
@@ -298,10 +283,10 @@ export function SalaryCalculator() {
           accent 
           label="Net Pay (Annual)" 
           value={formatters.money(netPay)} 
-          sub={`${formatters.money(netPerPeriod)} / ${selectedFrequency.label.toLowerCase()}`} 
+          sub={`${formatters.money(netPerPeriod)} / ${frequencyLabel.toLowerCase()}`} 
         />
         <Stat 
-          label={config.defaultTaxLabel} 
+          label={config.consumptionTax.label === "VAT" ? "Income Tax" : "Tax"} 
           value={formatters.money(taxResult.tax)}
           sub={`${formatters.money(taxPerPeriod)} / period`}
         />
@@ -346,7 +331,7 @@ export function SalaryCalculator() {
 
         <div className="rounded-xl border border-ink-600/70 bg-ink-850/80 p-4">
           <p className="font-mono text-[10px] font-semibold tracking-widest text-fog-500 uppercase mb-3">
-            Per {selectedFrequency.label} Pay
+            Per {frequencyLabel} Pay
           </p>
           <div className="space-y-2 text-[13px]">
             <div className="flex justify-between text-fog-300">
@@ -374,7 +359,7 @@ export function SalaryCalculator() {
       {/* Info & Disclaimers */}
       <div className="space-y-2">
         <p className="text-[11px] text-fog-500">
-          <strong>Tax Year:</strong> {config.taxYear} · {" "}
+          <strong>Tax Year:</strong> {config.tax.taxYear} · {" "}
           <strong>Status:</strong> {config.isEstimate ? "Estimate" : "Verified"}
         </p>
         
