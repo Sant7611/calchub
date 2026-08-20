@@ -12,7 +12,7 @@ export function InvoiceCalculator() {
   
   const [subtotal, setSubtotal] = useState(1000);
   const [discount, setDiscount] = useState(0);
-  const [taxRate, setTaxRate] = useState(config.defaultSalesTaxRate * 100);
+  const [taxRate, setTaxRate] = useState(config.consumptionTax.defaultRate * 100);
   
   // Clamp taxable subtotal to zero when discount exceeds subtotal
   const taxableSubtotal = Math.max(0, subtotal - discount);
@@ -22,15 +22,15 @@ export function InvoiceCalculator() {
   return (
     <div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={`Subtotal (${config.currencyCode})`}>
-          <NumInput value={subtotal} onChange={setSubtotal} prefix={config.currencySymbol} step={10} />
+        <Field label={`Subtotal (${config.currency.code})`}>
+          <NumInput value={subtotal} onChange={setSubtotal} prefix={config.currency.symbol} step={10} />
         </Field>
-        <Field label={`Discount (${config.currencyCode})`} hint="Discount is subtracted before tax">
-          <NumInput value={discount} onChange={setDiscount} prefix={config.currencySymbol} step={10} />
+        <Field label={`Discount (${config.currency.code})`} hint="Discount is subtracted before tax">
+          <NumInput value={discount} onChange={setDiscount} prefix={config.currency.symbol} step={10} />
         </Field>
         <Field 
-          label={`${config.salesTaxLabel} Rate (%)`}
-          hint={`Default: ${(config.defaultSalesTaxRate * 100).toFixed(1)}% · ${config.isEstimate ? "Estimate" : "Verified"}`}
+          label={`${config.consumptionTax.label} Rate (%)`}
+          hint={`Default: ${(config.consumptionTax.defaultRate * 100).toFixed(1)}% · ${config.isEstimate ? "Estimate" : "Verified"}`}
         >
           <NumInput value={taxRate} onChange={setTaxRate} suffix="%" step={0.1} min={0} max={100} />
         </Field>
@@ -39,7 +39,7 @@ export function InvoiceCalculator() {
             {config.isEstimate && config.estimateNote ? (
               <span className="text-amber-400">⚠️ Estimate</span>
             ) : (
-              <span className="text-fog-500">{config.taxYear}</span>
+              <span className="text-fog-500">{config.tax.taxYear}</span>
             )}
           </div>
         </div>
@@ -47,7 +47,7 @@ export function InvoiceCalculator() {
 
       <StatGrid>
         <Stat accent label="Total" value={formatters.money(total)} sub={`Taxable: ${formatters.money(taxableSubtotal)}`} />
-        <Stat label={`${config.salesTaxLabel}`} value={formatters.money(taxAmount)} />
+        <Stat label={config.consumptionTax.label} value={formatters.money(taxAmount)} />
         <Stat label="After Discount" value={formatters.money(taxableSubtotal)} sub={discount > 0 ? `Saved: ${formatters.money(discount)}` : undefined} />
       </StatGrid>
 
@@ -64,7 +64,7 @@ export function InvoiceCalculator() {
           </p>
         )}
         <p className="text-[11.5px] text-fog-600">
-          Invoice calculations are estimates only. Actual {config.salesTaxLabel.toLowerCase()} rates may vary by jurisdiction, product type, or customer status.
+          Invoice calculations are estimates only. Actual {config.consumptionTax.label.toLowerCase()} rates may vary by jurisdiction, product type, or customer status.
           Consult a tax professional for compliance.
         </p>
       </div>

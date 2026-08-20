@@ -13,54 +13,43 @@ export interface TaxCalculationResult {
  * Calculate regional income tax based on progressive tax brackets.
  * @param income - Annual gross income
  * @param region - Selected region code
- * @param filingStatus - Filing status (currently uses same brackets for all statuses)
  * @returns Tax calculation result with breakdown
  */
 export function calculateRegionalTax(
   income: number,
   region: Region,
-  filingStatus: string = "individual"
 ): TaxCalculationResult {
   const config = getRegionConfig(region);
   
-  // Calculate tax using progressive brackets
+  // Calculate tax using progressive brackets (cumulative slab method)
   let tax = 0;
-  let prevLimit = 0;
+  let remainingIncome = income;
   let marginalRate = 0;
   
-  for (const bracket of config.taxBrackets) {
-    if (income > prevLimit) {
-      const taxableInBracket = Math.min(income, bracket.limit) - prevLimit;
-      tax += taxableInBracket * bracket.rate;
-      
-      // Determine if income falls within this bracket
-      if (income <= bracket.limit || bracket.limit === Infinity) {
-        // Income falls within this bracket - this is the marginal rate
-        marginalRate = bracket.rate;
-        break;
-      }
-      // Income exceeds this bracket, continue to next bracket
-      prevLimit = bracket.limit;
-    } else {
-      // Income doesn't exceed previous limit, we're done
-      break;
-    }
+  for (const bracket of config.tax.brackets) {
+    if (remainingIncome <= 0) break;
+    
+    const bracketLimit = bracket.limit ?? Infinity;
+    const taxableInBracket = Math.min(remainingIncome, bracketLimit);
+    tax += taxableInBracket * bracket.rate;
+    remainingIncome -= taxableInBracket;
+    marginalRate = bracket.rate;
   }
   
   // Calculate mandatory payroll deductions
   let payrollDeductionsTotal = 0;
   const deductionDetails: { label: string; amount: number }[] = [];
   
-  for (const ded of config.payrollDeductions) {
-    if (ded.defaultRate) {
-      const amount = income * ded.defaultRate;
+  if (config.tax.payrollDeductions) {
+    for (const ded of config.tax.payrollDeductions) {
+      const amount = income * ded.rate;
       payrollDeductionsTotal += amount;
-      deductionDetails.push({ label: ded.label, amount });
+      deductionDetails.push({ label: ded.name, amount });
     }
   }
   
   const effectiveRate = income > 0 ? tax / income : 0;
-  const taxableIncome = Math.max(0, income - payrollDeductionsTotal);
+  const taxableIncome = Math.max(0, income);
   
   return {
     tax,
@@ -79,5 +68,5 @@ export function getTaxSummary(income: number, region: Region): string {
   const result = calculateRegionalTax(income, region);
   const config = getRegionConfig(region);
   
-  return `${config.defaultTaxLabel}: ${result.tax.toFixed(2)} (${(result.effectiveRate * 100).toFixed(1)}% effective)`;
+  return `${config.tax.system === "illustrative" ? "Illustrative Tax" : config.tax.taxYear}: ${result.tax.toFixed(2)} (${(result.effectiveRate * 100).toFixed(1)}% effective)`;
 }
