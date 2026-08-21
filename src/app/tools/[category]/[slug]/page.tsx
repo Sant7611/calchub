@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { CalendarClock } from "lucide-react";
 
 import { categories } from "@/data/categories";
@@ -18,6 +18,12 @@ interface ToolPageProps {
   params: Promise<{ category: string; slug: string }>;
 }
 
+const PREFERRED_TOOL_ROUTES: Record<string, string> = {
+  "finance/tax-calculator": "/finance/tax-calc",
+  "finance/salary-calculator": "/finance/salary-calc",
+  "finance/emi-calculator": "/emi-calculator",
+};
+
 // Ad-slot IDs come from the environment — nothing is hardcoded.
 // Create two responsive units in AdSense and set them in Vercel.
 const AD_SLOT_AFTER_CALCULATOR =
@@ -28,6 +34,10 @@ function findTool(categorySlug: string, toolSlug: string) {
   const category = categories.find((c) => c.slug === categorySlug);
   const tool = category?.tools.find((t) => t.slug === toolSlug);
   return category && tool ? { category, tool } : null;
+}
+
+function getPreferredToolRoute(categorySlug: string, toolSlug: string) {
+  return PREFERRED_TOOL_ROUTES[`${categorySlug}/${toolSlug}`] ?? null;
 }
 
 export function generateStaticParams() {
@@ -58,10 +68,11 @@ export async function generateMetadata({
   }
 
   const content = getCalculatorContent(found.tool.slug, found.tool.name);
+  const preferredRoute = getPreferredToolRoute(categorySlug, toolSlug);
 
   const metadata = getCalculatorMetadata(
     content,
-    `/tools/${categorySlug}/${toolSlug}`,
+    preferredRoute ?? `/tools/${categorySlug}/${toolSlug}`,
   );
 
   const hasCalculator = Boolean(calculatorRegistry[found.tool.slug]);
@@ -84,6 +95,9 @@ export default async function ToolPage({ params }: ToolPageProps) {
   const { category: categorySlug, slug: toolSlug } = await params;
   const found = findTool(categorySlug, toolSlug);
   if (!found) notFound();
+
+  const preferredRoute = getPreferredToolRoute(categorySlug, toolSlug);
+  if (preferredRoute) permanentRedirect(preferredRoute);
 
   const { category, tool } = found;
   const content = getCalculatorContent(tool.slug, tool.name);
