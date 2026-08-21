@@ -9,7 +9,6 @@ interface LegacyToolPageProps {
 const preferredLegacyRoutes: Record<string, string> = {
   "tax-calculator": "/finance/tax-calc",
   "salary-calculator": "/finance/salary-calc",
-  "emi-calculator": "/emi-calculator",
 };
 
 function findTool(slug: string) {
