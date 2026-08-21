@@ -11,7 +11,7 @@ export function Field({
   hint?: string;
 }) {
   return (
-    <label className="block">
+    <label className="block min-w-0">
       <span className="mb-1.5 block font-mono text-[10.5px] font-semibold tracking-widest text-fog-500 uppercase">
         {label}
       </span>
@@ -39,9 +39,9 @@ export function NumInput({
   max?: number;
 }) {
   return (
-    <div className="flex items-center overflow-hidden rounded-lg border border-ink-600 bg-ink-850 transition-all duration-200 focus-within:border-mint-500/60 focus-within:ring-2 focus-within:ring-mint-500/20">
+    <div className="flex min-h-11 min-w-0 items-stretch overflow-hidden rounded-lg border border-ink-600 bg-ink-850 transition-all duration-200 focus-within:border-mint-500/60 focus-within:ring-2 focus-within:ring-mint-500/20 lg:min-h-10">
       {prefix ? (
-        <span className="border-r border-ink-600 bg-ink-800 px-2.5 py-2 font-mono text-[12px] text-fog-500 select-none">
+        <span className="flex items-center border-r border-ink-600 bg-ink-800 px-2.5 py-2.5 font-mono text-[12px] text-fog-500 select-none lg:py-2">
           {prefix}
         </span>
       ) : null}
@@ -52,10 +52,10 @@ export function NumInput({
         min={min}
         max={max}
         onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-        className="w-full bg-transparent px-3 py-2 font-mono text-[14px] font-medium text-fog-100 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        className="min-w-0 flex-1 bg-transparent px-3 py-2.5 font-mono text-[14px] font-medium text-fog-100 outline-none [appearance:textfield] lg:py-2 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
       {suffix ? (
-        <span className="border-l border-ink-600 bg-ink-800 px-2.5 py-2 font-mono text-[12px] text-fog-500 select-none">
+        <span className="flex items-center border-l border-ink-600 bg-ink-800 px-2.5 py-2.5 font-mono text-[12px] text-fog-500 select-none lg:py-2">
           {suffix}
         </span>
       ) : null}
@@ -77,7 +77,7 @@ export function Stat({
 }) {
   return (
     <div
-      className={`rounded-xl border p-4 transition-all duration-300 ${
+      className={`min-w-0 rounded-xl border p-4 transition-all duration-300 lg:p-3 ${
         accent
           ? "border-mint-500/40 bg-mint-500/10"
           : "border-ink-600/70 bg-ink-850/80 hover:border-ink-500"
@@ -87,7 +87,7 @@ export function Stat({
         {label}
       </p>
       <p
-        className={`mt-1.5 font-display text-2xl font-bold tracking-tight ${
+        className={`mt-1.5 break-words font-display text-xl font-bold tracking-tight sm:text-2xl ${
           accent ? "text-mint-300" : "text-fog-100"
         }`}
       >
@@ -99,7 +99,11 @@ export function Stat({
 }
 
 export function StatGrid({ children }: { children: ReactNode }) {
-  return <div className="mt-5 grid gap-3 sm:grid-cols-3">{children}</div>;
+  return (
+    <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {children}
+    </div>
+  );
 }
 
 /* ── allocation bar (budget) ────────────────────────────── */
@@ -116,11 +120,13 @@ export function Bar({
 }) {
   return (
     <div>
-      <div className="mb-1 flex items-baseline justify-between">
+      <div className="mb-1 flex items-baseline justify-between gap-3">
         <span className="font-mono text-[10.5px] font-semibold tracking-widest text-fog-500 uppercase">
           {label}
         </span>
-        <span className="font-mono text-[13px] font-semibold text-fog-100">{value}</span>
+        <span className="min-w-0 break-words text-right font-mono text-[13px] font-semibold text-fog-100">
+          {value}
+        </span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-ink-700">
         <div
