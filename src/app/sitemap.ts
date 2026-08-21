@@ -3,7 +3,7 @@ import { categories } from "@/data/categories";
 import { getPosts } from "@/lib/blog";
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL ?? "https://oncalculator.app";
+  process.env.NEXT_PUBLIC_BASE_URL ?? "https://oncalculator.tech";
 
 const FINANCE_REGIONS = [
   "india",
