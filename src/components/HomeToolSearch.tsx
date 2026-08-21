@@ -8,6 +8,7 @@ import { type FormEvent, useMemo, useState } from "react";
 export interface HomeSearchTool {
   name: string;
   category: string;
+  description: string;
   href: string;
 }
 
@@ -26,7 +27,7 @@ export function HomeToolSearch({ tools }: HomeToolSearchProps) {
 
     return tools
       .filter((tool) => {
-        const searchableText = `${tool.name} ${tool.category}`.toLowerCase();
+        const searchableText = `${tool.name} ${tool.category} ${tool.description}`.toLowerCase();
         return searchableText.includes(normalizedQuery);
       })
       .slice(0, 8);
