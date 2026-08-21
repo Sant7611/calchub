@@ -105,7 +105,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
   const related = category.tools.filter((t) => t.slug !== tool.slug);
 
   return (
-    <article className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <article className="mx-auto max-w-4xl px-4 pb-12 pt-6 sm:px-6 sm:pt-8">
       {/* "Recently Used" history — client island, renders null */}
       <TrackToolView slug={tool.slug} />
 
@@ -117,20 +117,8 @@ export default async function ToolPage({ params }: ToolPageProps) {
         ]}
       />
 
-      <header className="mt-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-          {tool.name}
-        </h1>
-
-        <div className="mt-4 space-y-4 text-lg leading-relaxed text-slate-600">
-          {content.intro.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-        </div>
-      </header>
-
       {/* The interactive calculator (client island) — or Coming Soon */}
-      <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8">
         {CalculatorComponent ? (
           <CalculatorComponent />
         ) : (
@@ -149,9 +137,20 @@ export default async function ToolPage({ params }: ToolPageProps) {
         )}
       </div>
 
+      <header className="mt-8">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          {tool.name}
+        </h1>
+
+        <div className="mt-4 space-y-4 text-lg leading-relaxed text-slate-600">
+          {content.intro.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      </header>
+
       {/* ── AD SLOT 1 of 2 ──────────────────────────────────────────
-          Between the calculator card and "How to Use".
-          Never above the H1 · never inside the calculator inputs. */}
+          Between the calculator content and "How to Use". */}
       <AdBanner slot={AD_SLOT_AFTER_CALCULATOR} className="my-10" />
 
       <section className="mt-12">
