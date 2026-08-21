@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Children, type ReactNode } from "react";
 
 /* ── form field ─────────────────────────────────────────── */
 export function Field({
@@ -99,8 +99,16 @@ export function Stat({
 }
 
 export function StatGrid({ children }: { children: ReactNode }) {
+  const hasOddCount = Children.count(children) % 2 === 1;
+
   return (
-    <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div
+      className={`mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 ${
+        hasOddCount
+          ? "sm:[&>*:last-child]:col-span-2 lg:[&>*:last-child]:col-span-1"
+          : ""
+      }`}
+    >
       {children}
     </div>
   );
