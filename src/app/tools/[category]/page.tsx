@@ -20,6 +20,9 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   return {
     title: `${category.name} Calculators`,
     description: `Free online ${category.name.toLowerCase()} calculators — instant, mobile-friendly and SEO-optimized.`,
+    alternates: {
+      canonical: `/categories/${category.slug}`,
+    },
   };
 }
 
