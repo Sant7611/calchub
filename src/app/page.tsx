@@ -9,7 +9,10 @@ import { getPosts } from "@/lib/blog";
 import { CalculatorCard } from "@/components/ui/CalculatorCard";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { RecentlyUsed } from "@/components/RecentlyUsed";
-import { HomeToolSearch } from "@/components/HomeToolSearch";
+import {
+  HomeToolSearch,
+  type HomeSearchTool,
+} from "@/components/HomeToolSearch";
 import { RegionalFinanceSection } from "@/components/RegionalFinanceSection";
 
 export const metadata: Metadata = {
@@ -17,6 +20,22 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 };
+
+const PREFERRED_SEARCH_ROUTES: Record<string, string> = {
+  "tax-calculator": "/finance/tax-calc",
+  "salary-calculator": "/finance/salary-calc",
+  "emi-calculator": "/emi-calculator",
+};
+
+const HOME_SEARCH_TOOLS: HomeSearchTool[] = categories.flatMap((category) =>
+  category.tools.map((tool) => ({
+    name: tool.name,
+    category: category.name,
+    href:
+      PREFERRED_SEARCH_ROUTES[tool.slug] ??
+      `/tools/${category.slug}/${tool.slug}`,
+  })),
+);
 
 /**
  * Homepage
@@ -98,7 +117,7 @@ export default function HomePage() {
             instantly.
           </p>
 
-          <HomeToolSearch />
+          <HomeToolSearch tools={HOME_SEARCH_TOOLS} />
 
           <Link
             href="/tools"
