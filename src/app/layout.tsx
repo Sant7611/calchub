@@ -19,6 +19,8 @@ const adsenseClient =
 const googleVerification =
   process.env.GOOGLE_SITE_VERIFICATION;
 
+const GOOGLE_ANALYTICS_ID = "G-7Y8SKKD9EW";
+
 const SITE_DESCRIPTION =
   "Free online calculators for finance, health, math, date and time, conversions and everyday calculations.";
 
@@ -53,8 +55,6 @@ export const metadata: Metadata = {
     : undefined,
 };
 
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -76,6 +76,20 @@ export default function RootLayout({
           ${inter.className}
         `}
       >
+        <Script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GOOGLE_ANALYTICS_ID}');
+          `}
+        </Script>
+
         {adsenseClient && (
           <Script
             id="adsense-loader"
