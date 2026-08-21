@@ -55,7 +55,6 @@ export function createSocialImage() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            zIndex: 1,
           }}
         >
           <div
@@ -131,15 +130,16 @@ export function createSocialImage() {
           >
             <div
               style={{
+                display: "flex",
+                flexDirection: "column",
                 fontSize: 66,
                 lineHeight: 1.04,
                 fontWeight: 800,
                 letterSpacing: -2.5,
               }}
             >
-              Calculate clearly.
-              <br />
-              Decide confidently.
+              <span>Calculate clearly.</span>
+              <span>Decide confidently.</span>
             </div>
 
             <div
@@ -176,7 +176,6 @@ export function createSocialImage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1,
           }}
         >
           <div
