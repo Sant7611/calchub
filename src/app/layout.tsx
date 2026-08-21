@@ -23,47 +23,37 @@ const SITE_DESCRIPTION =
   "Free online calculators for finance, health, math, date and time, conversions and everyday calculations.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    "https://oncalculator.app",
-  ),
+  metadataBase: new URL("https://oncalculator.app"),
 
   title: {
-    default:
-      "OnCalculator - Free Online Calculators",
-    template:
-      "%s | OnCalculator",
+    default: "OnCalculator - Free Online Calculators",
+    template: "%s | OnCalculator",
   },
 
   description: SITE_DESCRIPTION,
-
-  alternates: {
-    canonical: "/",
-  },
 
   openGraph: {
     type: "website",
     siteName: "OnCalculator",
     url: "/",
-    title:
-      "OnCalculator - Free Online Calculators",
+    title: "OnCalculator - Free Online Calculators",
     description: SITE_DESCRIPTION,
   },
 
   twitter: {
     card: "summary_large_image",
-    title:
-      "OnCalculator - Free Online Calculators",
+    title: "OnCalculator - Free Online Calculators",
     description: SITE_DESCRIPTION,
   },
 
-  verification:
-    googleVerification
-      ? {
-          google:
-            googleVerification,
-        }
-      : undefined,
+  verification: googleVerification
+    ? {
+        google: googleVerification,
+      }
+    : undefined,
 };
+
+
 
 export default function RootLayout({
   children,

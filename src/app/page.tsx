@@ -1,20 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ArrowRight } from "lucide-react";
 
 import { categories } from "@/data/categories";
-
 import { getPosts } from "@/lib/blog";
 
 import { CalculatorCard } from "@/components/ui/CalculatorCard";
-
 import { BlogCard } from "@/components/blog/BlogCard";
-
 import { RecentlyUsed } from "@/components/RecentlyUsed";
-
 import { HomeToolSearch } from "@/components/HomeToolSearch";
-
 import { RegionalFinanceSection } from "@/components/RegionalFinanceSection";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 /**
  * Homepage
@@ -27,7 +29,6 @@ import { RegionalFinanceSection } from "@/components/RegionalFinanceSection";
  * Only the regional finance section
  * is a small client island.
  */
-
 export default function HomePage() {
   /* ────────────────────────────────────────────────────────
      Popular calculators
@@ -39,7 +40,6 @@ export default function HomePage() {
         .filter((tool) => tool.popular)
         .map((tool) => ({
           tool,
-
           categorySlug: category.slug,
         })),
     )
@@ -122,12 +122,7 @@ export default function HomePage() {
             "
           >
             Browse All Tools
-            <ArrowRight
-              className="
-                h-5
-                w-5
-              "
-            />
+            <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
       </section>
@@ -158,9 +153,7 @@ export default function HomePage() {
         ────────────────────────────────────────────── */}
 
         <section
-          className="
-            py-16
-          "
+          className="py-16"
           aria-labelledby="popular-tools-heading"
         >
           <h2
@@ -201,12 +194,13 @@ export default function HomePage() {
         ────────────────────────────────────────────── */}
 
         <section
-          className="
-            pb-16
-          "
+          className="pb-16"
           aria-labelledby="calculator-categories-heading"
         >
-          <h2 id="calculator-categories-heading" className="sr-only">
+          <h2
+            id="calculator-categories-heading"
+            className="sr-only"
+          >
             Browse Calculators by Category
           </h2>
 
@@ -214,47 +208,42 @@ export default function HomePage() {
             <div
               key={category.slug}
               className="
-                  mt-12
-                  first:mt-0
-                "
+                mt-12
+                first:mt-0
+              "
             >
               {/* Category heading */}
 
               <div
                 className="
-                    flex
-                    items-center
-                    justify-between
-                    gap-4
-                  "
+                  flex
+                  items-center
+                  justify-between
+                  gap-4
+                "
               >
                 <h3
                   className="
-                      flex
-                      items-center
-                      gap-2.5
-                      text-2xl
-                      font-bold
-                      text-slate-900
-                    "
+                    flex
+                    items-center
+                    gap-2.5
+                    text-2xl
+                    font-bold
+                    text-slate-900
+                  "
                 >
                   <span
                     className="
-                        grid
-                        h-9
-                        w-9
-                        place-items-center
-                        rounded-lg
-                        bg-indigo-50
-                        text-indigo-600
-                      "
+                      grid
+                      h-9
+                      w-9
+                      place-items-center
+                      rounded-lg
+                      bg-indigo-50
+                      text-indigo-600
+                    "
                   >
-                    <category.icon
-                      className="
-                          h-5
-                          w-5
-                        "
-                    />
+                    <category.icon className="h-5 w-5" />
                   </span>
 
                   {category.name}
@@ -263,24 +252,19 @@ export default function HomePage() {
                 <Link
                   href={`/categories/${category.slug}`}
                   className="
-                      hidden
-                      items-center
-                      gap-1
-                      text-sm
-                      font-semibold
-                      text-indigo-600
-                      transition-colors
-                      hover:text-indigo-800
-                      sm:inline-flex
-                    "
+                    hidden
+                    items-center
+                    gap-1
+                    text-sm
+                    font-semibold
+                    text-indigo-600
+                    transition-colors
+                    hover:text-indigo-800
+                    sm:inline-flex
+                  "
                 >
                   View category
-                  <ArrowRight
-                    className="
-                        h-4
-                        w-4
-                      "
-                  />
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
 
@@ -288,13 +272,13 @@ export default function HomePage() {
 
               <div
                 className="
-                    mt-6
-                    grid
-                    grid-cols-1
-                    gap-6
-                    md:grid-cols-2
-                    lg:grid-cols-3
-                  "
+                  mt-6
+                  grid
+                  grid-cols-1
+                  gap-6
+                  md:grid-cols-2
+                  lg:grid-cols-3
+                "
               >
                 {category.tools.map((tool) => (
                   <CalculatorCard
@@ -312,24 +296,19 @@ export default function HomePage() {
               <Link
                 href={`/categories/${category.slug}`}
                 className="
-                    mt-5
-                    inline-flex
-                    items-center
-                    gap-1
-                    text-sm
-                    font-semibold
-                    text-indigo-600
-                    hover:text-indigo-800
-                    sm:hidden
-                  "
+                  mt-5
+                  inline-flex
+                  items-center
+                  gap-1
+                  text-sm
+                  font-semibold
+                  text-indigo-600
+                  hover:text-indigo-800
+                  sm:hidden
+                "
               >
                 View all {category.name}
-                <ArrowRight
-                  className="
-                      h-4
-                      w-4
-                    "
-                />
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           ))}
@@ -379,12 +358,7 @@ export default function HomePage() {
               "
             >
               All articles
-              <ArrowRight
-                className="
-                  h-4
-                  w-4
-                "
-              />
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
@@ -398,7 +372,10 @@ export default function HomePage() {
             "
           >
             {latestGuides.map((post) => (
-              <BlogCard key={post.slug} post={post} />
+              <BlogCard
+                key={post.slug}
+                post={post}
+              />
             ))}
           </div>
         </section>
