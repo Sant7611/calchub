@@ -89,10 +89,10 @@ export function LoanCalculator() {
   };
 
   return (
-    <div>
+    <div className="min-w-0">
       {/* Region Selector */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-fog-900 mb-2">
+        <label className="mb-2 block text-sm font-medium text-fog-900">
           Region
         </label>
         <div className="flex flex-wrap gap-2">
@@ -102,7 +102,7 @@ export function LoanCalculator() {
               <button
                 key={r}
                 onClick={() => handleRegionChange(r)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`min-h-11 rounded-lg px-3 py-2 text-sm font-medium transition-all sm:px-4 lg:min-h-10 ${
                   region === r
                     ? "bg-brand-600 text-white shadow-md"
                     : "bg-fog-100 text-fog-700 hover:bg-fog-200"
@@ -117,8 +117,8 @@ export function LoanCalculator() {
 
       {/* Validation Errors */}
       {errors.length > 0 && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <ul className="text-sm text-red-700 space-y-1">
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
+          <ul className="space-y-1 text-sm text-red-700">
             {errors.map((err, i) => (
               <li key={i}>⚠️ {err}</li>
             ))}
@@ -126,7 +126,7 @@ export function LoanCalculator() {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
         <Field label={`Loan amount (${config.currency.code})`}>
           <NumInput 
             value={amount} 
@@ -163,22 +163,22 @@ export function LoanCalculator() {
       </StatGrid>
 
       {/* Amortization Summary */}
-      <div className="mt-6 p-4 bg-fog-50 rounded-lg border border-fog-200">
-        <h4 className="text-sm font-semibold text-fog-900 mb-2">Loan Summary</h4>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
+      <div className="mt-6 rounded-lg border border-fog-200 bg-fog-50 p-4 lg:p-3">
+        <h4 className="mb-2 text-sm font-semibold text-fog-900">Loan Summary</h4>
+        <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 lg:gap-4">
+          <div className="min-w-0">
             <span className="text-fog-600">Principal:</span>
-            <span className="ml-2 font-medium">{formatters.money(amount, 0)}</span>
+            <span className="ml-2 break-words font-medium">{formatters.money(amount, 0)}</span>
           </div>
-          <div>
+          <div className="min-w-0">
             <span className="text-fog-600">Interest:</span>
-            <span className="ml-2 font-medium">{formatters.money(interest, 0)}</span>
+            <span className="ml-2 break-words font-medium">{formatters.money(interest, 0)}</span>
           </div>
-          <div>
+          <div className="min-w-0">
             <span className="text-fog-600">Total Payments:</span>
             <span className="ml-2 font-medium">{n} months</span>
           </div>
-          <div>
+          <div className="min-w-0">
             <span className="text-fog-600">Interest Ratio:</span>
             <span className="ml-2 font-medium">{amount > 0 ? ((interest / amount) * 100).toFixed(1) : 0}%</span>
           </div>
@@ -192,7 +192,7 @@ export function LoanCalculator() {
 
       {/* Estimate Disclaimer */}
       {config.isEstimate && (
-        <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+        <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
           <p className="text-xs text-amber-800">
             ⚠️ <strong>Estimate:</strong> {config.estimateNote || "These calculations are estimates only."}
           </p>
