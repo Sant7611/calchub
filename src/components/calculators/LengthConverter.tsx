@@ -55,10 +55,10 @@ export function LengthConverter() {
           <select
             value={fromUnit}
             onChange={(e) => setFromUnit(e.target.value as UnitKey)}
-            className="w-full rounded-lg border border-ink-600 bg-ink-850 px-3 py-2 font-mono text-[14px] font-medium text-fog-100 outline-none transition-all duration-200 focus:border-mint-500/60 focus:ring-2 focus:ring-mint-500/20"
+            className="w-full rounded-lg border border-input bg-card px-3 py-2 font-mono text-[14px] font-medium text-foreground outline-none transition-all duration-200 focus:border-primary/60 focus:ring-2 focus:ring-ring/20"
           >
             {UNIT_ORDER.map((key) => (
-              <option key={key} value={key} className="bg-ink-850 text-fog-100">
+              <option key={key} value={key} className="bg-card text-foreground">
                 {UNITS[key].label} ({UNITS[key].symbol})
               </option>
             ))}
@@ -81,7 +81,7 @@ export function LengthConverter() {
         })}
       </StatGrid>
 
-      <p className="mt-4 text-[11.5px] text-fog-600">
+      <p className="mt-4 text-[11.5px] text-muted-foreground">
         Conversions use standard definitions (1 in = 0.0254 m, 1 mi = 1609.344 m, etc.). Values are
         rounded for display only — full precision is used internally.
       </p>
