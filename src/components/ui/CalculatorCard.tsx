@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
+import { resolveToolHref } from "@/lib/tool-routes";
 
 interface CalculatorCardProps {
   title: string;
@@ -18,9 +19,11 @@ export function CalculatorCard({
   icon: Icon,
   href,
 }: CalculatorCardProps) {
+  const resolvedHref = resolveToolHref(href);
+
   return (
     <Link
-      href={href}
+      href={resolvedHref}
       className="group block rounded-xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg"
     >
       <span className="grid h-11 w-11 place-items-center rounded-full bg-indigo-500 text-white shadow-sm transition-transform duration-300 group-hover:scale-105">
