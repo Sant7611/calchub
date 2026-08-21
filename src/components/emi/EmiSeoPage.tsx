@@ -22,12 +22,15 @@ const related: { type: LoanType; label: string; href: string }[] = [
 export function EmiSeoPage({ loanType }: { loanType: LoanType }) {
   const page = pages[loanType];
   const schema = { "@context": "https://schema.org", "@type": "WebApplication", name: page.heading, applicationCategory: "FinanceApplication", operatingSystem: "Web", description: page.intro };
-  return <main className="mx-auto max-w-5xl px-4 pb-12 pt-6 sm:px-6 sm:pt-8">
+  return <main className="mx-auto max-w-6xl px-3 pb-12 pt-5 sm:px-5 sm:pt-7 lg:px-6">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-    <div><EmiCalculator defaultLoanType={loanType} /></div>
-    <h1 className="mt-8 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{page.heading}</h1><p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-600">{page.intro}</p>
-    <section className="mt-12 max-w-3xl"><h2 className="text-2xl font-bold text-slate-900">Understanding your repayment</h2><p className="mt-4 leading-relaxed text-slate-600">{page.details}</p></section>
-    <FaqSection faqs={page.faqs} />
+    <div className="min-w-0 rounded-2xl bg-slate-50/70 p-0 sm:p-3 lg:p-4"><EmiCalculator defaultLoanType={loanType} /></div>
+    <div className="max-w-4xl">
+      <h1 className="mt-8 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{page.heading}</h1>
+      <p className="mt-4 text-lg leading-relaxed text-slate-600">{page.intro}</p>
+      <section className="mt-12"><h2 className="text-2xl font-bold text-slate-900">Understanding your repayment</h2><p className="mt-4 leading-relaxed text-slate-600">{page.details}</p></section>
+      <FaqSection faqs={page.faqs} />
+    </div>
     <section className="mt-12"><h2 className="text-2xl font-bold text-slate-900">{loanType === "general" ? "Explore EMI Calculators by Loan Type" : "Related EMI Calculators"}</h2><div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{related.filter((item) => item.type !== loanType).slice(0, loanType === "general" ? 6 : 3).map((item) => <Link key={item.type} href={item.href} className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-50">{item.label}</Link>)}</div></section>
   </main>;
 }
