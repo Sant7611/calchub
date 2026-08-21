@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Blog & Guides",
   description:
     "Practical, example-driven guides on loans, health, math and money — each one paired with a free calculator.",
+  alternates: {
+    canonical: "/blog",
+  },
 };
 
 export default function BlogPage() {
