@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "All Calculators & Tools",
   description:
     "Browse every free calculator — finance, health, math, converters and business — with instant search.",
+  alternates: {
+    canonical: "/tools",
+  },
 };
 
 /** Server Component — renders the heading; filtering happens client-side. */
