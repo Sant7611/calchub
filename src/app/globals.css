@@ -87,15 +87,14 @@
 /*
  * Legacy utility compatibility
  *
- * Much of the current UI predates semantic theme utilities and still uses
- * light-only Tailwind colors such as bg-white, bg-slate-50, text-slate-900,
- * and status tints such as bg-emerald-50. Instead of adding JavaScript theme
- * state or rewriting calculator logic, remap only those utility color tokens
- * when the device prefers dark mode. Brand-strength colors (500/600 etc.) and
- * text-white remain unchanged.
+ * Existing components still use light-oriented Tailwind colors such as
+ * bg-white, bg-slate-50, text-slate-900, and status tints like bg-red-50.
+ * Tailwind v4 exposes these colors as CSS variables, so in system dark mode
+ * we can remap the light surface shades without adding JavaScript theme state
+ * or changing strong brand colors such as indigo-600 and text-white.
  */
 @media (prefers-color-scheme: dark) {
-  /* White surfaces and gradients */
+  /* Keep white text white, but turn white backgrounds/gradients into surfaces. */
   [class*="bg-white"] {
     --color-white: hsl(var(--card));
   }
@@ -106,40 +105,77 @@
     --color-white: hsl(var(--background));
   }
 
-  /* Slate neutral surfaces */
-  [class*="bg-slate-50"],
-  [class*="from-slate-50"],
-  [class*="via-slate-50"],
-  [class*="to-slate-50"] {
+  :root {
+    /* Neutral surfaces and borders */
     --color-slate-50: hsl(var(--muted));
-  }
-
-  [class*="bg-slate-100"] {
     --color-slate-100: hsl(var(--secondary));
-  }
-
-  [class*="bg-slate-200"] {
-    --color-slate-200: hsl(var(--accent));
-  }
-
-  [class*="border-slate-100"],
-  [class*="divide-slate-100"],
-  [class*="ring-slate-100"] {
-    --color-slate-100: hsl(var(--border));
-  }
-
-  [class*="border-slate-200"],
-  [class*="divide-slate-200"],
-  [class*="ring-slate-200"] {
     --color-slate-200: hsl(var(--border));
-  }
-
-  [class*="border-slate-300"],
-  [class*="divide-slate-300"],
-  [class*="ring-slate-300"] {
     --color-slate-300: hsl(var(--border));
+
+    --color-gray-50: hsl(var(--muted));
+    --color-gray-100: hsl(var(--secondary));
+    --color-gray-200: hsl(var(--border));
+    --color-gray-300: hsl(var(--border));
+
+    /* Light semantic tints become dark semantic surfaces. */
+    --color-indigo-50: var(--color-indigo-950);
+    --color-indigo-100: var(--color-indigo-900);
+    --color-indigo-200: var(--color-indigo-800);
+
+    --color-blue-50: var(--color-blue-950);
+    --color-blue-100: var(--color-blue-900);
+    --color-blue-200: var(--color-blue-800);
+
+    --color-sky-50: var(--color-sky-950);
+    --color-sky-100: var(--color-sky-900);
+    --color-sky-200: var(--color-sky-800);
+
+    --color-cyan-50: var(--color-cyan-950);
+    --color-cyan-100: var(--color-cyan-900);
+    --color-cyan-200: var(--color-cyan-800);
+
+    --color-teal-50: var(--color-teal-950);
+    --color-teal-100: var(--color-teal-900);
+    --color-teal-200: var(--color-teal-800);
+
+    --color-emerald-50: var(--color-emerald-950);
+    --color-emerald-100: var(--color-emerald-900);
+    --color-emerald-200: var(--color-emerald-800);
+
+    --color-green-50: var(--color-green-950);
+    --color-green-100: var(--color-green-900);
+    --color-green-200: var(--color-green-800);
+
+    --color-amber-50: var(--color-amber-950);
+    --color-amber-100: var(--color-amber-900);
+    --color-amber-200: var(--color-amber-800);
+
+    --color-yellow-50: var(--color-yellow-950);
+    --color-yellow-100: var(--color-yellow-900);
+    --color-yellow-200: var(--color-yellow-800);
+
+    --color-orange-50: var(--color-orange-950);
+    --color-orange-100: var(--color-orange-900);
+    --color-orange-200: var(--color-orange-800);
+
+    --color-red-50: var(--color-red-950);
+    --color-red-100: var(--color-red-900);
+    --color-red-200: var(--color-red-800);
+
+    --color-rose-50: var(--color-rose-950);
+    --color-rose-100: var(--color-rose-900);
+    --color-rose-200: var(--color-rose-800);
+
+    --color-violet-50: var(--color-violet-950);
+    --color-violet-100: var(--color-violet-900);
+    --color-violet-200: var(--color-violet-800);
+
+    --color-purple-50: var(--color-purple-950);
+    --color-purple-100: var(--color-purple-900);
+    --color-purple-200: var(--color-purple-800);
   }
 
+  /* Restore readable neutral text after the surface remapping above. */
   [class*="text-slate-950"],
   [class*="text-slate-900"],
   [class*="text-slate-800"],
@@ -152,28 +188,12 @@
 
   [class*="text-slate-600"],
   [class*="text-slate-500"],
-  [class*="text-slate-400"] {
+  [class*="text-slate-400"],
+  [class*="text-slate-300"] {
     --color-slate-600: hsl(var(--muted-foreground));
     --color-slate-500: hsl(var(--muted-foreground));
     --color-slate-400: hsl(var(--muted-foreground));
-  }
-
-  /* Gray/neutral fallbacks used by a few generic UI states */
-  [class*="bg-gray-50"],
-  [class*="from-gray-50"],
-  [class*="via-gray-50"],
-  [class*="to-gray-50"] {
-    --color-gray-50: hsl(var(--muted));
-  }
-
-  [class*="bg-gray-100"] {
-    --color-gray-100: hsl(var(--secondary));
-  }
-
-  [class*="border-gray-200"],
-  [class*="border-gray-300"] {
-    --color-gray-200: hsl(var(--border));
-    --color-gray-300: hsl(var(--border));
+    --color-slate-300: hsl(var(--muted-foreground));
   }
 
   [class*="text-gray-950"],
@@ -188,50 +208,21 @@
 
   [class*="text-gray-600"],
   [class*="text-gray-500"],
-  [class*="text-gray-400"] {
+  [class*="text-gray-400"],
+  [class*="text-gray-300"] {
     --color-gray-600: hsl(var(--muted-foreground));
     --color-gray-500: hsl(var(--muted-foreground));
     --color-gray-400: hsl(var(--muted-foreground));
+    --color-gray-300: hsl(var(--muted-foreground));
   }
 
-  /* Indigo brand tints */
-  [class*="bg-indigo-50"],
-  [class*="from-indigo-50"],
-  [class*="via-indigo-50"],
-  [class*="to-indigo-50"] {
-    --color-indigo-50: var(--color-indigo-950);
-  }
-
-  [class*="bg-indigo-100"] {
-    --color-indigo-100: var(--color-indigo-900);
-  }
-
-  [class*="border-indigo-200"] {
-    --color-indigo-200: var(--color-indigo-800);
-  }
-
+  /* Dark semantic surfaces need lighter semantic text. */
   [class*="text-indigo-700"],
   [class*="text-indigo-800"],
   [class*="text-indigo-900"] {
     --color-indigo-700: var(--color-indigo-300);
     --color-indigo-800: var(--color-indigo-300);
     --color-indigo-900: var(--color-indigo-200);
-  }
-
-  /* Blue tints */
-  [class*="bg-blue-50"],
-  [class*="from-blue-50"],
-  [class*="via-blue-50"],
-  [class*="to-blue-50"] {
-    --color-blue-50: var(--color-blue-950);
-  }
-
-  [class*="bg-blue-100"] {
-    --color-blue-100: var(--color-blue-900);
-  }
-
-  [class*="border-blue-200"] {
-    --color-blue-200: var(--color-blue-800);
   }
 
   [class*="text-blue-700"],
@@ -242,44 +233,12 @@
     --color-blue-900: var(--color-blue-200);
   }
 
-  /* Sky tints */
-  [class*="bg-sky-50"],
-  [class*="from-sky-50"],
-  [class*="via-sky-50"],
-  [class*="to-sky-50"] {
-    --color-sky-50: var(--color-sky-950);
-  }
-
-  [class*="bg-sky-100"] {
-    --color-sky-100: var(--color-sky-900);
-  }
-
-  [class*="border-sky-200"] {
-    --color-sky-200: var(--color-sky-800);
-  }
-
   [class*="text-sky-700"],
   [class*="text-sky-800"],
   [class*="text-sky-900"] {
     --color-sky-700: var(--color-sky-300);
     --color-sky-800: var(--color-sky-300);
     --color-sky-900: var(--color-sky-200);
-  }
-
-  /* Cyan tints */
-  [class*="bg-cyan-50"],
-  [class*="from-cyan-50"],
-  [class*="via-cyan-50"],
-  [class*="to-cyan-50"] {
-    --color-cyan-50: var(--color-cyan-950);
-  }
-
-  [class*="bg-cyan-100"] {
-    --color-cyan-100: var(--color-cyan-900);
-  }
-
-  [class*="border-cyan-200"] {
-    --color-cyan-200: var(--color-cyan-800);
   }
 
   [class*="text-cyan-700"],
@@ -290,44 +249,12 @@
     --color-cyan-900: var(--color-cyan-200);
   }
 
-  /* Teal tints */
-  [class*="bg-teal-50"],
-  [class*="from-teal-50"],
-  [class*="via-teal-50"],
-  [class*="to-teal-50"] {
-    --color-teal-50: var(--color-teal-950);
-  }
-
-  [class*="bg-teal-100"] {
-    --color-teal-100: var(--color-teal-900);
-  }
-
-  [class*="border-teal-200"] {
-    --color-teal-200: var(--color-teal-800);
-  }
-
   [class*="text-teal-700"],
   [class*="text-teal-800"],
   [class*="text-teal-900"] {
     --color-teal-700: var(--color-teal-300);
     --color-teal-800: var(--color-teal-300);
     --color-teal-900: var(--color-teal-200);
-  }
-
-  /* Emerald tints */
-  [class*="bg-emerald-50"],
-  [class*="from-emerald-50"],
-  [class*="via-emerald-50"],
-  [class*="to-emerald-50"] {
-    --color-emerald-50: var(--color-emerald-950);
-  }
-
-  [class*="bg-emerald-100"] {
-    --color-emerald-100: var(--color-emerald-900);
-  }
-
-  [class*="border-emerald-200"] {
-    --color-emerald-200: var(--color-emerald-800);
   }
 
   [class*="text-emerald-700"],
@@ -338,44 +265,12 @@
     --color-emerald-900: var(--color-emerald-200);
   }
 
-  /* Green tints */
-  [class*="bg-green-50"],
-  [class*="from-green-50"],
-  [class*="via-green-50"],
-  [class*="to-green-50"] {
-    --color-green-50: var(--color-green-950);
-  }
-
-  [class*="bg-green-100"] {
-    --color-green-100: var(--color-green-900);
-  }
-
-  [class*="border-green-200"] {
-    --color-green-200: var(--color-green-800);
-  }
-
   [class*="text-green-700"],
   [class*="text-green-800"],
   [class*="text-green-900"] {
     --color-green-700: var(--color-green-300);
     --color-green-800: var(--color-green-300);
     --color-green-900: var(--color-green-200);
-  }
-
-  /* Amber/yellow/orange tints */
-  [class*="bg-amber-50"],
-  [class*="from-amber-50"],
-  [class*="via-amber-50"],
-  [class*="to-amber-50"] {
-    --color-amber-50: var(--color-amber-950);
-  }
-
-  [class*="bg-amber-100"] {
-    --color-amber-100: var(--color-amber-900);
-  }
-
-  [class*="border-amber-200"] {
-    --color-amber-200: var(--color-amber-800);
   }
 
   [class*="text-amber-700"],
@@ -386,34 +281,12 @@
     --color-amber-900: var(--color-amber-200);
   }
 
-  [class*="bg-yellow-50"],
-  [class*="from-yellow-50"],
-  [class*="via-yellow-50"],
-  [class*="to-yellow-50"] {
-    --color-yellow-50: var(--color-yellow-950);
-  }
-
-  [class*="border-yellow-200"] {
-    --color-yellow-200: var(--color-yellow-800);
-  }
-
   [class*="text-yellow-700"],
   [class*="text-yellow-800"],
   [class*="text-yellow-900"] {
     --color-yellow-700: var(--color-yellow-300);
     --color-yellow-800: var(--color-yellow-300);
     --color-yellow-900: var(--color-yellow-200);
-  }
-
-  [class*="bg-orange-50"],
-  [class*="from-orange-50"],
-  [class*="via-orange-50"],
-  [class*="to-orange-50"] {
-    --color-orange-50: var(--color-orange-950);
-  }
-
-  [class*="border-orange-200"] {
-    --color-orange-200: var(--color-orange-800);
   }
 
   [class*="text-orange-700"],
@@ -424,39 +297,12 @@
     --color-orange-900: var(--color-orange-200);
   }
 
-  /* Red/rose tints */
-  [class*="bg-red-50"],
-  [class*="from-red-50"],
-  [class*="via-red-50"],
-  [class*="to-red-50"] {
-    --color-red-50: var(--color-red-950);
-  }
-
-  [class*="bg-red-100"] {
-    --color-red-100: var(--color-red-900);
-  }
-
-  [class*="border-red-200"] {
-    --color-red-200: var(--color-red-800);
-  }
-
   [class*="text-red-700"],
   [class*="text-red-800"],
   [class*="text-red-900"] {
     --color-red-700: var(--color-red-300);
     --color-red-800: var(--color-red-300);
     --color-red-900: var(--color-red-200);
-  }
-
-  [class*="bg-rose-50"],
-  [class*="from-rose-50"],
-  [class*="via-rose-50"],
-  [class*="to-rose-50"] {
-    --color-rose-50: var(--color-rose-950);
-  }
-
-  [class*="border-rose-200"] {
-    --color-rose-200: var(--color-rose-800);
   }
 
   [class*="text-rose-700"],
@@ -467,35 +313,12 @@
     --color-rose-900: var(--color-rose-200);
   }
 
-  /* Violet/purple tints */
-  [class*="bg-violet-50"],
-  [class*="from-violet-50"],
-  [class*="via-violet-50"],
-  [class*="to-violet-50"] {
-    --color-violet-50: var(--color-violet-950);
-  }
-
-  [class*="border-violet-200"] {
-    --color-violet-200: var(--color-violet-800);
-  }
-
   [class*="text-violet-700"],
   [class*="text-violet-800"],
   [class*="text-violet-900"] {
     --color-violet-700: var(--color-violet-300);
     --color-violet-800: var(--color-violet-300);
     --color-violet-900: var(--color-violet-200);
-  }
-
-  [class*="bg-purple-50"],
-  [class*="from-purple-50"],
-  [class*="via-purple-50"],
-  [class*="to-purple-50"] {
-    --color-purple-50: var(--color-purple-950);
-  }
-
-  [class*="border-purple-200"] {
-    --color-purple-200: var(--color-purple-800);
   }
 
   [class*="text-purple-700"],
