@@ -56,7 +56,7 @@ export const categories: Category[] = [
       {
         name: "Loan Calculator",
         slug: "loan-calculator",
-        description: "Calculate monthly loan payments, total interest and a full amortization schedule.",
+        description: "Calculate monthly loan payments, total interest and total repayment using the standard reducing-balance loan formula.",
         icon: PiggyBank,
       },
       {
