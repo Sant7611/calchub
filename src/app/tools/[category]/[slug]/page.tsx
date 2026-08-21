@@ -13,6 +13,7 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { TrackToolView } from "@/components/TrackToolView";
 import { AdBanner } from "@/components/AdBanner";
+import styles from "./CalculatorWorkspace.module.css";
 
 interface ToolPageProps {
   params: Promise<{ category: string; slug: string }>;
@@ -105,7 +106,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
   const related = category.tools.filter((t) => t.slug !== tool.slug);
 
   return (
-    <article className="mx-auto max-w-4xl px-4 pb-12 pt-6 sm:px-6 sm:pt-8">
+    <article className="mx-auto max-w-6xl px-3 pb-12 pt-5 sm:px-5 sm:pt-7 lg:px-6">
       {/* "Recently Used" history — client island, renders null */}
       <TrackToolView slug={tool.slug} />
 
@@ -117,12 +118,12 @@ export default async function ToolPage({ params }: ToolPageProps) {
         ]}
       />
 
-      {/* The interactive calculator (client island) — or Coming Soon */}
-      <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8">
+      {/* Wide calculator workspace. Add a light shell only when the calculator does not already own one. */}
+      <div className={`${styles.workspace} mt-4`}>
         {CalculatorComponent ? (
           <CalculatorComponent />
         ) : (
-          <div className="flex flex-col items-center py-10 text-center">
+          <div className="flex flex-col items-center rounded-2xl border border-slate-200 bg-white py-10 text-center shadow-sm">
             <span className="grid h-14 w-14 place-items-center rounded-full bg-slate-100">
               <CalendarClock className="h-7 w-7 text-slate-400" />
             </span>
@@ -137,7 +138,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
         )}
       </div>
 
-      <header className="mt-8">
+      <header className="mt-8 max-w-4xl">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           {tool.name}
         </h1>
@@ -153,7 +154,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
           Between the calculator content and "How to Use". */}
       <AdBanner slot={AD_SLOT_AFTER_CALCULATOR} className="my-10" />
 
-      <section className="mt-12">
+      <section className="mt-12 max-w-4xl">
         <h2 className="text-2xl font-bold text-slate-900">
           How to Use the {tool.name}
         </h2>
@@ -171,7 +172,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
         </ol>
       </section>
 
-      <section className="mt-12">
+      <section className="mt-12 max-w-4xl">
         <h2 className="text-2xl font-bold text-slate-900">
           {content.formula.title}
         </h2>
@@ -182,7 +183,9 @@ export default async function ToolPage({ params }: ToolPageProps) {
         </div>
       </section>
 
-      <FaqSection faqs={content.faqs} />
+      <div className="max-w-4xl">
+        <FaqSection faqs={content.faqs} />
+      </div>
 
       {related.length > 0 && (
         <section className="mt-12">
