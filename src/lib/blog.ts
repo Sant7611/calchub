@@ -1,11 +1,13 @@
-import fs from "fs";
-import path from "path";
 import matter from "gray-matter";
 
+import { blogSources } from "@/data/generated-blog-sources";
+
 /**
- * Blog data layer — server-only (uses Node's fs, never imported into
- * client components). Content-as-code: every article is one .mdx file
- * in src/content/blog/.
+ * Blog data layer.
+ *
+ * Blog .mdx files are converted into a generated TypeScript module before
+ * Next.js starts. This keeps blog content bundled with the app and avoids
+ * runtime filesystem access in Cloudflare Workers.
  */
 
 export interface BlogPost {
@@ -24,14 +26,17 @@ export interface BlogPostWithContent extends BlogPost {
   content: string;
 }
 
-const POSTS_DIR = path.join(process.cwd(), "src/content/blog");
-
-/** Strict frontmatter parsing — fails loudly at build time, never at runtime. */
-function parseFrontmatter(slug: string, data: Record<string, unknown>): Omit<BlogPost, "slug" | "readingTime"> {
+/** Strict frontmatter parsing — malformed posts fail loudly when listed. */
+function parseFrontmatter(
+  slug: string,
+  data: Record<string, unknown>,
+): Omit<BlogPost, "slug" | "readingTime"> {
   const str = (key: string) => {
     const value = data[key];
     if (typeof value !== "string" || value.length === 0) {
-      throw new Error(`Blog post "${slug}" is missing required frontmatter field "${key}".`);
+      throw new Error(
+        `Blog post "${slug}" is missing required frontmatter field "${key}".`,
+      );
     }
     return value;
   };
@@ -47,7 +52,12 @@ function parseFrontmatter(slug: string, data: Record<string, unknown>): Omit<Blo
 }
 
 function readPost(slug: string): BlogPostWithContent {
-  const raw = fs.readFileSync(path.join(POSTS_DIR, `${slug}.mdx`), "utf-8");
+  const raw = blogSources[slug];
+
+  if (!raw) {
+    throw new Error(`Blog post "${slug}" was not found.`);
+  }
+
   const { data, content } = matter(raw);
 
   // Reading time: word count / 200 wpm, minimum one minute.
@@ -64,12 +74,7 @@ function readPost(slug: string): BlogPostWithContent {
 
 /** All posts, newest first. */
 export function getPosts(): BlogPostWithContent[] {
-  const slugs = fs
-    .readdirSync(POSTS_DIR)
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => file.replace(/\.mdx$/, ""));
-
-  return slugs
+  return Object.keys(blogSources)
     .map(readPost)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
