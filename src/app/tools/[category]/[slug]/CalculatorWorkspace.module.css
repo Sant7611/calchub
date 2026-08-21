@@ -3,11 +3,12 @@
 }
 
 .workspace:not(:has(> [class~="rounded-2xl"][class~="border"])):not(:has(> * > section[aria-label="Scientific calculator"])) {
-  border: 1px solid rgb(226 232 240);
+  border: 1px solid hsl(var(--border));
   border-radius: 1rem;
-  background: white;
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
   padding: 0.75rem;
-  box-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 0.05);
 }
 
 @media (min-width: 640px) {
