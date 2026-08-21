@@ -1,0 +1,43 @@
+.wrapper {
+  min-width: 0;
+  width: 100%;
+}
+
+.wrapper :global(section[aria-label="Scientific calculator"]) {
+  width: 100%;
+}
+
+.wrapper :global(section[aria-label="Scientific calculator"] button) {
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .wrapper :global(section[aria-label="Scientific calculator"] button[class*="border-b-"]) {
+    min-height: 3rem;
+    padding: 1rem 0.125rem 0.5rem;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    white-space: nowrap;
+    font-size: clamp(0.58rem, 2.8vw, 0.72rem);
+    line-height: 1;
+  }
+
+  .wrapper :global(section[aria-label="Scientific calculator"] button[class*="border-b-"] > span[class*="absolute"]) {
+    max-width: 42%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.42rem !important;
+    line-height: 1;
+  }
+
+  .wrapper :global(section[aria-label="Scientific calculator"] button[class*="min-h-8"]) {
+    padding-inline: 0.125rem;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: clamp(0.4rem, 1.9vw, 0.55rem) !important;
+    letter-spacing: 0;
+  }
+}
