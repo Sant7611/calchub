@@ -585,7 +585,7 @@ export function NepseShareCalculator() {
           Nepal Stock Market Tools
         </p>
 
-        <h1
+        <h2
           className="
             mt-2
             text-2xl
@@ -604,7 +604,7 @@ export function NepseShareCalculator() {
           >
             Calculate Share Profit, Brokerage, SEBON Fee &amp; CGT
           </span>
-        </h1>
+        </h2>
 
         <p
           className="

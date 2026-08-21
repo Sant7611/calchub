@@ -731,7 +731,7 @@ export function GradeCalculator() {
           CalcHub Education Tools
         </p>
 
-        <h1 className="
+        <h2 className="
           mt-2
           text-2xl
           font-bold
@@ -749,7 +749,7 @@ export function GradeCalculator() {
             Weighted Grade, GPA &
             Final Exam Score
           </span>
-        </h1>
+        </h2>
 
         <p className="
           mx-auto

@@ -575,7 +575,7 @@ export function SipCalculator() {
           CalcHub Investment Tools
         </p>
 
-        <h1 className="
+        <h2 className="
           mt-2
           text-2xl
           font-bold
@@ -594,7 +594,7 @@ export function SipCalculator() {
             SIP Return Calculator
           </span>
 
-        </h1>
+        </h2>
 
         <p className="
           mx-auto

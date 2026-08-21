@@ -4,31 +4,10 @@ interface FaqSectionProps {
   faqs: Faq[];
 }
 
-/**
- * Server Component. Renders accessible, no-JS <details>/<summary> FAQs and
- * injects FAQPage JSON-LD so Google can surface the answers directly.
- */
+/** Server Component that renders accessible, no-JavaScript FAQ content. */
 export function FaqSection({ faqs }: FaqSectionProps) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  };
-
   return (
     <section className="mt-12">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-
       <h2 className="text-2xl font-bold text-slate-900">
         Frequently Asked Questions
       </h2>

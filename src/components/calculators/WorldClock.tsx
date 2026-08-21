@@ -649,7 +649,7 @@ export function WorldClock() {
           CalcHub Date &amp; Time Tools
         </p>
 
-        <h1
+        <h2
           className="
             mt-2
             text-2xl
@@ -670,7 +670,7 @@ export function WorldClock() {
             Current Time &amp; Time
             Zone Comparison
           </span>
-        </h1>
+        </h2>
 
         <p
           className="

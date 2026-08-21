@@ -844,13 +844,13 @@ export function DateConverterCalculator() {
           CalcHub Date Tools
         </p>
 
-        <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+        <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
           Nepali Date Converter
           <span className="block text-blue-600">
             Instant AD to BS & BS to AD
             Conversion
           </span>
-        </h1>
+        </h2>
 
         <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-600">
           Convert English dates to Nepali

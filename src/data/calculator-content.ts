@@ -1,13 +1,25 @@
+import type { Metadata } from "next";
+
 /**
- * SEO content registry for every calculator.
+ * SEO + educational content registry for calculator pages.
  *
- * Pure data — no React. The dynamic `[category]/[slug]` page reads it
- * server-side to render intro copy, how-to steps, the formula block and
- * the FAQ (which is also emitted as FAQPage JSON-LD).
+ * This data is rendered server-side by the dynamic calculator page.
  *
- * Authored content wins; anything not yet written falls back to a
- * sensible generic block generated from the tool's display name.
+ * Each authored calculator should have:
+ * - unique SEO title
+ * - unique meta description
+ * - useful intro copy
+ * - clear how-to steps
+ * - transparent formula/methodology
+ * - genuinely useful FAQs
+ *
+ * Avoid generic claims such as "100% accurate" or
+ * "the same result professionals use" unless they are verifiably true.
  */
+
+/* ──────────────────────────────────────────────────────────
+   Types
+────────────────────────────────────────────────────────── */
 
 export interface Faq {
   question: string;
@@ -19,234 +31,563 @@ export interface FormulaInfo {
   explanation: string;
 }
 
+export interface CalculatorSeo {
+  /**
+   * Keep focused on the primary search intent.
+   *
+   * If your root layout uses:
+   *
+   * title: {
+   *   template: "%s | OnCalculator"
+   * }
+   *
+   * do NOT add "| OnCalculator" here.
+   */
+  title: string;
+
+  /**
+   * Natural SERP description.
+   * Usually aim for roughly 140–160 characters,
+   * but usefulness matters more than an exact length.
+   */
+  description: string;
+}
+
 export interface CalculatorContent {
   slug: string;
-  /** 1–2 paragraphs shown under the H1 */
+
+  seo: CalculatorSeo;
+
+  /**
+   * Main visible content immediately below the H1/calculator header.
+   *
+   * First paragraph should explain exactly what the calculator does.
+   */
   intro: string[];
-  /** Numbered "How to use" steps */
+
+  /**
+   * Numbered user instructions.
+   */
   howToUse: string[];
-  /** Formula title + plain-English explanation */
+
+  /**
+   * Transparent formula / calculation methodology.
+   */
   formula: FormulaInfo;
-  /** Rendered as <details> and FAQPage JSON-LD */
+
+  /**
+   * Visible FAQ content.
+   *
+   * Keep these because they answer long-tail searches and help users.
+   * Do not rely on FAQ rich results for Google SEO.
+   */
   faqs: Faq[];
 }
 
+/* ──────────────────────────────────────────────────────────
+   Loan Calculator
+────────────────────────────────────────────────────────── */
+
 const loanCalculator: CalculatorContent = {
   slug: "loan-calculator",
-  intro: [
-    "A loan calculator tells you exactly what a loan costs before you sign anything. Enter the amount you want to borrow, the annual interest rate and the repayment term, and it works out your fixed monthly payment, the total interest you'll pay, and the true all-in cost of the loan.",
-    "Because it uses the standard amortization formula, the result matches what a bank or lender would quote for a fully-amortized, fixed-rate loan — auto loans, personal loans, student loans and small business loans included.",
-  ],
-  howToUse: [
-    "Enter the principal — the amount you plan to borrow.",
-    "Enter the annual interest rate (APR) as a percentage, e.g. 6.5 for 6.5%.",
-    "Enter the repayment term in years (or months, depending on the field).",
-    "Read your monthly payment, then compare total interest across different terms — a longer term lowers the payment but usually raises the total cost.",
-  ],
-  formula: {
-    title: "The amortization (equal-installment) formula",
-    explanation:
-      "Monthly payment M = P × [ r(1+r)ⁿ ] / [ (1+r)ⁿ − 1 ], where P is the principal, r is the monthly interest rate (annual rate ÷ 12) and n is the total number of monthly payments (years × 12). Each payment covers that month's interest first; the remainder reduces the principal, which is why early payments are interest-heavy and later payments chip away at the balance faster.",
+
+  seo: {
+    title:
+      "Loan Calculator – Monthly Payment & Total Interest",
+
+    description:
+      "Calculate monthly loan payments, total interest and total repayment cost using loan amount, interest rate and repayment term.",
   },
+
+  intro: [
+    "Use this loan calculator to estimate your monthly loan payment, total interest and total repayment amount before borrowing. Enter the loan amount, annual interest rate and repayment term to see how much the loan may cost over time.",
+
+    "It is useful for comparing personal loans, auto loans, student loans and other fixed-payment loans. Try different interest rates or repayment terms to see how even a small change can affect both the monthly payment and the total interest paid.",
+  ],
+
+  howToUse: [
+    "Enter the loan amount, also called the principal.",
+    "Enter the annual interest rate as a percentage, such as 6.5 for 6.5%.",
+    "Choose or enter the repayment term.",
+    "Review the estimated monthly payment, total interest and total repayment.",
+    "Change the interest rate or loan term to compare different borrowing scenarios.",
+  ],
+
+  formula: {
+    title:
+      "Loan Payment Formula",
+
+    explanation:
+      "For a fixed-rate amortizing loan, the monthly payment is calculated as M = P × [r(1+r)ⁿ] ÷ [(1+r)ⁿ − 1]. P is the loan principal, r is the monthly interest rate, and n is the total number of monthly payments. Each payment contains both interest and principal, while the interest portion generally decreases as the outstanding balance falls.",
+  },
+
   faqs: [
     {
-      question: "Is the monthly payment the only thing I'll pay?",
+      question:
+        "How is the monthly loan payment calculated?",
+
       answer:
-        "No. The monthly payment covers principal and interest only. Real loans often add origination fees, insurance or taxes (for mortgages). Use the total-interest figure here to compare the financing cost, then add any fees a lender discloses.",
+        "The monthly payment is based on the amount borrowed, the interest rate and the number of payments. For a fixed-rate amortizing loan, the calculator distributes principal and interest across the repayment period using the standard amortization formula.",
     },
+
     {
-      question: "Why does a longer term cost more overall?",
+      question:
+        "Why does a longer loan term reduce the monthly payment?",
+
       answer:
-        "Interest accrues on the outstanding balance every month. Spreading repayment over more months means the balance stays higher for longer, so more interest accumulates even though each individual payment is smaller.",
+        "A longer term spreads repayment over more months, so each payment is usually smaller. However, the outstanding balance remains unpaid for longer, which can increase the total interest paid.",
     },
+
     {
-      question: "What happens if I make extra payments?",
+      question:
+        "Does the loan calculator include lender fees?",
+
       answer:
-        "Extra payments reduce the principal early, which lowers the interest charged in every remaining month. You'll either pay the loan off sooner or shrink future payments, depending on your lender's recalculation policy.",
+        "Not unless the calculator provides a separate field for them. Origination fees, insurance, taxes, late charges and other lender-specific costs may increase the real cost of borrowing.",
     },
+
     {
-      question: "Does this work for variable-rate loans?",
+      question:
+        "What happens if the interest rate is lower?",
+
       answer:
-        "It gives an accurate snapshot at today's rate. If your rate can change, treat the result as a starting point and re-run the calculator whenever the rate resets.",
+        "A lower interest rate generally reduces both the monthly payment and the total interest cost when the loan amount and repayment term remain the same.",
+    },
+
+    {
+      question:
+        "Can I use this calculator to compare loan offers?",
+
+      answer:
+        "Yes. Enter the amount, rate and term from each offer and compare the monthly payment and total interest. Also review fees and conditions provided by each lender before making a decision.",
     },
   ],
 };
+
+/* ──────────────────────────────────────────────────────────
+   EMI Calculator
+────────────────────────────────────────────────────────── */
 
 const emiCalculator: CalculatorContent = {
   slug: "emi-calculator",
-  intro: [
-    "An EMI (Equated Monthly Installment) calculator helps you determine your fixed monthly payment for home loans, car loans, and personal loans. EMI combines both principal and interest into one predictable payment, making budgeting easier.",
-    "This calculator uses the reducing-balance method — the same approach banks in Nepal, India and internationally use — so you can trust the results when comparing loan offers or planning your finances.",
-  ],
-  howToUse: [
-    "Select your region (Nepal, India, or USA) to see local currency and typical rates.",
-    "Enter the loan amount you need (principal).",
-    "Input the annual interest rate offered by your lender.",
-    "Set the loan tenure in years, then instantly see your monthly EMI, total interest payable, and the complete repayment schedule.",
-  ],
-  formula: {
-    title: "EMI Formula (Reducing Balance Method)",
-    explanation:
-      "EMI = P × r × (1+r)ⁿ / [(1+r)ⁿ − 1], where P = loan principal, r = monthly interest rate (annual rate ÷ 12 ÷ 100), and n = loan tenure in months. This formula ensures each payment is identical throughout the loan term, with the interest portion decreasing and principal portion increasing over time.",
+
+  seo: {
+    title:
+      "EMI Calculator – Calculate Monthly Loan EMI & Interest",
+
+    description:
+      "Calculate monthly EMI, total interest and total loan repayment for home, car and personal loans using amount, interest rate and tenure.",
   },
+
+  intro: [
+    "Use the EMI Calculator to estimate the Equated Monthly Installment for a home loan, car loan, personal loan or other reducing-balance loan. Enter the principal, annual interest rate and loan tenure to calculate the estimated monthly EMI.",
+
+    "The calculator also shows how much interest may be paid over the full loan term and the total amount repaid. Comparing several combinations of loan amount, interest rate and tenure can help you understand whether a loan fits your monthly budget.",
+  ],
+
+  howToUse: [
+    "Select your region to use the appropriate currency and regional formatting.",
+    "Enter the total loan amount or principal.",
+    "Enter the annual loan interest rate.",
+    "Set the repayment tenure in years or months.",
+    "Review the monthly EMI, total interest and total repayment amount.",
+    "Adjust the interest rate or tenure to compare alternative loan scenarios.",
+  ],
+
+  formula: {
+    title:
+      "EMI Formula – Reducing Balance Method",
+
+    explanation:
+      "EMI = P × r × (1+r)ⁿ ÷ [(1+r)ⁿ − 1]. P represents the loan principal, r is the monthly interest rate calculated from the annual rate, and n is the total number of monthly installments. With a reducing-balance loan, interest is calculated on the remaining principal, so the interest component generally falls as the loan is repaid.",
+  },
+
   faqs: [
     {
-      question: "What is EMI and how is it calculated?",
+      question:
+        "What does EMI mean?",
+
       answer:
-        "EMI stands for Equated Monthly Installment. It's a fixed amount paid monthly towards repaying a loan. Banks calculate EMI using the reducing balance method, where interest is computed on the outstanding principal each month.",
+        "EMI stands for Equated Monthly Installment. It is the scheduled amount paid each month toward a loan and normally contains both principal repayment and interest.",
     },
+
     {
-      question: "Does EMI change over the loan tenure?",
+      question:
+        "How is EMI calculated?",
+
       answer:
-        "For fixed-rate loans, the EMI remains constant throughout. However, if you have a floating/variable rate loan, the EMI may change when the interest rate resets. Some lenders adjust the tenure instead of the EMI when rates change.",
+        "EMI is calculated from the loan principal, monthly interest rate and total number of installments. The reducing-balance formula calculates interest on the outstanding loan balance rather than the original principal every month.",
     },
+
     {
-      question: "How can I reduce my EMI burden?",
+      question:
+        "Does a longer loan tenure reduce EMI?",
+
       answer:
-        "You can lower your EMI by: (1) opting for a longer tenure, (2) making a larger down payment to reduce the principal, (3) improving your credit score to qualify for lower interest rates, or (4) making partial prepayments when possible.",
+        "Usually yes. Extending the repayment period spreads the loan across more installments and lowers the monthly EMI. However, it can increase the total interest paid over the full loan period.",
     },
+
     {
-      question: "Is this EMI calculator accurate for Nepal and India?",
+      question:
+        "How can I reduce my monthly EMI?",
+
       answer:
-        "Yes. This calculator uses the same reducing-balance formula used by banks in Nepal and India. It supports NPR (Rs.), INR (₹), and USD ($) with region-specific default amounts and interest rates for realistic estimates.",
+        "You may reduce EMI by borrowing less, making a larger down payment, securing a lower interest rate or extending the loan tenure. Extending the tenure can reduce the monthly payment but may increase overall interest.",
+    },
+
+    {
+      question:
+        "Is the EMI calculator useful for Nepal and India?",
+
+      answer:
+        "Yes. The mathematical EMI formula is not currency-specific. Regional settings can be used to display results in currencies such as Nepalese Rupees or Indian Rupees while the underlying calculation remains the same.",
     },
   ],
 };
+
+/* ──────────────────────────────────────────────────────────
+   Currency Converter
+────────────────────────────────────────────────────────── */
 
 const currencyConverter: CalculatorContent = {
   slug: "currency-converter",
+
+  seo: {
+    title:
+      "Currency Converter – Convert NPR, INR, USD & More",
+
+    description:
+      "Convert NPR, INR, USD, EUR, GBP, CAD, AUD and other currencies. Check exchange rates, converted amounts and rate update information.",
+  },
+
   intro: [
-    "A currency converter gives you instant exchange rates between major world currencies including NPR (Nepalese Rupee), INR (Indian Rupee), USD, EUR, GBP, CAD, AUD and more. See when rates were last updated and whether you're viewing live or cached data.",
-    "This tool uses indicative market rates and includes an offline fallback so you always get a result. Exchange rates are shown with timestamps and source information for transparency.",
+    "Use the Currency Converter to convert money between Nepalese Rupee (NPR), Indian Rupee (INR), US Dollar (USD), Euro (EUR), British Pound (GBP), Canadian Dollar (CAD), Australian Dollar (AUD) and other supported currencies.",
+
+    "Enter an amount, choose the currency you are converting from and select the destination currency. The calculator displays the converted value together with the exchange rate and available rate-update information.",
   ],
+
   howToUse: [
     "Enter the amount you want to convert.",
-    "Select the source currency (e.g., USD, NPR, INR).",
-    "Choose the target currency you want to convert to.",
-    "View the converted amount, exchange rate, and rate timestamp.",
-    "Check the reversibility verification to confirm accuracy.",
+    "Select the currency you currently have.",
+    "Choose the currency you want to convert the amount into.",
+    "Review the converted amount and exchange rate.",
+    "Check the displayed rate source or update time before using the result for an important financial decision.",
   ],
+
   formula: {
-    title: "Currency Conversion Formula",
+    title:
+      "Currency Conversion Formula",
+
     explanation:
-      "Conversion uses cross-rates relative to USD base: Amount_target = (Amount_source / Rate_source) × Rate_target. This method ensures mathematical reversibility within rounding tolerance. Rates are updated from market data sources when available.",
+      "A currency conversion multiplies the source amount by the exchange rate between the source and destination currencies. When rates are stored relative to a common base currency, the converter first derives the cross-rate and then applies it to the amount being converted.",
   },
+
   faqs: [
     {
-      question: "Are these exchange rates live?",
+      question:
+        "How does a currency converter work?",
+
       answer:
-        "When available, rates are fetched from market data APIs. If the API is unavailable, the tool falls back to cached indicative rates. The timestamp shows when rates were last updated, and an indicator tells you if you're viewing offline data.",
+        "A currency converter applies an exchange rate between two currencies to the amount entered. If direct rates are unavailable, a cross-rate can be calculated using a common base currency.",
     },
+
     {
-      question: "Why is NPR (Nepalese Rupee) included?",
+      question:
+        "Are currency converter rates the same as bank rates?",
+
       answer:
-        "NPR is supported as a key regional currency for users in Nepal. The Nepalese Rupee is pegged to the Indian Rupee at approximately 1 INR = 1.6 NPR, and both are included alongside major international currencies.",
+        "Not necessarily. Banks, card providers, remittance companies and money changers can add spreads, commissions or transaction fees, so the amount you actually receive may differ from an indicative market conversion.",
     },
+
     {
-      question: "Can I use these rates for actual transactions?",
+      question:
+        "Can I convert Nepalese Rupees to US Dollars?",
+
       answer:
-        "No. These are indicative rates for informational purposes only. Actual exchange rates offered by banks, money changers, or payment processors will differ due to spreads, fees, and real-time market movements. Always verify with your financial institution before transacting.",
+        "Yes. Select NPR as the source currency and USD as the destination currency, then enter the Nepalese Rupee amount you want to convert.",
     },
+
     {
-      question: "How accurate is the conversion?",
+      question:
+        "Why can exchange rates change during the day?",
+
       answer:
-        "The math is precise and reversible within standard floating-point rounding tolerance. You can verify this using the reversibility check shown after conversion. However, the underlying rates are indicative and may not reflect current market conditions.",
+        "Many currencies trade continuously in global foreign-exchange markets. Supply, demand, interest rates, economic data, central-bank policy and market events can cause exchange rates to change.",
+    },
+
+    {
+      question:
+        "Should I use the converted amount for an actual transaction?",
+
+      answer:
+        "Use it as an estimate unless the displayed rate is specifically guaranteed by your financial provider. Always check the final exchange rate and fees offered by the bank, card provider, exchange service or remittance company handling the transaction.",
     },
   ],
 };
+
+/* ──────────────────────────────────────────────────────────
+   World Clock
+────────────────────────────────────────────────────────── */
 
 const worldClock: CalculatorContent = {
   slug: "world-clock",
-  intro: [
-    "A world clock and time zone converter lets you compare local times across multiple cities simultaneously. View current times in Kathmandu, Delhi, London, New York, Toronto, Sydney, and other major cities around the world.",
-    "Times are calculated using the IANA timezone database with automatic Daylight Saving Time (DST) adjustments. Your selected region sets the default timezone for personalized date and time formatting.",
-  ],
-  howToUse: [
-    "Your local time is displayed at the top based on your selected region.",
-    "Click city buttons to add or remove them from the comparison view.",
-    "View current time, date, and UTC offset for each selected city.",
-    "Use the reference table to see all regional times at a glance.",
-  ],
-  formula: {
-    title: "Time Zone Calculation",
-    explanation:
-      "Times are computed using IANA timezone identifiers (e.g., Asia/Kathmandu, America/New_York). The browser's Intl.DateTimeFormat API handles timezone conversions and DST rules automatically, ensuring accurate times year-round.",
+
+  seo: {
+    title:
+      "World Clock – Current Time & Time Zone Comparison",
+
+    description:
+      "Check current time around the world and compare time zones, local dates and UTC offsets for Kathmandu, Delhi, London, New York and more.",
   },
+
+  intro: [
+    "Use the World Clock to check the current local time in cities around the world and compare multiple time zones at once. View current times, dates and UTC offsets for locations such as Kathmandu, Delhi, London, New York, Toronto and Sydney.",
+
+    "Time-zone calculations use standard IANA time-zone identifiers, allowing locations that observe Daylight Saving Time to adjust according to their applicable regional rules.",
+  ],
+
+  howToUse: [
+    "View the default local time based on your selected region.",
+    "Select the cities or time zones you want to compare.",
+    "Compare the current local time and date for each location.",
+    "Check the UTC offset to understand the time difference between locations.",
+    "Reset the selection when you want to return to your regional default.",
+  ],
+
+  formula: {
+    title:
+      "How World Time Zone Conversion Works",
+
+    explanation:
+      "The world clock converts the same moment into different local times using IANA time-zone identifiers such as Asia/Kathmandu, Asia/Kolkata and America/New_York. The browser's internationalization APIs apply the relevant UTC offset and available daylight-saving rules for each time zone.",
+  },
+
   faqs: [
     {
-      question: "Which cities are supported?",
+      question:
+        "What is a world clock?",
+
       answer:
-        "Regional cities include Kathmandu (Nepal), Delhi (India), London (UK), New York (USA), Toronto (Canada), and Sydney (Australia). Additional cities like Tokyo, Singapore, Dubai, Paris, Berlin, Los Angeles, Chicago, and Vancouver are also available.",
+        "A world clock shows the current local time in multiple places around the world. It is useful for international calls, remote work, travel planning and comparing time differences between countries.",
     },
+
     {
-      question: "Does this account for Daylight Saving Time?",
+      question:
+        "What is a UTC offset?",
+
       answer:
-        "Yes. The tool uses the IANA timezone database which automatically applies DST rules where applicable. Times in London, New York, Toronto, Sydney and other DST-observing regions will adjust seasonally.",
+        "A UTC offset shows how far a local time zone is ahead of or behind Coordinated Universal Time. Nepal Standard Time, for example, uses UTC+05:45.",
     },
+
     {
-      question: "Why does my region affect the display?",
+      question:
+        "What time zone does Nepal use?",
+
       answer:
-        "Your selected region determines the default timezone and date/time format. For example, selecting Nepal shows times in Asia/Kathmandu timezone with DD/MM/YYYY formatting, while USA shows MM/DD/YYYY with America/New_York timezone.",
+        "Nepal uses Nepal Standard Time, represented by the IANA time zone Asia/Kathmandu. Its standard UTC offset is UTC+05:45.",
     },
+
     {
-      question: "How often do times update?",
+      question:
+        "Does the world clock account for Daylight Saving Time?",
+
       answer:
-        "The clock updates every second to show accurate real-time information. Date changes roll over automatically at midnight in each respective timezone.",
+        "Where supported by the selected IANA time zone and browser data, daylight-saving changes are applied automatically for locations that observe them.",
+    },
+
+    {
+      question:
+        "Why can the time difference between two cities change during the year?",
+
+      answer:
+        "Some countries change their clocks for Daylight Saving Time while others do not. This can cause the difference between two cities to change by an hour during part of the year.",
     },
   ],
 };
 
-/** Authored content, keyed by tool slug. */
-const contentBySlug: Record<string, CalculatorContent> = {
-  "loan-calculator": loanCalculator,
-  "emi-calculator": emiCalculator,
-  "currency-converter": currencyConverter,
-  "world-clock": worldClock,
-};
+/* ──────────────────────────────────────────────────────────
+   Registry
+────────────────────────────────────────────────────────── */
 
 /**
- * Returns authored content for a slug, or a high-quality generic block
- * generated from the tool's display name when nothing is authored yet.
+ * Authored calculator content keyed by slug.
+ *
+ * IMPORTANT:
+ * For strong calculator SEO, add an authored entry for every important
+ * calculator rather than relying permanently on the fallback.
+ */
+const contentBySlug: Record<
+  string,
+  CalculatorContent
+> = {
+  "loan-calculator":
+    loanCalculator,
+
+  "emi-calculator":
+    emiCalculator,
+
+  "currency-converter":
+    currencyConverter,
+
+  "world-clock":
+    worldClock,
+};
+
+/* ──────────────────────────────────────────────────────────
+   Content getter
+────────────────────────────────────────────────────────── */
+
+/**
+ * Returns authored content when available.
+ *
+ * The fallback intentionally avoids making unsupported claims about:
+ * - formulas
+ * - accuracy
+ * - privacy
+ * - professional usage
+ * - data storage
+ *
+ * Important calculators should eventually receive custom authored content.
  */
 export function getCalculatorContent(
   slug: string,
-  toolName: string,
+  toolName: string
 ): CalculatorContent {
-  const authored = contentBySlug[slug];
-  if (authored) return authored;
+  const authored =
+    contentBySlug[slug];
+
+  if (authored) {
+    return authored;
+  }
 
   return {
     slug,
-    intro: [
-      `The ${toolName} gives you an instant, private answer in your browser — no sign-up, no data leaves your device. Enter your figures below and the result updates as you type.`,
-      "Use it to sanity-check a decision, compare scenarios, or get a quick estimate before you talk to a professional.",
-    ],
-    howToUse: [
-      `Open the ${toolName} and review the input fields.`,
-      "Enter your values; every field accepts decimals and updates live.",
-      "Check the highlighted result and the supporting breakdown beneath it.",
-      "Adjust a single input to compare scenarios side by side.",
-    ],
-    formula: {
-      title: `How the ${toolName} works`,
-      explanation: `The ${toolName} applies the standard formula used by professionals in its field, rounding only for display. The full precision is kept internally so intermediate steps never distort the final answer.`,
+
+    seo: {
+      title: `${toolName} – Free Online Calculator`,
+
+      description:
+        `Use the ${toolName} online to calculate results quickly from the values you enter. Review the result and compare different input scenarios.`,
     },
+
+    intro: [
+      `Use the ${toolName} to calculate a result from the values you enter. The calculator is designed to make the calculation quick and easy to understand.`,
+
+      `Change the input values to compare different scenarios and review the result together with any supporting information shown by the calculator.`,
+    ],
+
+    howToUse: [
+      `Open the ${toolName} and review the available input fields.`,
+
+      "Enter the values required for the calculation.",
+
+      "Review the calculated result and any supporting breakdown.",
+
+      "Change one or more values to compare another scenario.",
+    ],
+
+    formula: {
+      title:
+        `How the ${toolName} Calculates the Result`,
+
+      explanation:
+        `The ${toolName} uses the values entered in the calculator to produce the displayed result. Refer to the calculator fields and result breakdown for the variables included in the calculation.`,
+    },
+
     faqs: [
       {
-        question: `Is the ${toolName} free to use?`,
+        question:
+          `What is the ${toolName}?`,
+
         answer:
-          "Yes — completely free, with no account, subscription or usage limit. It runs entirely in your browser.",
+          `The ${toolName} is an online tool that calculates a result from the information you enter and presents it in an easy-to-read format.`,
       },
+
       {
-        question: "Is my data stored anywhere?",
+        question:
+          `How do I use the ${toolName}?`,
+
         answer:
-          "No. Calculations happen client-side; nothing you type is sent to a server or saved.",
+          `Enter the requested values in the calculator fields and review the result. You can change the inputs to compare different scenarios.`,
       },
+
       {
-        question: "How accurate are the results?",
+        question:
+          `Can I use the ${toolName} for important decisions?`,
+
         answer:
-          "Results use full-precision arithmetic and standard rounding for display. For legally or financially binding decisions, confirm with a qualified professional.",
+          `The calculator can be useful for estimates and comparisons. For medical, legal, tax, investment or other high-stakes decisions, verify the result using appropriate official or professional guidance.`,
       },
     ],
+  };
+}
+
+/* ──────────────────────────────────────────────────────────
+   Next.js Metadata Helper
+────────────────────────────────────────────────────────── */
+
+/**
+ * Use from your dynamic server page.
+ *
+ * Example:
+ *
+ * const content = getCalculatorContent(
+ *   tool.slug,
+ *   tool.name
+ * );
+ *
+ * return getCalculatorMetadata(
+ *   content,
+ *   `/tools/${category}/${slug}`
+ * );
+ *
+ * Set metadataBase in your root layout:
+ *
+ * metadataBase: new URL("https://oncalculator.app")
+ */
+export function getCalculatorMetadata(
+  content: CalculatorContent,
+  canonicalPath?: string
+): Metadata {
+  const {
+    title,
+    description,
+  } = content.seo;
+
+  return {
+    title,
+
+    description,
+
+    ...(canonicalPath
+      ? {
+          alternates: {
+            canonical:
+              canonicalPath,
+          },
+        }
+      : {}),
+
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      siteName:
+        "OnCalculator",
+        ...(canonicalPath
+    ? {
+        url: canonicalPath,
+      }
+    : {}),
+    },
+
+    twitter: {
+      card:
+        "summary_large_image",
+
+      title,
+
+      description,
+    },
   };
 }

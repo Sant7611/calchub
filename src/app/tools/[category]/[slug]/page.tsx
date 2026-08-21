@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { CalendarClock } from "lucide-react";
 
 import { categories } from "@/data/categories";
-import { REGIONS, type Region } from "@/config/regions";
-import { getCalculatorContent } from "@/data/calculator-content";
+import {
+  getCalculatorContent,
+  getCalculatorMetadata,
+} from "@/data/calculator-content";
 import { calculatorRegistry } from "@/components/calculators/registry";
 import { CalculatorCard } from "@/components/ui/CalculatorCard";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
@@ -14,7 +16,6 @@ import { AdBanner } from "@/components/AdBanner";
 
 interface ToolPageProps {
   params: Promise<{ category: string; slug: string }>;
-  searchParams: Promise<{ region?: string }>;
 }
 
 // Ad-slot IDs come from the environment — nothing is hardcoded.
@@ -29,11 +30,6 @@ function findTool(categorySlug: string, toolSlug: string) {
   return category && tool ? { category, tool } : null;
 }
 
-/** Validate the optional ?region= param server-side; fall back to Global. */
-function resolveRegion(raw?: string): Region {
-  return raw && raw in REGIONS ? (raw as Region) : "global";
-}
-
 export function generateStaticParams() {
   return categories.flatMap((category) =>
     category.tools.map((tool) => ({
@@ -43,37 +39,49 @@ export function generateStaticParams() {
   );
 }
 
-// Region-aware titles, e.g.
-//   "EMI Calculator for Nepal (NPR) – oncalculator.app"
-//   "Loan Calculator for USA (USD) – oncalculator.app"
-export async function generateMetadata({ params, searchParams }: ToolPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ToolPageProps): Promise<Metadata> {
   const { category: categorySlug, slug: toolSlug } = await params;
-  const region = resolveRegion((await searchParams).region);
+
   const found = findTool(categorySlug, toolSlug);
-  if (!found) return { title: "Calculator not found" };
 
-  const { tool } = found;
-  const content = getCalculatorContent(tool.slug, tool.name);
-  const regionConfig = REGIONS[region];
-  
-  // Use region-specific tool name for EMI/Loan calculators
-  const toolName = tool.slug === "loan-calculator" || tool.slug === "emi-calculator"
-    ? regionConfig.loan.terminology.hoaOrServiceCharge.includes("EMI") ? "EMI Calculator" : "Loan Calculator"
-    : tool.name;
-  
-  const title = `${toolName} for ${regionConfig.name} (${regionConfig.currency.code})`;
+  if (!found) {
+    return {
+      title: "Calculator not found",
 
-  return {
-    title,
-    description: content.intro[0],
-    openGraph: { title, description: content.intro[0], type: "website" },
-  };
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const content = getCalculatorContent(found.tool.slug, found.tool.name);
+
+  const metadata = getCalculatorMetadata(
+    content,
+    `/tools/${categorySlug}/${toolSlug}`,
+  );
+
+  const hasCalculator = Boolean(calculatorRegistry[found.tool.slug]);
+
+  if (!hasCalculator) {
+    return {
+      ...metadata,
+
+      robots: {
+        index: false,
+        follow: true,
+      },
+    };
+  }
+
+  return metadata;
 }
 
-export default async function ToolPage({ params, searchParams }: ToolPageProps) {
+export default async function ToolPage({ params }: ToolPageProps) {
   const { category: categorySlug, slug: toolSlug } = await params;
-  const region = resolveRegion((await searchParams).region);
-  
   const found = findTool(categorySlug, toolSlug);
   if (!found) notFound();
 
@@ -81,36 +89,31 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
   const content = getCalculatorContent(tool.slug, tool.name);
   const CalculatorComponent = calculatorRegistry[tool.slug];
   const related = category.tools.filter((t) => t.slug !== tool.slug);
-  
-  // Use region-specific tool name for EMI/Loan calculators in H1
-  const regionConfig = REGIONS[region];
-  const config = regionConfig;
-  const displayToolName = tool.slug === "loan-calculator" || tool.slug === "emi-calculator"
-    ? config.loan.terminology.hoaOrServiceCharge.includes("EMI") ? "EMI Calculator" : "Loan Calculator"
-    : tool.name;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <article className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       {/* "Recently Used" history — client island, renders null */}
       <TrackToolView slug={tool.slug} />
 
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
-          { label: category.name, href: `/tools?category=${category.slug}` },
-          { label: displayToolName },
+          { label: category.name, href: `/categories/${category.slug}` },
+          { label: tool.name },
         ]}
       />
 
-      {/* H1 + intro — NO ads above this line, ever */}
-      <h1 className="mt-6 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-        {displayToolName}
-      </h1>
-      <div className="mt-4 space-y-4 text-lg leading-relaxed text-slate-600">
-        {content.intro.map((paragraph) => (
-          <p key={paragraph.slice(0, 32)}>{paragraph}</p>
-        ))}
-      </div>
+      <header className="mt-6">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          {tool.name}
+        </h1>
+
+        <div className="mt-4 space-y-4 text-lg leading-relaxed text-slate-600">
+          {content.intro.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      </header>
 
       {/* The interactive calculator (client island) — or Coming Soon */}
       <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
@@ -139,7 +142,7 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
 
       <section className="mt-12">
         <h2 className="text-2xl font-bold text-slate-900">
-          How to Use This Calculator
+          How to Use the {tool.name}
         </h2>
         <ol className="mt-5 space-y-4">
           {content.howToUse.map((step, index) => (
@@ -147,7 +150,9 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
               <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-indigo-50 text-sm font-semibold text-indigo-600">
                 {index + 1}
               </span>
-              <span className="pt-0.5 leading-relaxed text-slate-600">{step}</span>
+              <span className="pt-0.5 leading-relaxed text-slate-600">
+                {step}
+              </span>
             </li>
           ))}
         </ol>
@@ -155,11 +160,10 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
 
       <section className="mt-12">
         <h2 className="text-2xl font-bold text-slate-900">
-          Formula &amp; Explanation
+          {content.formula.title}
         </h2>
         <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-5">
-          <h3 className="font-semibold text-slate-900">{content.formula.title}</h3>
-          <p className="mt-2 leading-relaxed text-slate-600">
+          <p className="leading-relaxed text-slate-600">
             {content.formula.explanation}
           </p>
         </div>
@@ -189,6 +193,6 @@ export default async function ToolPage({ params, searchParams }: ToolPageProps) 
       {/* ── AD SLOT 2 of 2 ──────────────────────────────────────────
           Very bottom of the page, after the FAQs. */}
       <AdBanner slot={AD_SLOT_PAGE_BOTTOM} className="mt-12" />
-    </div>
+    </article>
   );
 }
