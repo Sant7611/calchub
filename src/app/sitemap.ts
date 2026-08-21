@@ -6,7 +6,6 @@ const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ?? "https://oncalculator.app";
 
 const FINANCE_REGIONS = [
-  "nepal",
   "india",
   "usa",
   "uk",
