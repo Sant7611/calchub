@@ -13,6 +13,7 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { TrackToolView } from "@/components/TrackToolView";
 import { AdBanner } from "@/components/AdBanner";
+import styles from "./CalculatorWorkspace.module.css";
 
 interface ToolPageProps {
   params: Promise<{ category: string; slug: string }>;
@@ -117,8 +118,8 @@ export default async function ToolPage({ params }: ToolPageProps) {
         ]}
       />
 
-      {/* Wide calculator workspace; calculator components keep their own visual cards. */}
-      <div className="mt-4 min-w-0 rounded-2xl bg-slate-50/70 p-0 sm:p-3 lg:p-4">
+      {/* Wide calculator workspace. Add a light shell only when the calculator does not already own one. */}
+      <div className={`${styles.workspace} mt-4`}>
         {CalculatorComponent ? (
           <CalculatorComponent />
         ) : (
