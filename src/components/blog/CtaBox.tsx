@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { categories, type Tool } from "@/data/categories";
+import { resolveToolHref } from "@/lib/tool-routes";
 
 interface CtaBoxProps {
   toolSlug: string;
@@ -20,6 +21,7 @@ export function CtaBox({ toolSlug }: CtaBoxProps) {
   if (!found) return null;
 
   const { tool, categorySlug } = found;
+  const href = resolveToolHref(`/tools/${categorySlug}/${tool.slug}`);
 
   return (
     <aside className="mt-12 overflow-hidden rounded-2xl bg-indigo-600 text-white shadow-lg">
@@ -40,7 +42,7 @@ export function CtaBox({ toolSlug }: CtaBoxProps) {
         </div>
 
         <Link
-          href={`/tools/${categorySlug}/${tool.slug}`}
+          href={href}
           className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-indigo-700 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
         >
           Open calculator
