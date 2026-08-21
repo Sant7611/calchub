@@ -49,12 +49,12 @@ export function FinanceCalculatorPage({ kind, region }: { kind: FinanceCalculato
   const base = kind === "tax" ? "/finance/tax-calc" : "/finance/salary-calc";
   const schema = { "@context": "https://schema.org", "@type": "WebApplication", name: title, applicationCategory: "FinanceApplication", operatingSystem: "Web", description: content.intro };
 
-  return <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+  return <main className="mx-auto max-w-5xl px-4 pb-12 pt-6 sm:px-6 sm:pt-8">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
     <nav aria-label="Breadcrumb" className="text-sm text-slate-500"><Link href="/finance" className="hover:text-indigo-600">Finance</Link><span className="mx-2">/</span><Link href={base} className="hover:text-indigo-600">{kind === "tax" ? "Tax calculator" : "Salary calculator"}</Link>{region !== "global" && <><span className="mx-2">/</span><span>{getRegionConfig(region).name}</span></>}</nav>
-    <h1 className="mt-6 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h1>
+    <div className="mt-5">{kind === "tax" ? <TaxCalculator defaultRegion={region} /> : <SalaryCalculator defaultRegion={region} />}</div>
+    <h1 className="mt-8 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h1>
     <p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-600">{content.intro}</p>
-    <div className="mt-8">{kind === "tax" ? <TaxCalculator defaultRegion={region} /> : <SalaryCalculator defaultRegion={region} />}</div>
     <section className="mt-12 max-w-3xl"><h2 className="text-2xl font-bold text-slate-900">{content.heading}</h2><p className="mt-4 leading-relaxed text-slate-600">{content.details}</p></section>
     <FaqSection faqs={content.faqs} />
     <section className="mt-12"><h2 className="text-2xl font-bold text-slate-900">{region === "global" ? "Explore Calculators by Region" : "Related Regional Calculators"}</h2><div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{FINANCE_REGIONS.filter((item) => item !== region).map((item) => <Link key={item} href={`${base}/${item}`} className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-50">{getRegionConfig(item).name} {kind === "tax" ? "Tax" : "Salary"} Calculator</Link>)}</div></section>
