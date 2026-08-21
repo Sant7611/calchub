@@ -12,7 +12,7 @@ import { WorldClock } from "./WorldClock";
 import { LengthConverter } from "./LengthConverter";
 import { BmiCalculator } from "./BmiCalculator";
 import { TemperatureConverter } from "./TemperatureConverter";
-import { ScientificCalculator } from "./ScientificCalculator";
+import { ScientificCalculatorResponsive } from "./ScientificCalculatorResponsive";
 import {CompoundInterestCalculator} from "./CompoundInterestCalculator";
 import {CalorieCalculator} from "./CalorieCalculator";
 import {AgeCalculator} from "./AgeCalculator";
@@ -43,7 +43,7 @@ export const calculatorRegistry: Record<string, ComponentType> = {
 
   // Math calculators
   "percentage-calculator": BudgetPlanner, // Reusing budget as placeholder
-  "scientific-calculator": ScientificCalculator, // Reusing scientific as placeholder
+  "scientific-calculator": ScientificCalculatorResponsive,
   "compound-interest-calculator": CompoundInterestCalculator, //  compound interest 
   "age-calculator": AgeCalculator,
 
