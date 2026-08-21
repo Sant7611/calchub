@@ -8,7 +8,7 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { CtaBox } from "@/components/blog/CtaBox";
 import { Callout } from "@/components/blog/Callout";
 
-const SITE_URL = "https://oncalculator.app";
+const SITE_URL = "https://oncalculator.tech";
 const SITE_NAME = "OnCalculator";
 const BLOG_URL = `${SITE_URL}/blog`;
 

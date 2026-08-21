@@ -1237,7 +1237,7 @@ export function getCalculatorContent(
  *
  * Set metadataBase in your root layout:
  *
- * metadataBase: new URL("https://oncalculator.app")
+ * metadataBase: new URL("https://oncalculator.tech")
  */
 export function getCalculatorMetadata(
   content: CalculatorContent,

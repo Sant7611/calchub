@@ -23,7 +23,7 @@ const SITE_DESCRIPTION =
   "Free online calculators for finance, health, math, date and time, conversions and everyday calculations.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://oncalculator.app"),
+  metadataBase: new URL("https://oncalculator.tech"),
 
   title: {
     default: "OnCalculator - Free Online Calculators",

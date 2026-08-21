@@ -164,7 +164,7 @@ export function createSocialImage() {
               color: "#4338ca",
             }}
           >
-            oncalculator.app
+            oncalculator.tech
             <span style={{ color: "#94a3b8", fontWeight: 500 }}>•</span>
             <span style={{ color: "#64748b", fontWeight: 600 }}>Fast • Free • Mobile-friendly</span>
           </div>

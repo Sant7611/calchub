@@ -1,4 +1,4 @@
-# 🧮 OnCalculator — [oncalculator.app](https://oncalculator.app)
+# 🧮 OnCalculator — [oncalculator.tech](https://oncalculator.tech)
 
 **Fast, accurate, and free online calculators** for finance, health, math, converters, and business — with multi-region support (🇳🇵 Nepal default, 🇮🇳 India, 🇺 USA).
 
@@ -31,7 +31,7 @@ Built with **Next.js (App Router)**, fully frontend-first, SEO-optimized, and re
 | Search       | Fuse.js |
 | State        | Zustand (persisted region store) |
 | Blog         | next-mdx-remote (RSC) + gray-matter |
-| Deployment   | Vercel + custom domain (`oncalculator.app`) |
+| Deployment   | Vercel + custom domain (`oncalculator.tech`) |
 
 ---
 
@@ -109,7 +109,7 @@ npm run build && npm start
 Copy `.env.example` to `.env.local`:
 
 ```bash
-NEXT_PUBLIC_BASE_URL=https://oncalculator.app
+NEXT_PUBLIC_BASE_URL=https://oncalculator.tech
 NEXT_PUBLIC_ADSENSE_CLIENT=          # e.g. ca-pub-XXXX (leave empty until approved)
 NEXT_PUBLIC_ADSENSE_SLOT=            # optional ad slot ID
 ```
@@ -183,7 +183,7 @@ Your markdown content here...
 
 1. Push to GitHub → import in [vercel.com](https://vercel.com) (auto-detects Next.js).
 2. Add env variables in Vercel project settings.
-3. Connect domain `oncalculator.app` and set DNS at your registrar:
+3. Connect domain `oncalculator.tech` and set DNS at your registrar:
 
 | Type  | Name | Value |
 | ----- | ---- | ----- |

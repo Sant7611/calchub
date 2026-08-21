@@ -1,4 +1,4 @@
-# Deployment Guide — oncalculator.app
+# Deployment Guide — oncalculator.tech
 
 A beginner-friendly, copy-and-run path from your laptop to a live,
 monetization-ready site. No step assumes prior Vercel or DNS experience.
@@ -29,7 +29,7 @@ broken build wastes a review cycle later.
 ```bash
 git init
 git add .
-git commit -m "feat: oncalculator.app — launch build"
+git commit -m "feat: oncalculator.tech — launch build"
 git branch -M main
 git remote add origin git@github.com:YOUR_USERNAME/oncalculator.git
 git push -u origin main
@@ -52,7 +52,7 @@ The `.gitignore` already excludes `node_modules/`, `.next/`, `out/` and
    | `NEXT_PUBLIC_ADSENSE_CLIENT` | *(leave empty for now)* | set after AdSense approval |
    | `NEXT_PUBLIC_AD_SLOT_AFTER_CALCULATOR` | *(empty for now)* | from your AdSense unit |
    | `NEXT_PUBLIC_AD_SLOT_PAGE_BOTTOM` | *(empty for now)* | from your AdSense unit |
-   | `NEXT_PUBLIC_BASE_URL` | `https://oncalculator.app` | used by sitemap + JSON-LD |
+   | `NEXT_PUBLIC_BASE_URL` | `https://oncalculator.tech` | used by sitemap + JSON-LD |
    | `GOOGLE_SITE_VERIFICATION` | token from Search Console | server-only, no `NEXT_PUBLIC_` |
 
    > `NEXT_PUBLIC_*` values are baked in at **build time**. Changing one
@@ -60,9 +60,9 @@ The `.gitignore` already excludes `node_modules/`, `.next/`, `out/` and
 
 5. Click **Deploy**. In ~2 minutes you have `https://oncalculator.vercel.app`.
 
-## 4 · Connect oncalculator.app
+## 4 · Connect oncalculator.tech
 
-In Vercel: **Project → Settings → Domains → Add** `oncalculator.app`.
+In Vercel: **Project → Settings → Domains → Add** `oncalculator.tech`.
 
 Then, at your domain registrar's DNS console, create exactly two records:
 
@@ -79,14 +79,14 @@ Then, at your domain registrar's DNS console, create exactly two records:
 
 ## 5 · Post-deployment checks
 
-- [ ] Visit `https://oncalculator.app` — home renders, no console errors
+- [ ] Visit `https://oncalculator.tech` — home renders, no console errors
       (DevTools → Console, filter: Errors).
-- [ ] `https://oncalculator.app/sitemap.xml` lists home, `/tools`, every
+- [ ] `https://oncalculator.tech/sitemap.xml` lists home, `/tools`, every
       category and every calculator URL.
-- [ ] `https://oncalculator.app/robots.txt` contains `Allow: /` and the
+- [ ] `https://oncalculator.tech/robots.txt` contains `Allow: /` and the
       sitemap line.
 - [ ] Open one calculator with `?region=india` — the title reads
-      "… for India (INR) – oncalculator.app".
+      "… for India (INR) – oncalculator.tech".
 - [ ] Submit the sitemap in **Google Search Console**
       (property → Sitemaps → `/sitemap.xml`) and verify ownership via the
       `GOOGLE_SITE_VERIFICATION` token already in your metadata.
@@ -102,12 +102,12 @@ Then, at your domain registrar's DNS console, create exactly two records:
 - [x] Working navigation, no placeholder copy, clean mobile experience.
 
 ### When to apply
-**Only after** the site is live at `https://oncalculator.app` with a valid
+**Only after** the site is live at `https://oncalculator.tech` with a valid
 certificate. AdSense rejects `*.vercel.app` preview hosts and localhost.
 
 ### How to apply
 1. Go to [adsense.google.com](https://adsense.google.com) → sign in →
-   **Sites → Add site** → enter `oncalculator.app`.
+   **Sites → Add site** → enter `oncalculator.tech`.
 2. AdSense gives you a verification snippet — paste it into
    `src/app/layout.tsx` inside `<head>` (or keep using the conditional
    loader once you have a client ID), redeploy.

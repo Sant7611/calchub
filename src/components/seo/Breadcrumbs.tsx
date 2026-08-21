@@ -23,7 +23,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
       "@type": "ListItem",
       position: index + 1,
       name: item.label,
-      ...(item.href ? { item: `https://oncalculator.app${item.href}` } : {}),
+      ...(item.href ? { item: `https://oncalculator.tech${item.href}` } : {}),
     })),
   };
 

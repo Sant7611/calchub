@@ -167,7 +167,7 @@ export function ContactForm() {
             type="url"
             value={pageUrl}
             onChange={(event) => setPageUrl(event.target.value)}
-            placeholder="https://oncalculator.app/tools/..."
+            placeholder="https://oncalculator.tech/tools/..."
             className={inputClass}
           />
         </FormField>
