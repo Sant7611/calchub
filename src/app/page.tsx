@@ -31,6 +31,7 @@ const HOME_SEARCH_TOOLS: HomeSearchTool[] = categories.flatMap((category) =>
   category.tools.map((tool) => ({
     name: tool.name,
     category: category.name,
+    description: tool.description,
     href:
       PREFERRED_SEARCH_ROUTES[tool.slug] ??
       `/tools/${category.slug}/${tool.slug}`,
