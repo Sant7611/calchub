@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of service for CalcuTools.",
+  description: "Terms of service for OnCalculator.",
 };
 
 export default function TermsPage() {
@@ -17,7 +17,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-slate-900">Acceptance of Terms</h2>
           <p className="mt-2">
-            By accessing and using CalcuTools, you accept and agree to be bound by the terms and 
+            By accessing and using OnCalculator, you accept and agree to be bound by the terms and 
             provision of this agreement.
           </p>
         </section>
@@ -42,7 +42,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-slate-900">Limitation of Liability</h2>
           <p className="mt-2">
-            CalcuTools shall not be liable for any damages arising from the use or inability to use 
+            OnCalculator shall not be liable for any damages arising from the use or inability to use 
             this website or its calculators.
           </p>
         </section>

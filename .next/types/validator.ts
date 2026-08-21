@@ -45,6 +45,15 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../src/app/about/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/about">> = Specific
+  const handler = {} as typeof import("../../src/app/about/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/blog/[slug]/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/blog/[slug]">> = Specific
@@ -67,6 +76,15 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
 {
   type __IsExpected<Specific extends AppPageConfig<"/categories/[slug]">> = Specific
   const handler = {} as typeof import("../../src/app/categories/[slug]/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/contact/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/contact">> = Specific
+  const handler = {} as typeof import("../../src/app/contact/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
@@ -135,6 +153,51 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../src/app/finance/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/finance">> = Specific
+  const handler = {} as typeof import("../../src/app/finance/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/finance/salary-calc/[region]/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/finance/salary-calc/[region]">> = Specific
+  const handler = {} as typeof import("../../src/app/finance/salary-calc/[region]/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/finance/salary-calc/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/finance/salary-calc">> = Specific
+  const handler = {} as typeof import("../../src/app/finance/salary-calc/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/finance/tax-calc/[region]/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/finance/tax-calc/[region]">> = Specific
+  const handler = {} as typeof import("../../src/app/finance/tax-calc/[region]/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/finance/tax-calc/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/finance/tax-calc">> = Specific
+  const handler = {} as typeof import("../../src/app/finance/tax-calc/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/">> = Specific
@@ -175,6 +238,33 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
 {
   type __IsExpected<Specific extends AppPageConfig<"/tools/[category]">> = Specific
   const handler = {} as typeof import("../../src/app/tools/[category]/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/tools/finance/emi-calculator/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/tools/finance/emi-calculator">> = Specific
+  const handler = {} as typeof import("../../src/app/tools/finance/emi-calculator/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/tools/finance/salary-calculator/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/tools/finance/salary-calculator">> = Specific
+  const handler = {} as typeof import("../../src/app/tools/finance/salary-calculator/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/tools/finance/tax-calculator/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/tools/finance/tax-calculator">> = Specific
+  const handler = {} as typeof import("../../src/app/tools/finance/tax-calculator/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Privacy policy for CalcuTools — we don't collect or store any personal data.",
+  description: "Privacy policy for OnCalculator — we don't collect or store any personal data.",
 };
 
 export default function PrivacyPage() {
@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-semibold text-slate-900">No Data Collection</h2>
           <p className="mt-2">
-            CalcuTools does not collect, store, or process any personal data. All calculations are performed 
+            OnCalculator does not collect, store, or process any personal data. All calculations are performed 
             locally in your browser. We do not use cookies for tracking purposes.
           </p>
         </section>

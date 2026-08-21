@@ -18,6 +18,7 @@ import {
   HeartPulse,
   Coins,
   Calculator,
+  Calendar,
 } from "lucide-react";
 
 /**
@@ -82,6 +83,43 @@ export const categories: Category[] = [
         description: "Calculate monthly mortgage payments and total interest over the life of the loan.",
         icon: PiggyBank,
       },
+      {
+        name: "Budget Planner",
+        slug: "budget-planner",
+        description: "Units and revenue needed to cover fixed and variable costs.",
+        icon: Store,
+      },
+      {
+        name: "SIP Calculator",
+        slug: "sip-calculator",
+        description: "Calculate the future value of a Systematic Investment Plan (SIP) with compound interest.",
+        icon: TrendingUp,
+      },
+      {
+        name:"Share Calculator",
+        slug: "share-calculator",
+        description: "Calculate the profit/loss of your share investment based on buy/sell price and quantity.",
+        icon: Coins,
+      },
+    ],
+  },
+  {
+    name: "Others",
+    slug: "others",
+    icon: Divide,
+    tools: [
+      {
+        name: "Grade Calculator",
+        slug: "grade-calculator",
+        description: "Calculate your grade point average (GPA) based on your course grades.",
+        icon: TrendingUp,
+      },
+      {
+        name: "World Clock",
+        slug: "world-clock",
+        description: "Compare times across Kathmandu, Delhi, London, New York, Toronto, Sydney and more.",
+        icon: Clock,
+      },
     ],
   },
   {
@@ -107,25 +145,25 @@ export const categories: Category[] = [
     name: "Math",
     slug: "math",
     icon: Sigma,
-    tools: [
-      {
-        name: "Percentage Calculator",
-        slug: "percentage-calculator",
-        description: "Percent of, percent change and increase/decrease in one tap.",
-        icon: Percent,
-      },
-      {
-        name: "Fraction Simplifier",
-        slug: "fraction-simplifier",
-        description: "Reduce fractions and convert between mixed and improper form.",
-        icon: Divide,
-      },
+    tools: [      
       {
         name: "Scientific Calculator",
         slug: "scientific-calculator",
         description: "Advanced calculations with trigonometric, logarithmic and exponential functions.",
         icon: Calculator,
-      }
+      },
+      {
+        name: "Compound Interest Calculator",
+        slug: "compound-interest-calculator",
+        description: "Calculate compound interest, future value and total interest earned.",
+        icon: TrendingUp,
+      },
+      {
+        name: "Age Calculator",
+        slug: "age-calculator",
+        description: "Calculate your age in years, months and days from your date of birth.",
+        icon: LineChart,
+      },
     ],
   },
   {
@@ -151,11 +189,12 @@ export const categories: Category[] = [
         description: "Real-time exchange rates with NPR, INR and major currencies. Shows rate timestamp and source.",
         icon: Coins,
       },
+      
       {
-        name: "World Clock",
-        slug: "world-clock",
-        description: "Compare times across Kathmandu, Delhi, London, New York, Toronto, Sydney and more.",
-        icon: Clock,
+        name: "Nepali Date Converter",
+        slug: "nepali-date-converter",
+        description: "Convert between AD and BS dates with a simple and intuitive interface.",
+        icon: Calendar,
       },
     ],
   },
@@ -164,18 +203,14 @@ export const categories: Category[] = [
     slug: "business",
     icon: Briefcase,
     tools: [
+      
       {
-        name: "Profit Margin Calculator",
-        slug: "profit-margin-calculator",
-        description: "Gross, operating and net margin from revenue and costs.",
-        icon: LineChart,
-      },
-      {
-        name: "Break-Even Calculator",
-        slug: "break-even-calculator",
-        description: "Units and revenue needed to cover fixed and variable costs.",
-        icon: Store,
-      },
+        name: "ROI Calculator",
+        slug: "roi-calculator",
+        description: "Return on investment (ROI) and payback period from costs and revenue.",
+        icon: TrendingUp,
+      }
+      
     ],
   },
 ];

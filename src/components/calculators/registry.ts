@@ -2,11 +2,10 @@ import type { ComponentType } from "react";
 
 import { LoanCalculator } from "./LoanCalculator";
 import { MortgageCalculator } from "./MortgageCalculator";
-import { RoiCalculator } from "./RoiCalculator";
+import { ROICalculator } from "./RoiCalculator";
 import { EmiCalculator } from "./EmiCalculator";
 import { TaxCalculator } from "./TaxCalculator";
 import { BudgetPlanner } from "./BudgetPlanner";
-import { InvoiceCalculator } from "./InvoiceCalculator";
 import { SalaryCalculator } from "./SalaryCalculator";
 import { CurrencyConverter } from "./CurrencyConverter";
 import { WorldClock } from "./WorldClock";
@@ -14,6 +13,13 @@ import { LengthConverter } from "./LengthConverter";
 import { BmiCalculator } from "./BmiCalculator";
 import { TemperatureConverter } from "./TemperatureConverter";
 import { ScientificCalculator } from "./ScientificCalculator";
+import {CompoundInterestCalculator} from "./CompoundInterestCalculator";
+import {CalorieCalculator} from "./CalorieCalculator";
+import {AgeCalculator} from "./AgeCalculator";
+import {DateConverterCalculator} from "./DateConverter";
+import {SipCalculator} from "./SipCalculator";
+import {GradeCalculator} from "./GradeCalculator";
+import {NepseShareCalculator} from "./NepseShareCalculator";
 
 /** Maps a tool slug (from src/data/categories.ts) to the CLIENT component
  * that implements it. The dynamic [category]/[slug] page reads this record
@@ -28,27 +34,33 @@ export const calculatorRegistry: Record<string, ComponentType> = {
   "emi-calculator": EmiCalculator, // Same EMI/Loan calculator component
   "mortgage-calculator": MortgageCalculator, // Reusing mortgage as placeholder
   "salary-calculator": SalaryCalculator,
+  "sip-calculator": SipCalculator,
+  "share-calculator": NepseShareCalculator,
 
   // Health calculators
   "bmi-calculator": BmiCalculator,
-  "calorie-calculator": TaxCalculator, // Reusing tax as placeholder
+  "calorie-calculator": CalorieCalculator, // Reusing tax as placeholder
 
   // Math calculators
   "percentage-calculator": BudgetPlanner, // Reusing budget as placeholder
-  "fraction-simplifier": LoanCalculator, // Reusing loan as placeholder
   "scientific-calculator": ScientificCalculator, // Reusing scientific as placeholder
+  "compound-interest-calculator": CompoundInterestCalculator, //  compound interest 
+  "age-calculator": AgeCalculator,
 
   // Converters
   "length-converter": LengthConverter,
   "temperature-converter": TemperatureConverter,
   "currency-converter": CurrencyConverter,
-  "world-clock": WorldClock,
-
+  "nepali-date-converter": DateConverterCalculator, // Reusing date converter as placeholder
+  
   // Business calculators
-  // "profit-margin-calculator": TaxCalculator, // Reusing tax as placeholder
   "tax-calculator": TaxCalculator, // Reusing tax as placeholder
-  "break-even-calculator": BudgetPlanner, // Reusing budget as placeholder
-  "invoice-calculator": InvoiceCalculator,
+  "budget-planner": BudgetPlanner, // Reusing budget as placeholder
+  "roi-calculator": ROICalculator, // Reusing ROI as placeholder
+  
+  //other calculators
+  "grade-calculator": GradeCalculator, // Reusing grade as placeholder
+  "world-clock": WorldClock,
 };
 
 /**

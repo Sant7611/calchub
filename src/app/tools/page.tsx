@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ToolsSearchGrid } from "@/components/ToolsSearchGrid";
 
@@ -18,7 +19,9 @@ export default function ToolsPage() {
         Search across every calculator, or browse by category.
       </p>
 
-      <ToolsSearchGrid />
+      <Suspense fallback={null}>
+        <ToolsSearchGrid />
+      </Suspense>
     </div>
   );
 }
