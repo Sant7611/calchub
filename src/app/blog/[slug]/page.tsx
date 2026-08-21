@@ -8,6 +8,10 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { CtaBox } from "@/components/blog/CtaBox";
 import { Callout } from "@/components/blog/Callout";
 
+const SITE_URL = "https://oncalculator.app";
+const SITE_NAME = "OnCalculator";
+const BLOG_URL = `${SITE_URL}/blog`;
+
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -22,6 +26,8 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const post = getPostBySlug(slug);
   if (!post) return { title: "Article not found" };
 
+  const articleUrl = `${SITE_URL}/blog/${post.slug}`;
+
   return {
     title: post.title,
     description: post.excerpt,
@@ -32,7 +38,10 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       title: post.title,
       description: post.excerpt,
       type: "article",
+      url: articleUrl,
+      siteName: SITE_NAME,
       publishedTime: post.date,
+      section: post.category,
       tags: post.tags,
     },
   };
@@ -70,14 +79,34 @@ const mdxComponents: MDXComponents = {
 
 /** BlogPosting JSON-LD — emitted in the same server render as the article. */
 function PostJsonLd({ post }: { post: BlogPost }) {
+  const articleUrl = `${SITE_URL}/blog/${post.slug}`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
+    "@id": `${articleUrl}#article`,
+    url: articleUrl,
     headline: post.title,
     description: post.excerpt,
     datePublished: post.date,
-    keywords: post.tags.join(", "),
-    mainEntityOfPage: `https://oncalculator.app/blog/${post.slug}`,
+    articleSection: post.category,
+    keywords: post.tags,
+    inLanguage: "en",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": articleUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    isPartOf: {
+      "@type": "Blog",
+      "@id": `${BLOG_URL}#blog`,
+      name: `${SITE_NAME} Blog`,
+      url: BLOG_URL,
+    },
   };
 
   return (
