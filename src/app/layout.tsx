@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ThemeSelector } from "@/components/ThemeSelector";
 
 import "./globals.css";
 
@@ -64,6 +65,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={inter.variable}
+      suppressHydrationWarning
     >
       <body
         className={`
@@ -76,6 +78,24 @@ export default function RootLayout({
           ${inter.className}
         `}
       >
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`
+            try {
+              var savedTheme = localStorage.getItem('oncalculator-theme');
+              var preference = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'system';
+              var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+              var useDark = preference === 'dark' || (preference === 'system' && systemDark);
+              document.documentElement.classList.toggle('dark', useDark);
+              document.documentElement.dataset.theme = preference;
+              document.documentElement.style.colorScheme = useDark ? 'dark' : 'light';
+            } catch (error) {
+              var fallbackDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+              document.documentElement.classList.toggle('dark', fallbackDark);
+              document.documentElement.style.colorScheme = fallbackDark ? 'dark' : 'light';
+            }
+          `}
+        </Script>
+
         <Script
           async
           src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`}
@@ -120,6 +140,7 @@ export default function RootLayout({
         </main>
 
         <Footer />
+        <ThemeSelector />
       </body>
     </html>
   );
