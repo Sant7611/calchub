@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getPosts, getPostBySlug, type BlogPost } from "@/lib/blog";
+import {
+  getPosts,
+  getPostBySlug,
+  getRelatedPosts,
+  type BlogPost,
+} from "@/lib/blog";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { CtaBox } from "@/components/blog/CtaBox";
 import styles from "./BlogArticle.module.css";
@@ -90,6 +96,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
+  const relatedPosts = getRelatedPosts(post, 3);
   const formattedDate = new Date(post.date).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
@@ -130,8 +137,35 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         dangerouslySetInnerHTML={{ __html: post.html }}
       />
 
-      {/* The traffic flywheel: every article ends at its calculator. */}
+      {/* Article → calculator internal link. */}
       <CtaBox toolSlug={post.relatedToolSlug} />
+
+      {relatedPosts.length > 0 ? (
+        <section className="mt-12" aria-labelledby="related-articles">
+          <h2 id="related-articles" className="text-2xl font-bold text-foreground">
+            Related Articles
+          </h2>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            {relatedPosts.map((relatedPost) => (
+              <Link
+                key={relatedPost.slug}
+                href={`/blog/${relatedPost.slug}`}
+                className="rounded-xl border border-border bg-card p-4 transition hover:border-primary/40 hover:bg-primary/5"
+              >
+                <span className="text-xs font-semibold uppercase tracking-wide text-primary">
+                  {relatedPost.category}
+                </span>
+                <h3 className="mt-2 font-semibold leading-snug text-foreground">
+                  {relatedPost.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {relatedPost.excerpt}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </article>
   );
 }

@@ -9,9 +9,13 @@ import {
 } from "@/data/calculator-content";
 import { nepalLandAreaCalculatorContent } from "@/data/nepal-land-area-content";
 import { calculatorRegistry } from "@/components/calculators/registry";
-import { CalculatorCard } from "@/components/ui/CalculatorCard";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSection } from "@/components/seo/FaqSection";
+import {
+  RelatedCalculators,
+  RelatedGuides,
+  SourceReferences,
+} from "@/components/seo/CalculatorInternalLinks";
 import { TrackToolView } from "@/components/TrackToolView";
 import { AdBanner } from "@/components/AdBanner";
 import styles from "./CalculatorWorkspace.module.css";
@@ -112,7 +116,9 @@ export default async function ToolPage({ params }: ToolPageProps) {
   const { category, tool } = found;
   const content = getToolContent(tool.slug, tool.name);
   const CalculatorComponent = calculatorRegistry[tool.slug];
-  const related = category.tools.filter((t) => t.slug !== tool.slug);
+  const fallbackRelatedToolSlugs = category.tools
+    .filter((item) => item.slug !== tool.slug)
+    .map((item) => item.slug);
 
   return (
     <article className="mx-auto max-w-6xl px-3 pb-12 pt-5 sm:px-5 sm:pt-7 lg:px-6">
@@ -159,6 +165,9 @@ export default async function ToolPage({ params }: ToolPageProps) {
         </div>
       </header>
 
+      {/* Contextual calculator → guide links are curated per tool. */}
+      <RelatedGuides toolSlug={tool.slug} />
+
       {/* ── AD SLOT 1 of 2 ──────────────────────────────────────────
           Between the calculator content and "How to Use". */}
       <AdBanner slot={AD_SLOT_AFTER_CALCULATOR} className="my-10" />
@@ -192,28 +201,17 @@ export default async function ToolPage({ params }: ToolPageProps) {
         </div>
       </section>
 
+      {/* Authoritative references appear only where curated sources exist. */}
+      <SourceReferences toolSlug={tool.slug} />
+
       <div className="max-w-4xl">
         <FaqSection faqs={content.faqs} />
       </div>
 
-      {related.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold text-foreground">
-            Related Calculators
-          </h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((t) => (
-              <CalculatorCard
-                key={t.slug}
-                title={t.name}
-                description={t.description}
-                icon={t.icon}
-                href={`/tools/${category.slug}/${t.slug}`}
-              />
-            ))}
-          </div>
-        </section>
-      )}
+      <RelatedCalculators
+        toolSlug={tool.slug}
+        fallbackToolSlugs={fallbackRelatedToolSlugs}
+      />
 
       {/* ── AD SLOT 2 of 2 ──────────────────────────────────────────
           Very bottom of the page, after the FAQs. */}
