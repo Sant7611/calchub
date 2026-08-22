@@ -2,6 +2,10 @@ import Link from "next/link";
 import { TaxCalculator } from "@/components/calculators/TaxCalculator";
 import { SalaryCalculator } from "@/components/calculators/SalaryCalculator";
 import { FaqSection } from "@/components/seo/FaqSection";
+import {
+  RelatedCalculators,
+  RelatedGuides,
+} from "@/components/seo/CalculatorInternalLinks";
 import { getRegionConfig, type Region } from "@/config/regions";
 
 export type FinanceCalculatorKind = "tax" | "salary";
@@ -47,6 +51,7 @@ export function FinanceCalculatorPage({ kind, region }: { kind: FinanceCalculato
   const title = financePageTitle(kind, region);
   const content = getSeoContent(kind, region);
   const base = kind === "tax" ? "/finance/tax-calc" : "/finance/salary-calc";
+  const toolSlug = kind === "tax" ? "tax-calculator" : "salary-calculator";
   const schema = { "@context": "https://schema.org", "@type": "WebApplication", name: title, applicationCategory: "FinanceApplication", operatingSystem: "Web", description: content.intro };
 
   return <main className="mx-auto max-w-6xl px-3 pb-12 pt-5 sm:px-5 sm:pt-7 lg:px-6">
@@ -56,9 +61,11 @@ export function FinanceCalculatorPage({ kind, region }: { kind: FinanceCalculato
     <div className="max-w-4xl">
       <h1 className="mt-8 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h1>
       <p className="mt-4 text-lg leading-relaxed text-slate-600">{content.intro}</p>
+      {region === "nepal" ? <RelatedGuides toolSlug={toolSlug} /> : null}
       <section className="mt-12"><h2 className="text-2xl font-bold text-slate-900">{content.heading}</h2><p className="mt-4 leading-relaxed text-slate-600">{content.details}</p></section>
       <FaqSection faqs={content.faqs} />
     </div>
     <section className="mt-12"><h2 className="text-2xl font-bold text-slate-900">{region === "global" ? "Explore Calculators by Region" : "Related Regional Calculators"}</h2><div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{FINANCE_REGIONS.filter((item) => item !== region).map((item) => <Link key={item} href={`${base}/${item}`} className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-50">{getRegionConfig(item).name} {kind === "tax" ? "Tax" : "Salary"} Calculator</Link>)}</div></section>
+    <RelatedCalculators toolSlug={toolSlug} />
   </main>;
 }
