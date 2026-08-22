@@ -6,7 +6,9 @@ import { getCalculatorInternalLinks } from "@/data/internal-links";
 import { resolveToolHref } from "@/lib/tool-routes";
 import { CalculatorCard } from "@/components/ui/CalculatorCard";
 
-function findTool(toolSlug: string): { tool: Tool; categorySlug: string } | null {
+type ResolvedTool = { tool: Tool; categorySlug: string };
+
+function findTool(toolSlug: string): ResolvedTool | null {
   for (const category of categories) {
     const tool = category.tools.find((item) => item.slug === toolSlug);
     if (tool) return { tool, categorySlug: category.slug };
@@ -117,7 +119,7 @@ export function RelatedCalculators({
   const related = slugs
     .filter((slug, index) => slug !== toolSlug && slugs.indexOf(slug) === index)
     .map(findTool)
-    .filter((item): item is NonNullable<typeof item> => Boolean(item));
+    .filter((item): item is ResolvedTool => item !== null);
 
   if (related.length === 0) return null;
 
