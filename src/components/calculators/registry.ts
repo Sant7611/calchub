@@ -20,6 +20,7 @@ import {DateConverterCalculator} from "./DateConverter";
 import {SipCalculator} from "./SipCalculator";
 import {GradeCalculator} from "./GradeCalculator";
 import {NepseShareCalculator} from "./NepseShareCalculator";
+import { NepalLandAreaConverter } from "./NepalLandAreaConverter";
 
 /** Maps a tool slug (from src/data/categories.ts) to the CLIENT component
  * that implements it. The dynamic [category]/[slug] page reads this record
@@ -49,6 +50,7 @@ export const calculatorRegistry: Record<string, ComponentType> = {
 
   // Converters
   "length-converter": LengthConverter,
+  "nepal-land-area-converter": NepalLandAreaConverter,
   "temperature-converter": TemperatureConverter,
   "currency-converter": CurrencyConverter,
   "nepali-date-converter": DateConverterCalculator, // Reusing date converter as placeholder

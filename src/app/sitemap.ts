@@ -29,6 +29,10 @@ const LEGACY_REDIRECT_TOOL_SLUGS = new Set([
   "emi-calculator",
 ]);
 
+const HIGH_PRIORITY_TOOL_SLUGS = new Set([
+  "nepal-land-area-converter",
+]);
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/`, changeFrequency: "weekly", priority: 1 },
@@ -54,7 +58,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       .map((tool) => ({
         url: `${BASE_URL}/tools/${category.slug}/${tool.slug}`,
         changeFrequency: "monthly",
-        priority: 0.8,
+        priority: HIGH_PRIORITY_TOOL_SLUGS.has(tool.slug) ? 0.9 : 0.8,
       })),
   );
 

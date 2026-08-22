@@ -178,6 +178,12 @@ export const categories: Category[] = [
         icon: Ruler,
       },
       {
+        name: "Nepal Land Area Converter",
+        slug: "nepal-land-area-converter",
+        description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet, square meters, acres and hectares in English or Nepali.",
+        icon: Ruler,
+      },
+      {
         name: "Temperature Converter",
         slug: "temperature-converter",
         description: "Convert Celsius, Fahrenheit and Kelvin using standard temperature conversion formulas.",
