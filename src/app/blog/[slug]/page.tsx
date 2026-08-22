@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import type { MDXComponents } from "mdx/types";
 import { notFound } from "next/navigation";
-import { MDXRemote } from "next-mdx-remote/rsc";
 
 import { getPosts, getPostBySlug, type BlogPost } from "@/lib/blog";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { CtaBox } from "@/components/blog/CtaBox";
-import { Callout } from "@/components/blog/Callout";
+import styles from "./BlogArticle.module.css";
 
 const SITE_URL = "https://oncalculator.tech";
 const SITE_NAME = "OnCalculator";
@@ -46,36 +44,6 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     },
   };
 }
-
-/** Article typography — indigo links, spaced headings, styled quotes. */
-const mdxComponents: MDXComponents = {
-  h2: (props) => (
-    <h2 className="mt-10 text-2xl font-bold tracking-tight text-slate-900" {...props} />
-  ),
-  h3: (props) => (
-    <h3 className="mt-8 text-xl font-semibold text-slate-900" {...props} />
-  ),
-  p: (props) => <p className="mt-4 leading-relaxed text-slate-700" {...props} />,
-  ul: (props) => <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700" {...props} />,
-  ol: (props) => <ol className="mt-4 list-decimal space-y-2 pl-6 text-slate-700" {...props} />,
-  a: (props) => (
-    <a
-      className="font-medium text-indigo-600 underline decoration-indigo-300 underline-offset-4 transition-colors hover:text-indigo-800"
-      {...props}
-    />
-  ),
-  blockquote: (props) => (
-    <blockquote
-      className="mt-6 border-l-4 border-indigo-200 bg-indigo-50/50 py-2 pr-4 pl-4 italic text-slate-600"
-      {...props}
-    />
-  ),
-  code: (props) => (
-    <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-slate-800" {...props} />
-  ),
-  // Custom author-facing component: <Callout title="...">...</Callout>
-  Callout,
-};
 
 /** BlogPosting JSON-LD — emitted in the same server render as the article. */
 function PostJsonLd({ post }: { post: BlogPost }) {
@@ -140,7 +108,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         ]}
       />
 
-      {/* H1 + meta row */}
       <header className="mt-6">
         <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600">
           {post.category}
@@ -153,10 +120,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </p>
       </header>
 
-      {/* MDX body — compiled server-side, styled by mdxComponents */}
-      <div className="mt-8">
-        <MDXRemote source={post.content} components={mdxComponents} />
-      </div>
+      {/*
+       * Article HTML is generated from repository-owned MDX during prebuild.
+       * The build step escapes authored text and only emits the supported
+       * Markdown elements, so Cloudflare never compiles/evaluates MDX here.
+       */}
+      <div
+        className={`${styles.content} mt-8`}
+        dangerouslySetInnerHTML={{ __html: post.html }}
+      />
 
       {/* The traffic flywheel: every article ends at its calculator. */}
       <CtaBox toolSlug={post.relatedToolSlug} />
