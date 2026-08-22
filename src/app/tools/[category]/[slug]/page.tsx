@@ -7,6 +7,7 @@ import {
   getCalculatorContent,
   getCalculatorMetadata,
 } from "@/data/calculator-content";
+import { nepalLandAreaCalculatorContent } from "@/data/nepal-land-area-content";
 import { calculatorRegistry } from "@/components/calculators/registry";
 import { CalculatorCard } from "@/components/ui/CalculatorCard";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
@@ -41,6 +42,14 @@ function getPreferredToolRoute(categorySlug: string, toolSlug: string) {
   return PREFERRED_TOOL_ROUTES[`${categorySlug}/${toolSlug}`] ?? null;
 }
 
+function getToolContent(toolSlug: string, toolName: string) {
+  if (toolSlug === nepalLandAreaCalculatorContent.slug) {
+    return nepalLandAreaCalculatorContent;
+  }
+
+  return getCalculatorContent(toolSlug, toolName);
+}
+
 export function generateStaticParams() {
   return categories.flatMap((category) =>
     category.tools.map((tool) => ({
@@ -68,7 +77,7 @@ export async function generateMetadata({
     };
   }
 
-  const content = getCalculatorContent(found.tool.slug, found.tool.name);
+  const content = getToolContent(found.tool.slug, found.tool.name);
   const preferredRoute = getPreferredToolRoute(categorySlug, toolSlug);
 
   const metadata = getCalculatorMetadata(
@@ -101,7 +110,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
   if (preferredRoute) permanentRedirect(preferredRoute);
 
   const { category, tool } = found;
-  const content = getCalculatorContent(tool.slug, tool.name);
+  const content = getToolContent(tool.slug, tool.name);
   const CalculatorComponent = calculatorRegistry[tool.slug];
   const related = category.tools.filter((t) => t.slug !== tool.slug);
 
