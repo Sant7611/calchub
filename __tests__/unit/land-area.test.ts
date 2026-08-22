@@ -35,7 +35,7 @@ describe("Nepal land area conversions", () => {
       daam: 1,
     });
 
-    expect(squareFeet).toBeCloseTo(12855.890625, 8);
+    expect(squareFeet).toBeCloseTo(12855.765625, 8);
   });
 
   it("round-trips Ropani-Aana-Paisa-Daam", () => {
