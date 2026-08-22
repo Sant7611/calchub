@@ -132,14 +132,14 @@ export default async function ToolPage({ params }: ToolPageProps) {
         {CalculatorComponent ? (
           <CalculatorComponent />
         ) : (
-          <div className="flex flex-col items-center rounded-2xl border border-slate-200 bg-white py-10 text-center shadow-sm">
-            <span className="grid h-14 w-14 place-items-center rounded-full bg-slate-100">
-              <CalendarClock className="h-7 w-7 text-slate-400" />
+          <div className="flex flex-col items-center rounded-2xl border border-border bg-card py-10 text-center shadow-sm">
+            <span className="grid h-14 w-14 place-items-center rounded-full bg-muted">
+              <CalendarClock className="h-7 w-7 text-muted-foreground" />
             </span>
-            <h2 className="mt-4 text-lg font-semibold text-slate-900">
+            <h2 className="mt-4 text-lg font-semibold text-foreground">
               Coming soon
             </h2>
-            <p className="mt-1 max-w-sm text-sm text-slate-600">
+            <p className="mt-1 max-w-sm text-sm text-muted-foreground">
               The {tool.name} is on the roadmap. In the meantime, explore the
               related calculators below.
             </p>
@@ -148,11 +148,11 @@ export default async function ToolPage({ params }: ToolPageProps) {
       </div>
 
       <header className="mt-8 max-w-4xl">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           {tool.name}
         </h1>
 
-        <div className="mt-4 space-y-4 text-lg leading-relaxed text-slate-600">
+        <div className="mt-4 space-y-4 text-lg leading-relaxed text-muted-foreground">
           {content.intro.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
@@ -164,16 +164,16 @@ export default async function ToolPage({ params }: ToolPageProps) {
       <AdBanner slot={AD_SLOT_AFTER_CALCULATOR} className="my-10" />
 
       <section className="mt-12 max-w-4xl">
-        <h2 className="text-2xl font-bold text-slate-900">
+        <h2 className="text-2xl font-bold text-foreground">
           How to Use the {tool.name}
         </h2>
         <ol className="mt-5 space-y-4">
           {content.howToUse.map((step, index) => (
             <li key={step} className="flex gap-4">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-indigo-50 text-sm font-semibold text-indigo-600">
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
                 {index + 1}
               </span>
-              <span className="pt-0.5 leading-relaxed text-slate-600">
+              <span className="pt-0.5 leading-relaxed text-muted-foreground">
                 {step}
               </span>
             </li>
@@ -182,11 +182,11 @@ export default async function ToolPage({ params }: ToolPageProps) {
       </section>
 
       <section className="mt-12 max-w-4xl">
-        <h2 className="text-2xl font-bold text-slate-900">
+        <h2 className="text-2xl font-bold text-foreground">
           {content.formula.title}
         </h2>
-        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-5">
-          <p className="leading-relaxed text-slate-600">
+        <div className="mt-4 rounded-xl border border-border bg-muted/50 p-5">
+          <p className="leading-relaxed text-muted-foreground">
             {content.formula.explanation}
           </p>
         </div>
@@ -198,7 +198,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
 
       {related.length > 0 && (
         <section className="mt-12">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 className="text-2xl font-bold text-foreground">
             Related Calculators
           </h2>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
